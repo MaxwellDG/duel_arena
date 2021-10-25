@@ -4,7 +4,7 @@
             
         </div>
         <div>
-            <p>Crypto Cruz Inc. 2021</p>
+            <p>Agrano Inc. 2021</p>
         </div>
         <div>
             <p>Legal Policy</p>
@@ -28,7 +28,6 @@ export default {
 
 <style scoped>
     .container{
-        background-color: azure;
         margin-top: 60px;
     }
 </style>

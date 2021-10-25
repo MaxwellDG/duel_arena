@@ -31,7 +31,6 @@ export default {
 
 <style scoped>
     #landing{
-        background-color: azure;
         height: 100vh;
         width: 100%;
         display: flex;

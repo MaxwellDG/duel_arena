@@ -1,30 +1,25 @@
 <template>
-  <div id="app">
+  <div id="container">
     <Landing />
     <Interfaz />
+    <ComoFunciona />
+    <SobreNosotros />
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import NavBar from '../components/NavBar.vue'
 import Interfaz from './Interfaz.vue'
 import Landing from './Landing.vue'
-
-import VueToast from 'vue-toast-notification'
-import 'vue-toast-notification/dist/theme-default.css';
-// import 'vue-toast-notification/dist/theme-sugar.css';
-
-Vue.use(VueToast);
-Vue.use(VueRouter);
+import ComoFunciona from './ComoFunciona.vue'
+import SobreNosotros from './SobreNosotros.vue'
 
 export default {
-  name: 'App',
+  name: 'Principal',
   components: {
     Landing,
     Interfaz,
-    NavBar
+    ComoFunciona,
+    SobreNosotros
   }
 }
 </script>

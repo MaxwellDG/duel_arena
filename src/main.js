@@ -13,18 +13,18 @@ global.Buffer = global.Buffer || require("buffer").Buffer;
 // I dunno
 Vue.config.productionTip = false
 
-//Routing
-const routes = [
-  { path: '/', component: Principal },
-  { path: '/legal', component: Legal }
-]
+// //Routing
+// const routes = [
+//   { path: '/', component: Principal },
+//   { path: '/legal', component: Legal }
+// ]
 
-const router = new VueRouter({
-  routes
-})
+// const router = new VueRouter({
+//   routes
+// })
 
 //Init with index.html
 new Vue({
   render: h => h(App),
-  router,
+  // router,
 }).$mount('#app')

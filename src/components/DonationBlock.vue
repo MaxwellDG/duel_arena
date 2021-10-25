@@ -1,6 +1,6 @@
 <template>
   <div id="DonationBlock">
-      <img src="/images/grocery-1.jpeg" class="groceryImg"/>
+      <img src="/images/grocery-1.png" class="groceryImg"/>
       <Address :address="`0x934uh3nb3035bdjnibr`"/>
   </div>
 </template>
