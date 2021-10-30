@@ -5,7 +5,7 @@
             Once upon a time, there were societies that created infrastructure solely for the benefit of each other. They created roads
             and bridges because they and their neighbours needed to get across - and nothing more. We strive to do the same. We are a small team
             of professionals that have full-time employment elsewhere. All of us have opted to dedicate our free-time to creating this project.
-            We are building those roads and bridges to connect us through the blockchain. 
+            We are building the roads and bridges that will connect us through the blockchain. 
         </p>
         <div class="members-con">
             <h3 class="white-text">Core</h3>

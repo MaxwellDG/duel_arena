@@ -4,6 +4,7 @@
     <Interfaz />
     <ComoFunciona />
     <SobreNosotros />
+    <Contacta />
   </div>
 </template>
 
@@ -12,6 +13,7 @@ import Interfaz from './Interfaz.vue'
 import Landing from './Landing.vue'
 import ComoFunciona from './ComoFunciona.vue'
 import SobreNosotros from './SobreNosotros.vue'
+import Contacta from './Contacta.vue'
 
 export default {
   name: 'Principal',
@@ -19,7 +21,8 @@ export default {
     Landing,
     Interfaz,
     ComoFunciona,
-    SobreNosotros
+    SobreNosotros,
+    Contacta
   }
 }
 </script>
