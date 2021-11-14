@@ -1,4 +1,9 @@
+html{
+    height: 100%;
+}
+
 body{
+    height: 100%;
     background-color: #deedf9;
     margin: 0;
     scrollbar-width: none; /* Also needed to disable scrollbar Firefox */

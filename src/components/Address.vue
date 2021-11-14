@@ -5,7 +5,7 @@
         @mouseover="() => this.isCopy = true" 
         @mouseout="() => this.isCopy = false"
     >
-      <p class="text">{{address}}</p>
+      <p class="text">0x56655034D4E55FFFBd22490c5724cb928bac0b52</p>
       <div v-if="isCopy" class="copy">
         <img class="copyImg" src="/images/copy.png"/>
       </div>

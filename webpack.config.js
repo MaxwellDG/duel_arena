@@ -18,11 +18,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.m?js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
-        },
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { targets: "defaults" }]
+            ]
+          }
+        }
       },
       {
         test: /\.vue$/,
@@ -36,13 +41,19 @@ module.exports = {
         },
       },
       {
-        test: /\.(png|jpe?g|gif|webm|mp4|svg)$/,
+        test: /\.(png|jpe?g|gif|webm|mp4)$/,
         loader: "file-loader",
         options: {
           name: "[name][contenthash:8].[ext]",
           outputPath: "assets/img",
           esModule: false,
         },
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          'vue-svg-loader',
+        ],
       },
       {
         test: /\.s?css$/,
