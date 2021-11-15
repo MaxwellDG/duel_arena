@@ -1,25 +1,19 @@
-html{
-    height: 100%;
-}
-
 body{
-    height: 100%;
     background-color: #deedf9;
     margin: 0;
-    scrollbar-width: none; /* Also needed to disable scrollbar Firefox */
-    -ms-overflow-style: none;  /* Disable scrollbar IE 10+ */
-    overflow-y: scroll;
 }
 
-@-moz-document url-prefix() { /* Disable scrollbar Firefox */
-    html{
-      scrollbar-width: none;
-    }
-}
-::-webkit-scrollbar {
-    display: none;
+html, body, {
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
 }
   
+.purp{
+    color: #b784c2;
+}
 
 .between{
     display: flex;

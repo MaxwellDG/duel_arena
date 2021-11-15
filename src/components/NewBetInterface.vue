@@ -82,8 +82,9 @@ export default {
     }
 
     #newBetInterface{
+        height: 15vh;
         background-color: purple;
-        padding: 10px;
+        padding: 0 10px 10px 10px;
         border-radius: 5px;
     }
     .formContainer{

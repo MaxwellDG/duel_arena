@@ -34,6 +34,20 @@ module.exports = {
         loader: "vue-loader",
       },
       {
+        test: /\.s?css$/,
+        use: [
+          "style-loader",
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              esModule: false,
+            },
+          },
+          "css-loader",
+          "sass-loader",
+        ],
+      },
+      {
         test: /\.(eot|ttf|woff|woff2)(\?\S*)?$/,
         loader: "file-loader",
         options: {
@@ -53,20 +67,6 @@ module.exports = {
         test: /\.svg$/,
         use: [
           'vue-svg-loader',
-        ],
-      },
-      {
-        test: /\.s?css$/,
-        use: [
-          "style-loader",
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              esModule: false,
-            },
-          },
-          "css-loader",
-          "sass-loader",
         ],
       },
     ],

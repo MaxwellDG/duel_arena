@@ -1,18 +1,11 @@
 <template>
     <div id='artwork'>
-        <div>
-            
-        </div>
-        <div>
-
-        </div>
+        <img src="/images/osrs-dance.png" class="osrsDance" />
         <div class="wowText">
             <img src="/images/wowroll.png" class="wowroll" />
             <img src="/images/sudoku.png" class="sudoku" />
         </div>
-        <div>
-            <img src="/images/Grunt.png" class="orc"/>
-        </div>
+        <img src="/images/Grunt.png" class="orc"/>
     </div>
 </template>
 
@@ -32,17 +25,10 @@ export default {
 
 <style scoped>
     #artwork{
+        height: 30vh;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;   
-    }
-
-    .wowroll{
-        margin-right: 50px;
-    }
-
-    .sudoku{
-        margin: 0 0 50px 50px;
+        justify-content: space-between;  
     }
 
     .wowText{
