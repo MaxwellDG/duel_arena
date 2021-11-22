@@ -46,6 +46,9 @@ Vue.use(VueToast);
 // Maybe do some advertising? '50/50 2x Peer-2-Peer Crypto Gambling - DuelArena.io'
 // Miss DuelArena? Gamble like a big boi @ DuelArena.io
 
+const BET_FACTORY_ADDRESS = '0x0F5F5268246cbF5f3a9381b6511D34f5aB3Af08A';
+
+
 export default {
     name: 'App',
     components: {
@@ -66,10 +69,13 @@ export default {
                 console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
             }
         })()
+
+
+
     },
     data() {
         return{
-
+        
         }
     },
     

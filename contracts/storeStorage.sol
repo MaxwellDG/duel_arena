@@ -1,2 +1,0 @@
-// Money in the storage wallet must be mapped  {transactionId -> uint} so when money is removed from the wallet, it can be proven that it was YOUR money removed and that
-// we weren't doubling our receipts to people who sent equal amounts of money to that storage wallet
