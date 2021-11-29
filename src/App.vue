@@ -20,7 +20,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueFormulate from '@braid/vue-formulate'
+
+//Blockchain
 import Web3 from 'web3'
+import BetFactory from '../build/contracts/BetFactory.json'
 
 //Components
 import VueToast from 'vue-toast-notification'
@@ -62,8 +65,36 @@ export default {
     },
     mounted(){
         (async () => {
-            if (typeof window.ethereum !== 'undefined') {          
-                this.$store.commit('setWeb3', new Web3(Web3.givenProvider || new Web3.providers.HttpProvider('http://localhost:8545')));
+            if (typeof window.ethereum !== 'undefined') {   
+                const web3 = new Web3(new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545'))
+                const addresses = await web3.eth.getAccounts()
+                const networkId = await web3.eth.net.getId();
+                const deployedNetwork = BetFactory.networks[networkId];
+
+                // const web3 = new Web3(Web3.givenProvider || new Web3.providers.HttpProvider('http://localhost:7545'))
+                this.$store.commit('setWeb3', web3);
+                const BetFactoryContract = new web3.eth.Contract(BetFactory.abi, deployedNetwork.address)
+                console.log(BetFactoryContract)
+
+                try{
+                    const betCounter = await BetFactoryContract.methods.betCounter().call();
+                    console.log(betCounter);
+                } catch (e){
+                    console.log('errrr', e)
+                }
+
+                try{
+                    const self = await BetFactoryContract.methods.readSelfBets().call()
+                    console.log('READING BETS');
+                    console.log(self)
+                } catch(e){
+                    console.log('got and error:')
+                    console.log(e);
+                }
+
+                await BetFactoryContract.methods.createBet(58, "SOL", "NODNOD").send({
+                    from: addresses[0],
+                })
             } else { 
                 // Non-dapp browsers
                 console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');

@@ -1,0 +1,3760 @@
+{
+  "contractName": "Mortal",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "betId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "s1",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "s2",
+          "type": "string"
+        }
+      ],
+      "name": "compareStringsbyBytes",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "creator",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "displayName",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "token",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "wager",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "kill",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"betId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"s1\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"s2\",\"type\":\"string\"}],\"name\":\"compareStringsbyBytes\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"creator\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"displayName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"kill\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wager\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/BetFactory.sol\":\"Mortal\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Bet.sol\":{\"keccak256\":\"0xe3fc5303fa5a52d9021c64c82f0cbaf220a39608e471433195f30948a034ba28\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c7c918d350796a155fb7b759ea207a233574dbc95332fc25632a4e7af0194986\",\"dweb:/ipfs/QmQyL5KXgB28zdDB6DikU6GwiBPgGikVzmUm5xxmBcmfa3\"]},\"project:/contracts/BetFactory.sol\":{\"keccak256\":\"0xf2489721be508918e5ebdeee14fe5b9c1149117ba65f64260029e4bb9313b5bb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7286ad2c03575eada584295ee25080465b678b6cea2647e2a2d6e184e116c7fe\",\"dweb:/ipfs/QmeQAz3kV6UDizz8abLi1XS4KhZRYe2K8fkfvcdG84f6Dk\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity >=0.4.22 <0.9.0;\r\n\r\nimport \"./Bet.sol\";\r\n// TODO emit events for all major changes\r\n// TODO don't use ETH. The gas fees are retarded \r\n// Solang Solidity Compiler allows you to deploy .sol smart contracts to Solana blockchain\r\n\r\ncontract BetFactory{\r\n\r\n    // TODO this gettter is requiring a uint256 to index the Bet[] and return just 1\r\n    mapping(address => Bet[]) public allBets;\r\n    mapping(address => bool) public allAddresses;\r\n    uint256 public betCounter = 0;\r\n\r\n    function createBet(uint256 _wager, string memory _token, string memory _displayName) external{\r\n        betCounter += 1;\r\n        Bet bet = new Bet();\r\n        // allBets[msg.sender].push(bet);\r\n        // allAddresses[msg.sender] = true;\r\n    }\r\n\r\n    function removeBet(uint256 _betId) public hasOpenBets{\r\n        for (uint j = 0; j <= allBets[msg.sender].length; j ++) {  \r\n            if(_betId == allBets[msg.sender][j].betId()){\r\n                delete allBets[msg.sender][j];\r\n                if(allBets[msg.sender].length == 0){\r\n                    allAddresses[msg.sender] = false;\r\n                }\r\n            }\r\n        }\r\n    } \r\n\r\n    // This is kind of working. It returns the contract addresses of the Bets with csv\r\n    function readSelfBets() public view returns (Bet[] memory){ \r\n        return allBets[msg.sender];\r\n    }\r\n\r\n    function readBets(string memory _tokenFilter, string memory _betFilter, string memory _displayNameFilter, uint256 pageNum) public view{\r\n        // TODO in some way that's not mega expensive\r\n    }\r\n\r\n    //Modifiers\r\n    modifier hasOpenBets(){\r\n        // BROKEN ?\r\n        require(allAddresses[msg.sender] == true);\r\n        _;\r\n    }\r\n\r\n}\r\n\r\nabstract contract Mortal is Bet {\r\n\r\n    function kill() public mustBeCreator { \r\n        selfdestruct(payable(msg.sender));\r\n    }\r\n}",
+  "sourcePath": "C:\\Users\\Maxwell\\Documents\\DuelArena\\DuelArena\\contracts\\BetFactory.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/BetFactory.sol",
+    "exportedSymbols": {
+      "Bet": [
+        75
+      ],
+      "BetFactory": [
+        212
+      ],
+      "Mortal": [
+        229
+      ]
+    },
+    "id": 230,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 77,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".22",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:32:1"
+      },
+      {
+        "absolutePath": "project:/contracts/Bet.sol",
+        "file": "./Bet.sol",
+        "id": 78,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 230,
+        "sourceUnit": 76,
+        "src": "69:19:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "BetFactory",
+        "contractDependencies": [
+          75
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 212,
+        "linearizedBaseContracts": [
+          212
+        ],
+        "name": "BetFactory",
+        "nameLocation": "287:10:1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "functionSelector": "d17f538f",
+            "id": 84,
+            "mutability": "mutable",
+            "name": "allBets",
+            "nameLocation": "425:7:1",
+            "nodeType": "VariableDeclaration",
+            "scope": 212,
+            "src": "392:40:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+              "typeString": "mapping(address => contract Bet[])"
+            },
+            "typeName": {
+              "id": 83,
+              "keyType": {
+                "id": 79,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "400:7:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "392:25:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                "typeString": "mapping(address => contract Bet[])"
+              },
+              "valueType": {
+                "baseType": {
+                  "id": 81,
+                  "nodeType": "UserDefinedTypeName",
+                  "pathNode": {
+                    "id": 80,
+                    "name": "Bet",
+                    "nodeType": "IdentifierPath",
+                    "referencedDeclaration": 75,
+                    "src": "411:3:1"
+                  },
+                  "referencedDeclaration": 75,
+                  "src": "411:3:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_Bet_$75",
+                    "typeString": "contract Bet"
+                  }
+                },
+                "id": 82,
+                "nodeType": "ArrayTypeName",
+                "src": "411:5:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage_ptr",
+                  "typeString": "contract Bet[]"
+                }
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "af5996aa",
+            "id": 88,
+            "mutability": "mutable",
+            "name": "allAddresses",
+            "nameLocation": "471:12:1",
+            "nodeType": "VariableDeclaration",
+            "scope": 212,
+            "src": "439:44:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+              "typeString": "mapping(address => bool)"
+            },
+            "typeName": {
+              "id": 87,
+              "keyType": {
+                "id": 85,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "447:7:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "439:24:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                "typeString": "mapping(address => bool)"
+              },
+              "valueType": {
+                "id": 86,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "458:4:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "a416f5ab",
+            "id": 91,
+            "mutability": "mutable",
+            "name": "betCounter",
+            "nameLocation": "505:10:1",
+            "nodeType": "VariableDeclaration",
+            "scope": 212,
+            "src": "490:29:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 89,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "490:7:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": {
+              "hexValue": "30",
+              "id": 90,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "518:1:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_0_by_1",
+                "typeString": "int_const 0"
+              },
+              "value": "0"
+            },
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 112,
+              "nodeType": "Block",
+              "src": "621:152:1",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 102,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 100,
+                      "name": "betCounter",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 91,
+                      "src": "632:10:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "+=",
+                    "rightHandSide": {
+                      "hexValue": "31",
+                      "id": 101,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "646:1:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
+                      },
+                      "value": "1"
+                    },
+                    "src": "632:15:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 103,
+                  "nodeType": "ExpressionStatement",
+                  "src": "632:15:1"
+                },
+                {
+                  "assignments": [
+                    106
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 106,
+                      "mutability": "mutable",
+                      "name": "bet",
+                      "nameLocation": "662:3:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 112,
+                      "src": "658:7:1",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Bet_$75",
+                        "typeString": "contract Bet"
+                      },
+                      "typeName": {
+                        "id": 105,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 104,
+                          "name": "Bet",
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 75,
+                          "src": "658:3:1"
+                        },
+                        "referencedDeclaration": 75,
+                        "src": "658:3:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_Bet_$75",
+                          "typeString": "contract Bet"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 111,
+                  "initialValue": {
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 109,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "NewExpression",
+                      "src": "668:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_creation_nonpayable$__$returns$_t_contract$_Bet_$75_$",
+                        "typeString": "function () returns (contract Bet)"
+                      },
+                      "typeName": {
+                        "id": 108,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 107,
+                          "name": "Bet",
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 75,
+                          "src": "672:3:1"
+                        },
+                        "referencedDeclaration": 75,
+                        "src": "672:3:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_Bet_$75",
+                          "typeString": "contract Bet"
+                        }
+                      }
+                    },
+                    "id": 110,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "668:9:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Bet_$75",
+                      "typeString": "contract Bet"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "658:19:1"
+                }
+              ]
+            },
+            "functionSelector": "292e9556",
+            "id": 113,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "createBet",
+            "nameLocation": "537:9:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 98,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 93,
+                  "mutability": "mutable",
+                  "name": "_wager",
+                  "nameLocation": "555:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 113,
+                  "src": "547:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 92,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "547:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 95,
+                  "mutability": "mutable",
+                  "name": "_token",
+                  "nameLocation": "577:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 113,
+                  "src": "563:20:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 94,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "563:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 97,
+                  "mutability": "mutable",
+                  "name": "_displayName",
+                  "nameLocation": "599:12:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 113,
+                  "src": "585:26:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 96,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "585:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "546:66:1"
+            },
+            "returnParameters": {
+              "id": 99,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "621:0:1"
+            },
+            "scope": 212,
+            "src": "528:245:1",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 172,
+              "nodeType": "Block",
+              "src": "834:338:1",
+              "statements": [
+                {
+                  "body": {
+                    "id": 170,
+                    "nodeType": "Block",
+                    "src": "901:264:1",
+                    "statements": [
+                      {
+                        "condition": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          "id": 143,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "id": 134,
+                            "name": "_betId",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 115,
+                            "src": "921:6:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": "==",
+                          "rightExpression": {
+                            "arguments": [],
+                            "expression": {
+                              "argumentTypes": [],
+                              "expression": {
+                                "baseExpression": {
+                                  "baseExpression": {
+                                    "id": 135,
+                                    "name": "allBets",
+                                    "nodeType": "Identifier",
+                                    "overloadedDeclarations": [],
+                                    "referencedDeclaration": 84,
+                                    "src": "931:7:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                                      "typeString": "mapping(address => contract Bet[] storage ref)"
+                                    }
+                                  },
+                                  "id": 138,
+                                  "indexExpression": {
+                                    "expression": {
+                                      "id": 136,
+                                      "name": "msg",
+                                      "nodeType": "Identifier",
+                                      "overloadedDeclarations": [],
+                                      "referencedDeclaration": 4294967281,
+                                      "src": "939:3:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_magic_message",
+                                        "typeString": "msg"
+                                      }
+                                    },
+                                    "id": 137,
+                                    "isConstant": false,
+                                    "isLValue": false,
+                                    "isPure": false,
+                                    "lValueRequested": false,
+                                    "memberName": "sender",
+                                    "nodeType": "MemberAccess",
+                                    "src": "939:10:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_address",
+                                      "typeString": "address"
+                                    }
+                                  },
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "nodeType": "IndexAccess",
+                                  "src": "931:19:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                                    "typeString": "contract Bet[] storage ref"
+                                  }
+                                },
+                                "id": 140,
+                                "indexExpression": {
+                                  "id": 139,
+                                  "name": "j",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 121,
+                                  "src": "951:1:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_uint256",
+                                    "typeString": "uint256"
+                                  }
+                                },
+                                "isConstant": false,
+                                "isLValue": true,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "nodeType": "IndexAccess",
+                                "src": "931:22:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_contract$_Bet_$75",
+                                  "typeString": "contract Bet"
+                                }
+                              },
+                              "id": 141,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "betId",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 11,
+                              "src": "931:28:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_function_external_view$__$returns$_t_uint256_$",
+                                "typeString": "function () view external returns (uint256)"
+                              }
+                            },
+                            "id": 142,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "kind": "functionCall",
+                            "lValueRequested": false,
+                            "names": [],
+                            "nodeType": "FunctionCall",
+                            "src": "931:30:1",
+                            "tryCall": false,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "src": "921:40:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "id": 169,
+                        "nodeType": "IfStatement",
+                        "src": "918:236:1",
+                        "trueBody": {
+                          "id": 168,
+                          "nodeType": "Block",
+                          "src": "962:192:1",
+                          "statements": [
+                            {
+                              "expression": {
+                                "id": 150,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "nodeType": "UnaryOperation",
+                                "operator": "delete",
+                                "prefix": true,
+                                "src": "981:29:1",
+                                "subExpression": {
+                                  "baseExpression": {
+                                    "baseExpression": {
+                                      "id": 144,
+                                      "name": "allBets",
+                                      "nodeType": "Identifier",
+                                      "overloadedDeclarations": [],
+                                      "referencedDeclaration": 84,
+                                      "src": "988:7:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                                        "typeString": "mapping(address => contract Bet[] storage ref)"
+                                      }
+                                    },
+                                    "id": 147,
+                                    "indexExpression": {
+                                      "expression": {
+                                        "id": 145,
+                                        "name": "msg",
+                                        "nodeType": "Identifier",
+                                        "overloadedDeclarations": [],
+                                        "referencedDeclaration": 4294967281,
+                                        "src": "996:3:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_magic_message",
+                                          "typeString": "msg"
+                                        }
+                                      },
+                                      "id": 146,
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "memberName": "sender",
+                                      "nodeType": "MemberAccess",
+                                      "src": "996:10:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      }
+                                    },
+                                    "isConstant": false,
+                                    "isLValue": true,
+                                    "isPure": false,
+                                    "lValueRequested": false,
+                                    "nodeType": "IndexAccess",
+                                    "src": "988:19:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                                      "typeString": "contract Bet[] storage ref"
+                                    }
+                                  },
+                                  "id": 149,
+                                  "indexExpression": {
+                                    "id": 148,
+                                    "name": "j",
+                                    "nodeType": "Identifier",
+                                    "overloadedDeclarations": [],
+                                    "referencedDeclaration": 121,
+                                    "src": "1008:1:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_uint256",
+                                      "typeString": "uint256"
+                                    }
+                                  },
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": true,
+                                  "nodeType": "IndexAccess",
+                                  "src": "988:22:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_contract$_Bet_$75",
+                                    "typeString": "contract Bet"
+                                  }
+                                },
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_tuple$__$",
+                                  "typeString": "tuple()"
+                                }
+                              },
+                              "id": 151,
+                              "nodeType": "ExpressionStatement",
+                              "src": "981:29:1"
+                            },
+                            {
+                              "condition": {
+                                "commonType": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                },
+                                "id": 158,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "leftExpression": {
+                                  "expression": {
+                                    "baseExpression": {
+                                      "id": 152,
+                                      "name": "allBets",
+                                      "nodeType": "Identifier",
+                                      "overloadedDeclarations": [],
+                                      "referencedDeclaration": 84,
+                                      "src": "1032:7:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                                        "typeString": "mapping(address => contract Bet[] storage ref)"
+                                      }
+                                    },
+                                    "id": 155,
+                                    "indexExpression": {
+                                      "expression": {
+                                        "id": 153,
+                                        "name": "msg",
+                                        "nodeType": "Identifier",
+                                        "overloadedDeclarations": [],
+                                        "referencedDeclaration": 4294967281,
+                                        "src": "1040:3:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_magic_message",
+                                          "typeString": "msg"
+                                        }
+                                      },
+                                      "id": 154,
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "memberName": "sender",
+                                      "nodeType": "MemberAccess",
+                                      "src": "1040:10:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      }
+                                    },
+                                    "isConstant": false,
+                                    "isLValue": true,
+                                    "isPure": false,
+                                    "lValueRequested": false,
+                                    "nodeType": "IndexAccess",
+                                    "src": "1032:19:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                                      "typeString": "contract Bet[] storage ref"
+                                    }
+                                  },
+                                  "id": 156,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "memberName": "length",
+                                  "nodeType": "MemberAccess",
+                                  "src": "1032:26:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_uint256",
+                                    "typeString": "uint256"
+                                  }
+                                },
+                                "nodeType": "BinaryOperation",
+                                "operator": "==",
+                                "rightExpression": {
+                                  "hexValue": "30",
+                                  "id": 157,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "kind": "number",
+                                  "lValueRequested": false,
+                                  "nodeType": "Literal",
+                                  "src": "1062:1:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_rational_0_by_1",
+                                    "typeString": "int_const 0"
+                                  },
+                                  "value": "0"
+                                },
+                                "src": "1032:31:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_bool",
+                                  "typeString": "bool"
+                                }
+                              },
+                              "id": 167,
+                              "nodeType": "IfStatement",
+                              "src": "1029:110:1",
+                              "trueBody": {
+                                "id": 166,
+                                "nodeType": "Block",
+                                "src": "1064:75:1",
+                                "statements": [
+                                  {
+                                    "expression": {
+                                      "id": 164,
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "leftHandSide": {
+                                        "baseExpression": {
+                                          "id": 159,
+                                          "name": "allAddresses",
+                                          "nodeType": "Identifier",
+                                          "overloadedDeclarations": [],
+                                          "referencedDeclaration": 88,
+                                          "src": "1087:12:1",
+                                          "typeDescriptions": {
+                                            "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                                            "typeString": "mapping(address => bool)"
+                                          }
+                                        },
+                                        "id": 162,
+                                        "indexExpression": {
+                                          "expression": {
+                                            "id": 160,
+                                            "name": "msg",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 4294967281,
+                                            "src": "1100:3:1",
+                                            "typeDescriptions": {
+                                              "typeIdentifier": "t_magic_message",
+                                              "typeString": "msg"
+                                            }
+                                          },
+                                          "id": 161,
+                                          "isConstant": false,
+                                          "isLValue": false,
+                                          "isPure": false,
+                                          "lValueRequested": false,
+                                          "memberName": "sender",
+                                          "nodeType": "MemberAccess",
+                                          "src": "1100:10:1",
+                                          "typeDescriptions": {
+                                            "typeIdentifier": "t_address",
+                                            "typeString": "address"
+                                          }
+                                        },
+                                        "isConstant": false,
+                                        "isLValue": true,
+                                        "isPure": false,
+                                        "lValueRequested": true,
+                                        "nodeType": "IndexAccess",
+                                        "src": "1087:24:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_bool",
+                                          "typeString": "bool"
+                                        }
+                                      },
+                                      "nodeType": "Assignment",
+                                      "operator": "=",
+                                      "rightHandSide": {
+                                        "hexValue": "66616c7365",
+                                        "id": 163,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": true,
+                                        "kind": "bool",
+                                        "lValueRequested": false,
+                                        "nodeType": "Literal",
+                                        "src": "1114:5:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_bool",
+                                          "typeString": "bool"
+                                        },
+                                        "value": "false"
+                                      },
+                                      "src": "1087:32:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_bool",
+                                        "typeString": "bool"
+                                      }
+                                    },
+                                    "id": 165,
+                                    "nodeType": "ExpressionStatement",
+                                    "src": "1087:32:1"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 130,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "id": 124,
+                      "name": "j",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 121,
+                      "src": "862:1:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "<=",
+                    "rightExpression": {
+                      "expression": {
+                        "baseExpression": {
+                          "id": 125,
+                          "name": "allBets",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 84,
+                          "src": "867:7:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                            "typeString": "mapping(address => contract Bet[] storage ref)"
+                          }
+                        },
+                        "id": 128,
+                        "indexExpression": {
+                          "expression": {
+                            "id": 126,
+                            "name": "msg",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 4294967281,
+                            "src": "875:3:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_magic_message",
+                              "typeString": "msg"
+                            }
+                          },
+                          "id": 127,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "sender",
+                          "nodeType": "MemberAccess",
+                          "src": "875:10:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "867:19:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                          "typeString": "contract Bet[] storage ref"
+                        }
+                      },
+                      "id": 129,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "src": "867:26:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "862:31:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 171,
+                  "initializationExpression": {
+                    "assignments": [
+                      121
+                    ],
+                    "declarations": [
+                      {
+                        "constant": false,
+                        "id": 121,
+                        "mutability": "mutable",
+                        "name": "j",
+                        "nameLocation": "855:1:1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 171,
+                        "src": "850:6:1",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "typeName": {
+                          "id": 120,
+                          "name": "uint",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "850:4:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "id": 123,
+                    "initialValue": {
+                      "hexValue": "30",
+                      "id": 122,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "859:1:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "nodeType": "VariableDeclarationStatement",
+                    "src": "850:10:1"
+                  },
+                  "loopExpression": {
+                    "expression": {
+                      "id": 132,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "UnaryOperation",
+                      "operator": "++",
+                      "prefix": false,
+                      "src": "895:4:1",
+                      "subExpression": {
+                        "id": 131,
+                        "name": "j",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 121,
+                        "src": "895:1:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 133,
+                    "nodeType": "ExpressionStatement",
+                    "src": "895:4:1"
+                  },
+                  "nodeType": "ForStatement",
+                  "src": "845:320:1"
+                }
+              ]
+            },
+            "functionSelector": "5c2029a9",
+            "id": 173,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 118,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 117,
+                  "name": "hasOpenBets",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 211,
+                  "src": "823:11:1"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "823:11:1"
+              }
+            ],
+            "name": "removeBet",
+            "nameLocation": "790:9:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 116,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 115,
+                  "mutability": "mutable",
+                  "name": "_betId",
+                  "nameLocation": "808:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 173,
+                  "src": "800:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 114,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "800:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "799:16:1"
+            },
+            "returnParameters": {
+              "id": 119,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "834:0:1"
+            },
+            "scope": 212,
+            "src": "781:391:1",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 185,
+              "nodeType": "Block",
+              "src": "1327:46:1",
+              "statements": [
+                {
+                  "expression": {
+                    "baseExpression": {
+                      "id": 180,
+                      "name": "allBets",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 84,
+                      "src": "1346:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                        "typeString": "mapping(address => contract Bet[] storage ref)"
+                      }
+                    },
+                    "id": 183,
+                    "indexExpression": {
+                      "expression": {
+                        "id": 181,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4294967281,
+                        "src": "1354:3:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 182,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "src": "1354:10:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "1346:19:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                      "typeString": "contract Bet[] storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 179,
+                  "id": 184,
+                  "nodeType": "Return",
+                  "src": "1339:26:1"
+                }
+              ]
+            },
+            "functionSelector": "7ac7ac73",
+            "id": 186,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "readSelfBets",
+            "nameLocation": "1278:12:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 174,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1290:2:1"
+            },
+            "returnParameters": {
+              "id": 179,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 178,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 186,
+                  "src": "1314:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_memory_ptr",
+                    "typeString": "contract Bet[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 176,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 175,
+                        "name": "Bet",
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 75,
+                        "src": "1314:3:1"
+                      },
+                      "referencedDeclaration": 75,
+                      "src": "1314:3:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Bet_$75",
+                        "typeString": "contract Bet"
+                      }
+                    },
+                    "id": 177,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1314:5:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage_ptr",
+                      "typeString": "contract Bet[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1313:14:1"
+            },
+            "scope": 212,
+            "src": "1269:104:1",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 197,
+              "nodeType": "Block",
+              "src": "1515:63:1",
+              "statements": []
+            },
+            "functionSelector": "f7f6267d",
+            "id": 198,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "readBets",
+            "nameLocation": "1390:8:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 195,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 188,
+                  "mutability": "mutable",
+                  "name": "_tokenFilter",
+                  "nameLocation": "1413:12:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1399:26:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 187,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1399:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 190,
+                  "mutability": "mutable",
+                  "name": "_betFilter",
+                  "nameLocation": "1441:10:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1427:24:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 189,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1427:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 192,
+                  "mutability": "mutable",
+                  "name": "_displayNameFilter",
+                  "nameLocation": "1467:18:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1453:32:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 191,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1453:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 194,
+                  "mutability": "mutable",
+                  "name": "pageNum",
+                  "nameLocation": "1495:7:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1487:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 193,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1487:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1398:105:1"
+            },
+            "returnParameters": {
+              "id": 196,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1515:0:1"
+            },
+            "scope": 212,
+            "src": "1381:197:1",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 210,
+              "nodeType": "Block",
+              "src": "1625:93:1",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        "id": 206,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "baseExpression": {
+                            "id": 201,
+                            "name": "allAddresses",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 88,
+                            "src": "1665:12:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                              "typeString": "mapping(address => bool)"
+                            }
+                          },
+                          "id": 204,
+                          "indexExpression": {
+                            "expression": {
+                              "id": 202,
+                              "name": "msg",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 4294967281,
+                              "src": "1678:3:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_message",
+                                "typeString": "msg"
+                              }
+                            },
+                            "id": 203,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "sender",
+                            "nodeType": "MemberAccess",
+                            "src": "1678:10:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "1665:24:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "hexValue": "74727565",
+                          "id": 205,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "bool",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1693:4:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "value": "true"
+                        },
+                        "src": "1665:32:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 200,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "1657:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 207,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1657:41:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 208,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1657:41:1"
+                },
+                {
+                  "id": 209,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "1709:1:1"
+                }
+              ]
+            },
+            "id": 211,
+            "name": "hasOpenBets",
+            "nameLocation": "1612:11:1",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 199,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1623:2:1"
+            },
+            "src": "1603:115:1",
+            "virtual": false,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 230,
+        "src": "278:1445:1",
+        "usedErrors": []
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 213,
+              "name": "Bet",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 75,
+              "src": "1755:3:1"
+            },
+            "id": 214,
+            "nodeType": "InheritanceSpecifier",
+            "src": "1755:3:1"
+          }
+        ],
+        "canonicalName": "Mortal",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 229,
+        "linearizedBaseContracts": [
+          229,
+          75
+        ],
+        "name": "Mortal",
+        "nameLocation": "1745:6:1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 227,
+              "nodeType": "Block",
+              "src": "1805:53:1",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "expression": {
+                              "id": 222,
+                              "name": "msg",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 4294967281,
+                              "src": "1838:3:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_message",
+                                "typeString": "msg"
+                              }
+                            },
+                            "id": 223,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "sender",
+                            "nodeType": "MemberAccess",
+                            "src": "1838:10:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          ],
+                          "id": 221,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "1830:8:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_payable_$",
+                            "typeString": "type(address payable)"
+                          },
+                          "typeName": {
+                            "id": 220,
+                            "name": "address",
+                            "nodeType": "ElementaryTypeName",
+                            "src": "1830:8:1",
+                            "stateMutability": "payable",
+                            "typeDescriptions": {}
+                          }
+                        },
+                        "id": 224,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "1830:19:1",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      ],
+                      "id": 219,
+                      "name": "selfdestruct",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4294967275,
+                      "src": "1817:12:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_selfdestruct_nonpayable$_t_address_payable_$returns$__$",
+                        "typeString": "function (address payable)"
+                      }
+                    },
+                    "id": 225,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1817:33:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 226,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1817:33:1"
+                }
+              ]
+            },
+            "functionSelector": "41c0e1b5",
+            "id": 228,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 217,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 216,
+                  "name": "mustBeCreator",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 50,
+                  "src": "1791:13:1"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1791:13:1"
+              }
+            ],
+            "name": "kill",
+            "nameLocation": "1777:4:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 215,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1781:2:1"
+            },
+            "returnParameters": {
+              "id": 218,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1805:0:1"
+            },
+            "scope": 229,
+            "src": "1768:90:1",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 230,
+        "src": "1727:134:1",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:1828:1"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/BetFactory.sol",
+    "exportedSymbols": {
+      "Bet": [
+        75
+      ],
+      "BetFactory": [
+        212
+      ],
+      "Mortal": [
+        229
+      ]
+    },
+    "id": 230,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 77,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".22",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:32:1"
+      },
+      {
+        "absolutePath": "project:/contracts/Bet.sol",
+        "file": "./Bet.sol",
+        "id": 78,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 230,
+        "sourceUnit": 76,
+        "src": "69:19:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "BetFactory",
+        "contractDependencies": [
+          75
+        ],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 212,
+        "linearizedBaseContracts": [
+          212
+        ],
+        "name": "BetFactory",
+        "nameLocation": "287:10:1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "functionSelector": "d17f538f",
+            "id": 84,
+            "mutability": "mutable",
+            "name": "allBets",
+            "nameLocation": "425:7:1",
+            "nodeType": "VariableDeclaration",
+            "scope": 212,
+            "src": "392:40:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+              "typeString": "mapping(address => contract Bet[])"
+            },
+            "typeName": {
+              "id": 83,
+              "keyType": {
+                "id": 79,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "400:7:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "392:25:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                "typeString": "mapping(address => contract Bet[])"
+              },
+              "valueType": {
+                "baseType": {
+                  "id": 81,
+                  "nodeType": "UserDefinedTypeName",
+                  "pathNode": {
+                    "id": 80,
+                    "name": "Bet",
+                    "nodeType": "IdentifierPath",
+                    "referencedDeclaration": 75,
+                    "src": "411:3:1"
+                  },
+                  "referencedDeclaration": 75,
+                  "src": "411:3:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_Bet_$75",
+                    "typeString": "contract Bet"
+                  }
+                },
+                "id": 82,
+                "nodeType": "ArrayTypeName",
+                "src": "411:5:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage_ptr",
+                  "typeString": "contract Bet[]"
+                }
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "af5996aa",
+            "id": 88,
+            "mutability": "mutable",
+            "name": "allAddresses",
+            "nameLocation": "471:12:1",
+            "nodeType": "VariableDeclaration",
+            "scope": 212,
+            "src": "439:44:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+              "typeString": "mapping(address => bool)"
+            },
+            "typeName": {
+              "id": 87,
+              "keyType": {
+                "id": 85,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "447:7:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "439:24:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                "typeString": "mapping(address => bool)"
+              },
+              "valueType": {
+                "id": 86,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "458:4:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "a416f5ab",
+            "id": 91,
+            "mutability": "mutable",
+            "name": "betCounter",
+            "nameLocation": "505:10:1",
+            "nodeType": "VariableDeclaration",
+            "scope": 212,
+            "src": "490:29:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 89,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "490:7:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": {
+              "hexValue": "30",
+              "id": 90,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "518:1:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_0_by_1",
+                "typeString": "int_const 0"
+              },
+              "value": "0"
+            },
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 112,
+              "nodeType": "Block",
+              "src": "621:152:1",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 102,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 100,
+                      "name": "betCounter",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 91,
+                      "src": "632:10:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "+=",
+                    "rightHandSide": {
+                      "hexValue": "31",
+                      "id": 101,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "646:1:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
+                      },
+                      "value": "1"
+                    },
+                    "src": "632:15:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 103,
+                  "nodeType": "ExpressionStatement",
+                  "src": "632:15:1"
+                },
+                {
+                  "assignments": [
+                    106
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 106,
+                      "mutability": "mutable",
+                      "name": "bet",
+                      "nameLocation": "662:3:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 112,
+                      "src": "658:7:1",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Bet_$75",
+                        "typeString": "contract Bet"
+                      },
+                      "typeName": {
+                        "id": 105,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 104,
+                          "name": "Bet",
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 75,
+                          "src": "658:3:1"
+                        },
+                        "referencedDeclaration": 75,
+                        "src": "658:3:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_Bet_$75",
+                          "typeString": "contract Bet"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 111,
+                  "initialValue": {
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 109,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "NewExpression",
+                      "src": "668:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_creation_nonpayable$__$returns$_t_contract$_Bet_$75_$",
+                        "typeString": "function () returns (contract Bet)"
+                      },
+                      "typeName": {
+                        "id": 108,
+                        "nodeType": "UserDefinedTypeName",
+                        "pathNode": {
+                          "id": 107,
+                          "name": "Bet",
+                          "nodeType": "IdentifierPath",
+                          "referencedDeclaration": 75,
+                          "src": "672:3:1"
+                        },
+                        "referencedDeclaration": 75,
+                        "src": "672:3:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_Bet_$75",
+                          "typeString": "contract Bet"
+                        }
+                      }
+                    },
+                    "id": 110,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "668:9:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Bet_$75",
+                      "typeString": "contract Bet"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "658:19:1"
+                }
+              ]
+            },
+            "functionSelector": "292e9556",
+            "id": 113,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "createBet",
+            "nameLocation": "537:9:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 98,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 93,
+                  "mutability": "mutable",
+                  "name": "_wager",
+                  "nameLocation": "555:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 113,
+                  "src": "547:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 92,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "547:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 95,
+                  "mutability": "mutable",
+                  "name": "_token",
+                  "nameLocation": "577:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 113,
+                  "src": "563:20:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 94,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "563:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 97,
+                  "mutability": "mutable",
+                  "name": "_displayName",
+                  "nameLocation": "599:12:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 113,
+                  "src": "585:26:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 96,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "585:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "546:66:1"
+            },
+            "returnParameters": {
+              "id": 99,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "621:0:1"
+            },
+            "scope": 212,
+            "src": "528:245:1",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 172,
+              "nodeType": "Block",
+              "src": "834:338:1",
+              "statements": [
+                {
+                  "body": {
+                    "id": 170,
+                    "nodeType": "Block",
+                    "src": "901:264:1",
+                    "statements": [
+                      {
+                        "condition": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          "id": 143,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "id": 134,
+                            "name": "_betId",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 115,
+                            "src": "921:6:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": "==",
+                          "rightExpression": {
+                            "arguments": [],
+                            "expression": {
+                              "argumentTypes": [],
+                              "expression": {
+                                "baseExpression": {
+                                  "baseExpression": {
+                                    "id": 135,
+                                    "name": "allBets",
+                                    "nodeType": "Identifier",
+                                    "overloadedDeclarations": [],
+                                    "referencedDeclaration": 84,
+                                    "src": "931:7:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                                      "typeString": "mapping(address => contract Bet[] storage ref)"
+                                    }
+                                  },
+                                  "id": 138,
+                                  "indexExpression": {
+                                    "expression": {
+                                      "id": 136,
+                                      "name": "msg",
+                                      "nodeType": "Identifier",
+                                      "overloadedDeclarations": [],
+                                      "referencedDeclaration": 4294967281,
+                                      "src": "939:3:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_magic_message",
+                                        "typeString": "msg"
+                                      }
+                                    },
+                                    "id": 137,
+                                    "isConstant": false,
+                                    "isLValue": false,
+                                    "isPure": false,
+                                    "lValueRequested": false,
+                                    "memberName": "sender",
+                                    "nodeType": "MemberAccess",
+                                    "src": "939:10:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_address",
+                                      "typeString": "address"
+                                    }
+                                  },
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "nodeType": "IndexAccess",
+                                  "src": "931:19:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                                    "typeString": "contract Bet[] storage ref"
+                                  }
+                                },
+                                "id": 140,
+                                "indexExpression": {
+                                  "id": 139,
+                                  "name": "j",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 121,
+                                  "src": "951:1:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_uint256",
+                                    "typeString": "uint256"
+                                  }
+                                },
+                                "isConstant": false,
+                                "isLValue": true,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "nodeType": "IndexAccess",
+                                "src": "931:22:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_contract$_Bet_$75",
+                                  "typeString": "contract Bet"
+                                }
+                              },
+                              "id": 141,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "betId",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 11,
+                              "src": "931:28:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_function_external_view$__$returns$_t_uint256_$",
+                                "typeString": "function () view external returns (uint256)"
+                              }
+                            },
+                            "id": 142,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "kind": "functionCall",
+                            "lValueRequested": false,
+                            "names": [],
+                            "nodeType": "FunctionCall",
+                            "src": "931:30:1",
+                            "tryCall": false,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "src": "921:40:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "id": 169,
+                        "nodeType": "IfStatement",
+                        "src": "918:236:1",
+                        "trueBody": {
+                          "id": 168,
+                          "nodeType": "Block",
+                          "src": "962:192:1",
+                          "statements": [
+                            {
+                              "expression": {
+                                "id": 150,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "nodeType": "UnaryOperation",
+                                "operator": "delete",
+                                "prefix": true,
+                                "src": "981:29:1",
+                                "subExpression": {
+                                  "baseExpression": {
+                                    "baseExpression": {
+                                      "id": 144,
+                                      "name": "allBets",
+                                      "nodeType": "Identifier",
+                                      "overloadedDeclarations": [],
+                                      "referencedDeclaration": 84,
+                                      "src": "988:7:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                                        "typeString": "mapping(address => contract Bet[] storage ref)"
+                                      }
+                                    },
+                                    "id": 147,
+                                    "indexExpression": {
+                                      "expression": {
+                                        "id": 145,
+                                        "name": "msg",
+                                        "nodeType": "Identifier",
+                                        "overloadedDeclarations": [],
+                                        "referencedDeclaration": 4294967281,
+                                        "src": "996:3:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_magic_message",
+                                          "typeString": "msg"
+                                        }
+                                      },
+                                      "id": 146,
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "memberName": "sender",
+                                      "nodeType": "MemberAccess",
+                                      "src": "996:10:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      }
+                                    },
+                                    "isConstant": false,
+                                    "isLValue": true,
+                                    "isPure": false,
+                                    "lValueRequested": false,
+                                    "nodeType": "IndexAccess",
+                                    "src": "988:19:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                                      "typeString": "contract Bet[] storage ref"
+                                    }
+                                  },
+                                  "id": 149,
+                                  "indexExpression": {
+                                    "id": 148,
+                                    "name": "j",
+                                    "nodeType": "Identifier",
+                                    "overloadedDeclarations": [],
+                                    "referencedDeclaration": 121,
+                                    "src": "1008:1:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_uint256",
+                                      "typeString": "uint256"
+                                    }
+                                  },
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": true,
+                                  "nodeType": "IndexAccess",
+                                  "src": "988:22:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_contract$_Bet_$75",
+                                    "typeString": "contract Bet"
+                                  }
+                                },
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_tuple$__$",
+                                  "typeString": "tuple()"
+                                }
+                              },
+                              "id": 151,
+                              "nodeType": "ExpressionStatement",
+                              "src": "981:29:1"
+                            },
+                            {
+                              "condition": {
+                                "commonType": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                },
+                                "id": 158,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "leftExpression": {
+                                  "expression": {
+                                    "baseExpression": {
+                                      "id": 152,
+                                      "name": "allBets",
+                                      "nodeType": "Identifier",
+                                      "overloadedDeclarations": [],
+                                      "referencedDeclaration": 84,
+                                      "src": "1032:7:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                                        "typeString": "mapping(address => contract Bet[] storage ref)"
+                                      }
+                                    },
+                                    "id": 155,
+                                    "indexExpression": {
+                                      "expression": {
+                                        "id": 153,
+                                        "name": "msg",
+                                        "nodeType": "Identifier",
+                                        "overloadedDeclarations": [],
+                                        "referencedDeclaration": 4294967281,
+                                        "src": "1040:3:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_magic_message",
+                                          "typeString": "msg"
+                                        }
+                                      },
+                                      "id": 154,
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "memberName": "sender",
+                                      "nodeType": "MemberAccess",
+                                      "src": "1040:10:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      }
+                                    },
+                                    "isConstant": false,
+                                    "isLValue": true,
+                                    "isPure": false,
+                                    "lValueRequested": false,
+                                    "nodeType": "IndexAccess",
+                                    "src": "1032:19:1",
+                                    "typeDescriptions": {
+                                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                                      "typeString": "contract Bet[] storage ref"
+                                    }
+                                  },
+                                  "id": 156,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "memberName": "length",
+                                  "nodeType": "MemberAccess",
+                                  "src": "1032:26:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_uint256",
+                                    "typeString": "uint256"
+                                  }
+                                },
+                                "nodeType": "BinaryOperation",
+                                "operator": "==",
+                                "rightExpression": {
+                                  "hexValue": "30",
+                                  "id": 157,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "kind": "number",
+                                  "lValueRequested": false,
+                                  "nodeType": "Literal",
+                                  "src": "1062:1:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_rational_0_by_1",
+                                    "typeString": "int_const 0"
+                                  },
+                                  "value": "0"
+                                },
+                                "src": "1032:31:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_bool",
+                                  "typeString": "bool"
+                                }
+                              },
+                              "id": 167,
+                              "nodeType": "IfStatement",
+                              "src": "1029:110:1",
+                              "trueBody": {
+                                "id": 166,
+                                "nodeType": "Block",
+                                "src": "1064:75:1",
+                                "statements": [
+                                  {
+                                    "expression": {
+                                      "id": 164,
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "leftHandSide": {
+                                        "baseExpression": {
+                                          "id": 159,
+                                          "name": "allAddresses",
+                                          "nodeType": "Identifier",
+                                          "overloadedDeclarations": [],
+                                          "referencedDeclaration": 88,
+                                          "src": "1087:12:1",
+                                          "typeDescriptions": {
+                                            "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                                            "typeString": "mapping(address => bool)"
+                                          }
+                                        },
+                                        "id": 162,
+                                        "indexExpression": {
+                                          "expression": {
+                                            "id": 160,
+                                            "name": "msg",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 4294967281,
+                                            "src": "1100:3:1",
+                                            "typeDescriptions": {
+                                              "typeIdentifier": "t_magic_message",
+                                              "typeString": "msg"
+                                            }
+                                          },
+                                          "id": 161,
+                                          "isConstant": false,
+                                          "isLValue": false,
+                                          "isPure": false,
+                                          "lValueRequested": false,
+                                          "memberName": "sender",
+                                          "nodeType": "MemberAccess",
+                                          "src": "1100:10:1",
+                                          "typeDescriptions": {
+                                            "typeIdentifier": "t_address",
+                                            "typeString": "address"
+                                          }
+                                        },
+                                        "isConstant": false,
+                                        "isLValue": true,
+                                        "isPure": false,
+                                        "lValueRequested": true,
+                                        "nodeType": "IndexAccess",
+                                        "src": "1087:24:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_bool",
+                                          "typeString": "bool"
+                                        }
+                                      },
+                                      "nodeType": "Assignment",
+                                      "operator": "=",
+                                      "rightHandSide": {
+                                        "hexValue": "66616c7365",
+                                        "id": 163,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": true,
+                                        "kind": "bool",
+                                        "lValueRequested": false,
+                                        "nodeType": "Literal",
+                                        "src": "1114:5:1",
+                                        "typeDescriptions": {
+                                          "typeIdentifier": "t_bool",
+                                          "typeString": "bool"
+                                        },
+                                        "value": "false"
+                                      },
+                                      "src": "1087:32:1",
+                                      "typeDescriptions": {
+                                        "typeIdentifier": "t_bool",
+                                        "typeString": "bool"
+                                      }
+                                    },
+                                    "id": 165,
+                                    "nodeType": "ExpressionStatement",
+                                    "src": "1087:32:1"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 130,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "id": 124,
+                      "name": "j",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 121,
+                      "src": "862:1:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "<=",
+                    "rightExpression": {
+                      "expression": {
+                        "baseExpression": {
+                          "id": 125,
+                          "name": "allBets",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 84,
+                          "src": "867:7:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                            "typeString": "mapping(address => contract Bet[] storage ref)"
+                          }
+                        },
+                        "id": 128,
+                        "indexExpression": {
+                          "expression": {
+                            "id": 126,
+                            "name": "msg",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 4294967281,
+                            "src": "875:3:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_magic_message",
+                              "typeString": "msg"
+                            }
+                          },
+                          "id": 127,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "sender",
+                          "nodeType": "MemberAccess",
+                          "src": "875:10:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "867:19:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                          "typeString": "contract Bet[] storage ref"
+                        }
+                      },
+                      "id": 129,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "src": "867:26:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "862:31:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 171,
+                  "initializationExpression": {
+                    "assignments": [
+                      121
+                    ],
+                    "declarations": [
+                      {
+                        "constant": false,
+                        "id": 121,
+                        "mutability": "mutable",
+                        "name": "j",
+                        "nameLocation": "855:1:1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 171,
+                        "src": "850:6:1",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "typeName": {
+                          "id": 120,
+                          "name": "uint",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "850:4:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "id": 123,
+                    "initialValue": {
+                      "hexValue": "30",
+                      "id": 122,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "859:1:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "nodeType": "VariableDeclarationStatement",
+                    "src": "850:10:1"
+                  },
+                  "loopExpression": {
+                    "expression": {
+                      "id": 132,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "UnaryOperation",
+                      "operator": "++",
+                      "prefix": false,
+                      "src": "895:4:1",
+                      "subExpression": {
+                        "id": 131,
+                        "name": "j",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 121,
+                        "src": "895:1:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 133,
+                    "nodeType": "ExpressionStatement",
+                    "src": "895:4:1"
+                  },
+                  "nodeType": "ForStatement",
+                  "src": "845:320:1"
+                }
+              ]
+            },
+            "functionSelector": "5c2029a9",
+            "id": 173,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 118,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 117,
+                  "name": "hasOpenBets",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 211,
+                  "src": "823:11:1"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "823:11:1"
+              }
+            ],
+            "name": "removeBet",
+            "nameLocation": "790:9:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 116,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 115,
+                  "mutability": "mutable",
+                  "name": "_betId",
+                  "nameLocation": "808:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 173,
+                  "src": "800:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 114,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "800:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "799:16:1"
+            },
+            "returnParameters": {
+              "id": 119,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "834:0:1"
+            },
+            "scope": 212,
+            "src": "781:391:1",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 185,
+              "nodeType": "Block",
+              "src": "1327:46:1",
+              "statements": [
+                {
+                  "expression": {
+                    "baseExpression": {
+                      "id": 180,
+                      "name": "allBets",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 84,
+                      "src": "1346:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_contract$_Bet_$75_$dyn_storage_$",
+                        "typeString": "mapping(address => contract Bet[] storage ref)"
+                      }
+                    },
+                    "id": 183,
+                    "indexExpression": {
+                      "expression": {
+                        "id": 181,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4294967281,
+                        "src": "1354:3:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 182,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "src": "1354:10:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "1346:19:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage",
+                      "typeString": "contract Bet[] storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 179,
+                  "id": 184,
+                  "nodeType": "Return",
+                  "src": "1339:26:1"
+                }
+              ]
+            },
+            "functionSelector": "7ac7ac73",
+            "id": 186,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "readSelfBets",
+            "nameLocation": "1278:12:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 174,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1290:2:1"
+            },
+            "returnParameters": {
+              "id": 179,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 178,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 186,
+                  "src": "1314:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_memory_ptr",
+                    "typeString": "contract Bet[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 176,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 175,
+                        "name": "Bet",
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 75,
+                        "src": "1314:3:1"
+                      },
+                      "referencedDeclaration": 75,
+                      "src": "1314:3:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Bet_$75",
+                        "typeString": "contract Bet"
+                      }
+                    },
+                    "id": 177,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1314:5:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_Bet_$75_$dyn_storage_ptr",
+                      "typeString": "contract Bet[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1313:14:1"
+            },
+            "scope": 212,
+            "src": "1269:104:1",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 197,
+              "nodeType": "Block",
+              "src": "1515:63:1",
+              "statements": []
+            },
+            "functionSelector": "f7f6267d",
+            "id": 198,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "readBets",
+            "nameLocation": "1390:8:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 195,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 188,
+                  "mutability": "mutable",
+                  "name": "_tokenFilter",
+                  "nameLocation": "1413:12:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1399:26:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 187,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1399:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 190,
+                  "mutability": "mutable",
+                  "name": "_betFilter",
+                  "nameLocation": "1441:10:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1427:24:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 189,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1427:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 192,
+                  "mutability": "mutable",
+                  "name": "_displayNameFilter",
+                  "nameLocation": "1467:18:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1453:32:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 191,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1453:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 194,
+                  "mutability": "mutable",
+                  "name": "pageNum",
+                  "nameLocation": "1495:7:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 198,
+                  "src": "1487:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 193,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1487:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1398:105:1"
+            },
+            "returnParameters": {
+              "id": 196,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1515:0:1"
+            },
+            "scope": 212,
+            "src": "1381:197:1",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 210,
+              "nodeType": "Block",
+              "src": "1625:93:1",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        "id": 206,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "baseExpression": {
+                            "id": 201,
+                            "name": "allAddresses",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 88,
+                            "src": "1665:12:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                              "typeString": "mapping(address => bool)"
+                            }
+                          },
+                          "id": 204,
+                          "indexExpression": {
+                            "expression": {
+                              "id": 202,
+                              "name": "msg",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 4294967281,
+                              "src": "1678:3:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_message",
+                                "typeString": "msg"
+                              }
+                            },
+                            "id": 203,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "sender",
+                            "nodeType": "MemberAccess",
+                            "src": "1678:10:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "1665:24:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "hexValue": "74727565",
+                          "id": 205,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "bool",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1693:4:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "value": "true"
+                        },
+                        "src": "1665:32:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 200,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "1657:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 207,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1657:41:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 208,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1657:41:1"
+                },
+                {
+                  "id": 209,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "1709:1:1"
+                }
+              ]
+            },
+            "id": 211,
+            "name": "hasOpenBets",
+            "nameLocation": "1612:11:1",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 199,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1623:2:1"
+            },
+            "src": "1603:115:1",
+            "virtual": false,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 230,
+        "src": "278:1445:1",
+        "usedErrors": []
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 213,
+              "name": "Bet",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 75,
+              "src": "1755:3:1"
+            },
+            "id": 214,
+            "nodeType": "InheritanceSpecifier",
+            "src": "1755:3:1"
+          }
+        ],
+        "canonicalName": "Mortal",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 229,
+        "linearizedBaseContracts": [
+          229,
+          75
+        ],
+        "name": "Mortal",
+        "nameLocation": "1745:6:1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 227,
+              "nodeType": "Block",
+              "src": "1805:53:1",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "expression": {
+                              "id": 222,
+                              "name": "msg",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 4294967281,
+                              "src": "1838:3:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_message",
+                                "typeString": "msg"
+                              }
+                            },
+                            "id": 223,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "sender",
+                            "nodeType": "MemberAccess",
+                            "src": "1838:10:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          ],
+                          "id": 221,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "1830:8:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_payable_$",
+                            "typeString": "type(address payable)"
+                          },
+                          "typeName": {
+                            "id": 220,
+                            "name": "address",
+                            "nodeType": "ElementaryTypeName",
+                            "src": "1830:8:1",
+                            "stateMutability": "payable",
+                            "typeDescriptions": {}
+                          }
+                        },
+                        "id": 224,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "1830:19:1",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      ],
+                      "id": 219,
+                      "name": "selfdestruct",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4294967275,
+                      "src": "1817:12:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_selfdestruct_nonpayable$_t_address_payable_$returns$__$",
+                        "typeString": "function (address payable)"
+                      }
+                    },
+                    "id": 225,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1817:33:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 226,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1817:33:1"
+                }
+              ]
+            },
+            "functionSelector": "41c0e1b5",
+            "id": 228,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 217,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 216,
+                  "name": "mustBeCreator",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 50,
+                  "src": "1791:13:1"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1791:13:1"
+              }
+            ],
+            "name": "kill",
+            "nameLocation": "1777:4:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 215,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1781:2:1"
+            },
+            "returnParameters": {
+              "id": 218,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1805:0:1"
+            },
+            "scope": 229,
+            "src": "1768:90:1",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 230,
+        "src": "1727:134:1",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:1828:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.10+commit.fc410830.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-11-29T00:50:27.671Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

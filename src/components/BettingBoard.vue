@@ -15,6 +15,7 @@
 <script>
 import { mapState } from 'vuex'
 import OpenBet from './Bet.vue'
+import Web3 from 'web3'
 
 export default {
     name: 'BettingBoard',
@@ -24,6 +25,7 @@ export default {
     computed: {
         ...mapState({
             openBets: state => state.openBets,
+            web3: state => state.web3
         })
     },
     data() {
