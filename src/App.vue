@@ -3,7 +3,7 @@
         <div class="banner">
             <h1 class="banner-text">50/50 Bets -> 2x</h1>
             <Info>
-                <p style="margin: 0;">*$1 flat fee subtracted from winner</p>
+                <p style="margin: 0; font-size: 12px; font-family: 'RuneScape UF';">*$1 flat fee subtracted from winner</p>
             </Info>
         </div>
         <Connect />
@@ -113,7 +113,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+    @font-face {
+        font-family: 'RuneScape UF';
+        font-weight: normal;
+        font-style: normal;
+        src: local("Runescape-UF"), url("./fonts/RuneScape-UF.woff2") format("woff2");
+    }
+
     .main-con{
         height: 100vh;
     }
@@ -134,6 +141,7 @@ export default {
         display: flex;
     }
     .banner-text{
+        font-family: 'RuneScape UF';
         margin: 0 5px 0 0;
     }
 </style>

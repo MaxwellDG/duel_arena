@@ -3,7 +3,7 @@ pragma solidity >=0.4.22 <0.9.0;
 
 import "./Bet.sol";
 // TODO emit events for all major changes
-// TODO don't use ETH. The gas fees are retarded 
+// TODO don't use ETH retard gas
 // Solang Solidity Compiler allows you to deploy .sol smart contracts to Solana blockchain
 
 contract BetFactory{
