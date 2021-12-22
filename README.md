@@ -1,4 +1,4 @@
-# cryptocruz
+# DuelArena
 
 ## Project setup
 ```
