@@ -1,111 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { v4 as uuidv4 } from 'uuid';
+import Bet from '../models/bet';
+
 Vue.use(Vuex)
+
+const DEFAULT_BETS = []
+
+for (let i = 0; i < 10; i++) {
+  DEFAULT_BETS.push(new Bet({
+    coin: 'ada',
+    bet: (i + 1) * 5,
+    usd: (i + 1) * 5 * 2
+  }))
+}
 
 export const store = new Vuex.Store({
   state: {
     web3: {},
     isBetModal: false,
-    openBets: [{
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-    {
-      id: uuidv4(),
-      coin: 'ada',
-      displayName: 'shitPoster9000',
-      bet: 15,
-      usd: 37
-    },
-  ]
+    isConnected: false,
+    openBets: DEFAULT_BETS,
   },
   mutations: {
     toggleNewBetModal (state) {
@@ -116,6 +30,9 @@ export const store = new Vuex.Store({
     },
     addBet (state, bet) {
       state.openBets.push(bet);
+    },
+    toggleConnected (state) {
+      state.isConnected = !state.isConnected;
     }
   },
   getters: {

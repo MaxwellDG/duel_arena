@@ -51,5 +51,7 @@ export default {
 
     .box-con{
         background-color: #b784c2;
+        border-radius: 3px;
+        padding: 2px 6px;
     }
 </style>

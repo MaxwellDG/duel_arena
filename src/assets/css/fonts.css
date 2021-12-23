@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'RuneScape UF';
+    font-weight: normal;
+    font-style: normal;
+    src: local("Runescape-UF"), url("../../fonts/RuneScape-UF.woff2") format("woff2");
+}
+
+p{
+    margin: 0;
+}

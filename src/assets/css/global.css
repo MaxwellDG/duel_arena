@@ -3,7 +3,7 @@ body{
     margin: 0;
 }
 
-html, body, {
+html, body{
     position:fixed;
     top:0;
     bottom:0;
@@ -11,45 +11,18 @@ html, body, {
     right:0;
 }
 
-/* @font-face {
-    font-family: "Runescape";
-    font-weight: 400;
-    font-style: normal;
-    font-display: auto;
-    unicode-range: U+000-5FF;
-    src: local("runescape_uf"), url("/fonts/runescape_uf.ttf") format("ttf");
-} */
+.right-tab{
+    right: 0;
+    padding: 5px;
+    cursor: pointer;
+    background-color: rgba(128, 0, 128, 0.3);
+    border-top: 2px solid purple;
+    border-left: 2px solid purple;
+    border-bottom: 2px solid purple;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
   
-.purp{
-    color: #b784c2;
-}
 
-.between{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.center{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-.p15{
-    padding-right: 15px;
-    padding-left: 15px;
-}
-
-.white-text{
-    color: white;
-}
-
-.primary-brand{
-    color: #4485ac;
-    font-weight: 800;
-    font-size: 18px;
-}
 

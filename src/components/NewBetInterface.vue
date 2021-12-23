@@ -86,6 +86,7 @@ export default {
         background-color: purple;
         padding: 0 10px 10px 10px;
         border-radius: 5px;
+        font-family: 'RuneScape UF';
     }
     .formContainer{
         display: flex;

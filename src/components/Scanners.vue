@@ -1,9 +1,9 @@
 <template>
-    <div id='scanners'>
+    <div class='scanners'>
+        <div class="find">
+            <p>Find Your Transaction</p>
+        </div>
         <div class="scanner-buttons">
-            <div>
-                <img src="/images/research.png"  :width="50" :height="50"/>
-            </div>
             <div v-on:click="() => handleClick('BTC')" class="scanner-icon-con">
                 <BTC :width=32 :height=32 />
             </div>
@@ -17,8 +17,9 @@
                 <SOL :width=32 :height=32 />
             </div>
         </div>
-        <div class="website-con">
-            <p>{{website}}</p>
+        <div @mouseover="() => isHoverScanner = true" @mouseout="() => isHoverScanner = false" class="website-con">
+            <p class="website-text">{{website}}</p>
+            
         </div>
     </div>
 </template>
@@ -28,6 +29,7 @@ import BTC from '../../node_modules/cryptocurrency-icons/svg/black/btc.svg'
 import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
 import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
 import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
+
 
 export default {
     name: '',
@@ -40,7 +42,8 @@ export default {
     data() {
         return{
             expanded: false,
-            website: `https://btc.com/`
+            website: `https://btc.com/`,
+            isHover: false,
         }
     },
     methods: {
@@ -63,29 +66,43 @@ export default {
                     break;
                 }
             }
-        }
+        },
     }
 }
 </script>
 
 <style scoped>
-    #container{
-        
-    }
-
-    #scanners{
+    .scanners{
         position: absolute;
         bottom: 1rem;
-        left: 1rem;
+        left: 0;
+        width: 11rem;
+        background-color: rgba(128, 0, 128, 0.3);
+        border-top: 2px solid purple;
+        border-right: 2px solid purple;
+        border-bottom: 2px solid purple;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        padding: 5px;
     }
 
     .scanner-buttons{
         display: flex;
+        margin: 10px 0;
     }
+
+    .find{
+        color: white;
+    }
+
+    .website-text{
+        padding: 2px 5px;
+    }
+
     .website-con{
         background-color: white;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
+        border-radius: 2px;
+        cursor: pointer;
     }
 
     .scanner-icon-con{
@@ -93,6 +110,7 @@ export default {
         justify-content: center;
         align-items: center;
         margin: 0 5px 0 5px;
+        cursor: pointer;
     }
 
     .else{
@@ -100,4 +118,11 @@ export default {
         justify-content: center;
         align-items: center;
     }
+
+    @media only screen and (max-width: 700px) {
+        .scanners {
+            display: none;
+        }
+    }
+
 </style>

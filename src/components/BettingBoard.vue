@@ -1,21 +1,20 @@
 <template>
-    <div id="bet-con">
-        <div style="display: flex;">
-            <p>Filter ></p>
-            <input type="text" :value="filter" style="background-color: transparent; border: none;"/>
+    <div class="bet-con">
+        <div class="filterCon">
+            <p class="filterText">Filter ></p>
+            <input type="text" :value="filter" class="filterInput"/>
         </div>
-        <ul id='bettingBoard' style="padding: 0 10px;">
-            <li v-for="bet in openBets" :key="bet.id" style="list-style-type: none;">
-                <OpenBet :bet="bet"/>
-            </li>
-        </ul>
+        <div class="list-con">
+            <ul class='bettingBoard'>
+                <OpenBet v-for="bet in openBets" :bet="bet" :key="bet.id" />
+            </ul>
+        </div>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import OpenBet from './Bet.vue'
-import Web3 from 'web3'
 
 export default {
     name: 'BettingBoard',
@@ -38,19 +37,40 @@ export default {
 </script>
 
 <style scoped>
-    #bet-con{
-        height: 40vh;
+    .filterCon{
+        display: flex;
+        align-items: center;
+        margin: 30px 0 10px 0;
+    }
+
+    .filterInput{
+        background-color: transparent;
+        border: none;
+        padding: 2px 5px;
+    }
+
+    .filterText{
+        margin: 0;
+    }
+
+    .bet-con{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
         width: 100%;
+        padding: 0 10px 10px 10px;
         overflow: hidden;
     }
+
+    .list-con{
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 17px;
+    }
     
-    #bettingBoard{
-        width: 100%;
-        padding: 5px 0;
-        border-radius: 5px;
-        height: 100%;
-        overflow-y: scroll;
-        padding-right: 17px; /* Increase/decrease this value for cross-browser compatibility */
-        box-sizing: content-box; /* So the width will be 100% + 17px */
+    .bettingBoard{
+        height: 0;
+        margin: 0;
+        padding: 0;
     }
 </style>

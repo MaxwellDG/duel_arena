@@ -1,18 +1,19 @@
 <template>
     <div class="main-con">
-        <div class="banner">
-            <h1 class="banner-text">50/50 Bets -> 2x</h1>
-            <Info>
-                <p style="margin: 0; font-size: 12px; font-family: 'RuneScape UF';">*$1 flat fee subtracted from winner</p>
-            </Info>
-        </div>
-        <Connect />
-        <div id='center-con'>
+        <Banner />
+        <div class='center-con'>
             <Artwork />
             <BettingBoard />
-            <NewBetInterface />
+            <Footer />
         </div>
+        <BottomButtons v-if="windowWidth < 700"/>
+
+        <!-- media queries set to display = none when width < 700px -->
+        <Connect />
         <Scanners />
+        <RightTab :text="'How it Works'" :index="0"/>
+        <RightTab :text="'Contact'" :index="1"/>
+        <RightTab :text="'Place New Bet'" :index="2"/>
     </div>
 </template>
 
@@ -20,6 +21,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueFormulate from '@braid/vue-formulate'
+import 'vue-toast-notification/dist/theme-default.css'
 
 //Blockchain
 import Web3 from 'web3'
@@ -27,13 +29,15 @@ import BetFactory from '../build/contracts/BetFactory.json'
 
 //Components
 import VueToast from 'vue-toast-notification'
+import Banner from './components/Banner.vue'
+import BottomButtons from './components/BottomButtons';
 import Address from './components/Address.vue'
+import RightTab from './components/RightTab.vue'
+import Connect from './components/Connect.vue';
 import Scanners from './components/Scanners.vue'
-import Connect from './components/Connect.vue'
-import NewBetInterface from './components/NewBetInterface.vue'
 import Artwork from './components/Artwork.vue'
+import Footer from './components/Footer.vue';
 import BettingBoard from './components/BettingBoard.vue'
-import 'vue-toast-notification/dist/theme-default.css'
 
 //SVGs
 import Info from './icons/info.vue'
@@ -50,6 +54,7 @@ Vue.use(VueToast);
 // Miss DuelArena? Gamble like a big boi @ DuelArena.io
 
 const BET_FACTORY_ADDRESS = '0x0F5F5268246cbF5f3a9381b6511D34f5aB3Af08A';
+const WINDOW_WIDTH = window.innerWidth;
 
 
 export default {
@@ -58,10 +63,18 @@ export default {
         Address,
         Artwork,
         Scanners,
-        NewBetInterface,
+        BottomButtons,
         Connect,
+        Banner,
+        RightTab,
+        Footer,
         BettingBoard,
         Info
+    },
+    created(){
+        this.$nextTick(() => {
+            window.addEventListener('resize', this.onResize);
+        })
     },
     mounted(){
         (async () => {
@@ -100,48 +113,38 @@ export default {
                 console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
             }
         })()
-
-
-
     },
+    beforeDestroy() { 
+        window.removeEventListener('resize', this.onResize); 
+    },    
     data() {
         return{
-        
+            windowWidth: WINDOW_WIDTH,
         }
     },
-    
+    methods: {  
+        onResize() {
+            this.windowWidth = window.innerWidth;
+        }
+    },
 }
 </script>
 
 <style>
-    @font-face {
-        font-family: 'RuneScape UF';
-        font-weight: normal;
-        font-style: normal;
-        src: local("Runescape-UF"), url("./fonts/RuneScape-UF.woff2") format("woff2");
-    }
-
     .main-con{
-        height: 100vh;
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: flex-start;
+        font-family: 'Runescape UF';
     }
 
-    #center-con{
+    .center-con{
         display: flex;
         flex-direction: column;
-        height: 100%;
-        justify-content: space-between;
         align-items: center;
+        height: 100%;
         width: 50%;
         margin: 0 auto;
-    }
-    .top-con{
-        display: flex;
-    }
-    .banner{
-        display: flex;
-    }
-    .banner-text{
-        font-family: 'RuneScape UF';
-        margin: 0 5px 0 0;
     }
 </style>

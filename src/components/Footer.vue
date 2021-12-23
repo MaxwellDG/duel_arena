@@ -1,12 +1,12 @@
 <template>
-    <div id='container'>
-
+    <div>
+        <p class="footer-text">No copyright Ltd. - Fuck your government</p>
     </div>
 </template>
 
 <script>
 export default {
-    name: '',
+    name: 'Footer',
     components: {
         
     },
@@ -19,7 +19,7 @@ export default {
 </script>
 
 <style scoped>
-    #container{
-        
+    .footer-text{
+        font-size: 10px;
     }
 </style>

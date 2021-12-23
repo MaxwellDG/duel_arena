@@ -1,12 +1,17 @@
 <template>
-    <div v-on:click="connectToMetamask" class="connectCon">
-        <p  class='connect-button'>Connect -></p>
-        <p v-if="account != 0">{{account}}</p>
-        <p v-if="balance != 0">{{balance}}</p>
+    <div class="connectCon">
+        <button v-if="!isConnected" @click="connectToMetamask" class='connect butt'>Connect -></button>
+        <div v-else-if="isConnected">
+            <button class='disconnect butt'>Disconnect</button> 
+            <p>{{account}}</p>
+            <p>{{balance}}</p>
+        </div>
     </div>
 </template>
 
 <script>
+import {mapState, mapMutations} from 'vuex';
+
 export default {
     name: '',
     components: {
@@ -15,10 +20,17 @@ export default {
     data() {
         return{
             account: 0,
-            balance: 0
+            balance: 0,
+            isHovering: false,
         }
     },
+    computed: {
+        ...mapState({
+            isConnected: state => state.isConnected
+        }),
+    },
     methods: {
+        ...mapMutations(['toggleConnected']),
         connectToMetamask: async function(){
             // modern version of 'window.ethereum.enable()'
             await window.ethereum.send('eth_requestAccounts')
@@ -29,6 +41,7 @@ export default {
                     const balance = await this.$store.state.web3.eth.getBalance(this.account)
                     this.balance = parseInt(balance)
                 }
+                this.toggleConnected();
             } catch(e){
                 console.log(e)
             }
@@ -40,16 +53,47 @@ export default {
 <style scoped>
     .connectCon{
         position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background-color: purple;
-        padding: 12px;
-        border-radius: 5px;
+        top: 0 ;
+        right: 2rem;
+        background-color: rgba(128, 0, 128, 0.3);
+        border-left: 2px solid purple;
+        border-right: 2px solid purple;
+        border-bottom: 2px solid purple;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
     }
 
     p{
         border: none;
         background-color: transparent;
         color: white;
+        margin: 0;
+    }
+
+    .butt{
+        border-radius: 5px;
+        font-family: 'Runescape UF';
+        cursor: pointer;
+        padding: 5px 10px;
+        font-size: 16px;
+    }
+
+    .connect{
+        margin: 2rem 1rem 1rem 1rem;
+        font-size: 22px;
+        color: black;
+        border: 2px solid rgba(128, 0, 128, 0.3);
+        background-color: transparent;
+    }
+
+    .connect:hover{
+        background-color: rgba(128, 0, 128, 0.7);
+        color: white;
+    }
+
+    @media only screen and (max-width: 700px) {
+        .connectCon {
+            display: none;
+        }
     }
 </style>
