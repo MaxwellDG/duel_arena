@@ -10,7 +10,7 @@ for (let i = 0; i < 10; i++) {
   DEFAULT_BETS.push(new Bet({
     coin: 'ada',
     bet: (i + 1) * 5,
-    usd: (i + 1) * 5 * 2
+    inUSD: (i + 1) * 5 * 2
   }))
 }
 

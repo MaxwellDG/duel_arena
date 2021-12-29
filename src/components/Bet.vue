@@ -5,8 +5,10 @@
             <component :is="icon"/>
         </div>
         <p>{{bet.displayName}}</p>
-        <p @mouseover="handleHover" @mouseout="handleHoverout">{{bet.bet}}</p>
-        <p>{{bet.inUSD}}</p>
+        <div style="display: flex;">
+            <p>{{bet.bet}}</p>
+            <p class="usd">{{bet.inUSD}}</p>
+        </div>
         <button @click="handleBet" class="bet-button">BET</button>
     </li>
 </template>
@@ -22,19 +24,12 @@ export default {
     },
     data() {
         return{
-            isHoveringBet: false,
             icon: () => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.coin}.svg`)
         }
     },
     methods: {
         handleBet(){
             // TODO some wiggidy wack metamask stuff
-        },
-        handleHover(){
-            this.isHoveringBet = true;
-        },
-        handleHoverout(){
-            this.isHoveringBet = false;
         },
     }
 }
@@ -57,5 +52,10 @@ export default {
         border: 2px solid purple;
         color: black;
         font-weight: 600;
+    }
+
+    .usd{
+        color: grey;
+        margin-left: 10px;
     }
 </style>
