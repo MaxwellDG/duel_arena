@@ -55,6 +55,7 @@ contract BetFactory{
         return bet;
     }
 
+    // This doesn't work atm
     function removeBet(uint256 _betId) public hasOpenBets{
         for (uint j = 0; j <= allBets[msg.sender].length; j ++) {  
             if(_betId == allBets[msg.sender][j].betId()){

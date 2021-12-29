@@ -70,7 +70,9 @@ export default {
     },
     methods: {
         handleSubmit(){
-
+            await this.web3.BetFactoryContract.methods.createBet(58, "SOL", "NODNOD").send({
+                from: this.web3.accounts[0],
+            })
         }
     }
 }

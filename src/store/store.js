@@ -16,7 +16,7 @@ for (let i = 0; i < 10; i++) {
 
 export const store = new Vuex.Store({
   state: {
-    web3: {},
+    web3: undefined,
     isBetModal: false,
     isConnected: false,
     openBets: DEFAULT_BETS,

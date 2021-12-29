@@ -5,25 +5,25 @@ const assert = require("assert");
 const BetFactory = artifacts.require('BetFactory');
 
 // 'contract' is comparable to 'describe' in standard mocha
-contract('BetFactory is initialized with default properties', () => {
+contract('BetFactory can create a bet', () => {
+    let betFactory 
+    before(async () => {
+        betFactory = await BetFactory.deployed();
+    });
+
     it('Should deploy smart contract', async () => {
         const betFactory = await BetFactory.deployed();
         console.log('Hello', betFactory.address);
         assert(betFactory.address != '');
     })
 
-})
-
-contract('BetFactory can create a bet', () => {
-    let betFactory 
-    before(async () => {
-        betFactory = await BetFactory.deployed();
-    });
-    it('Created a bet', async () => {
+    it('No bets present', async () => {
         const betsLength = await betFactory.getSelfBetsLength();
         assert(betsLength == 0);
+    })
 
-        const bet = await betFactory.createBet(55, 'SOL', 'Martian');
+    it('Created a bet', async () => {
+        await betFactory.createBet(55, 'SOL', 'Martian');
 
         const betsLengthAfter = await betFactory.getSelfBetsLength();
         assert(betsLengthAfter == 1);
