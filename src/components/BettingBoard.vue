@@ -21,17 +21,16 @@ export default {
     components: {
         OpenBet
     },
+        data() {
+            return{
+                filter: 'ALL',
+            }
+        },
     computed: {
         ...mapState({
             openBets: state => state.openBets,
             web3: state => state.web3
         })
-    },
-    data() {
-        return{
-            filter: 'ALL',
-        
-        }
     },
 }
 </script>
@@ -63,6 +62,8 @@ export default {
     }
 
     .list-con{
+        scrollbar-color: rgba(128, 0, 128, 0.3) transparent;
+        scrollbar-width: thin;
         flex: 1;
         overflow-y: auto;
         padding: 0 17px;

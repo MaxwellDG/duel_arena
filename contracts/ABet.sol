@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-contract Bet {
+contract ABet {
 
     address public creator;
     string public displayName;
@@ -9,8 +9,12 @@ contract Bet {
     string public token;
     uint256 public betId;
 
-    constructor() {
-
+    constructor(address _creator, string memory _displayName, uint256 _wager, string memory _token, uint256 _betId) {
+        creator = _creator;
+        displayName = _displayName;
+        wager = _wager;
+        token = _token;
+        betId = _betId;
     }
 
     // Pure
@@ -24,7 +28,7 @@ contract Bet {
         _;
     }
 
-    modifier mustMatchBet(Bet incMatchBet) {
+    modifier mustMatchBet(ABet incMatchBet) {
         require(incMatchBet.wager() == wager);
         require(compareStringsbyBytes(incMatchBet.token(), token));
         _;

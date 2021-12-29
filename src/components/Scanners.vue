@@ -17,9 +17,14 @@
                 <SOL :width=32 :height=32 />
             </div>
         </div>
-        <div @mouseover="() => isHoverScanner = true" @mouseout="() => isHoverScanner = false" class="website-con">
+        <div 
+            @click="handleCopy"
+            @mouseover="() => isHoverScanner = true"
+            @mouseout="() => isHoverScanner = false" 
+            class="website-con"
+        >
             <p class="website-text">{{website}}</p>
-            
+            <Copy v-if="isHoverScanner"/>
         </div>
     </div>
 </template>
@@ -29,6 +34,7 @@ import BTC from '../../node_modules/cryptocurrency-icons/svg/black/btc.svg'
 import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
 import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
 import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
+import Copy from '../icons/copy.svg';
 
 
 export default {
@@ -37,13 +43,14 @@ export default {
         BTC,
         ETH,
         ADA,
-        SOL
+        SOL,
+        Copy
     },
     data() {
         return{
             expanded: false,
             website: `https://btc.com/`,
-            isHover: false,
+            isHoverScanner: false,
         }
     },
     methods: {
@@ -67,6 +74,12 @@ export default {
                 }
             }
         },
+        handleCopy(){
+            this.$toast.open({
+                message: 'Copied to clipboard',
+                type: 'info'
+            })
+        }
     }
 }
 </script>
@@ -100,9 +113,13 @@ export default {
     }
 
     .website-con{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         background-color: white;
         border-radius: 2px;
         cursor: pointer;
+        padding: 2px 3px 1px 3px;
     }
 
     .scanner-icon-con{

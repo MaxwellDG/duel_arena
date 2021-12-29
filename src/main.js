@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import './assets/css/global.css'
 import './assets/css/fonts.css'
+import './assets/css/colors.css'
 import {store} from './store/store.js'
 require('buffer')
 

@@ -8,7 +8,7 @@
         </div>
         <BottomButtons v-if="windowWidth < 700"/>
 
-        <!-- media queries set to display = none when width < 700px -->
+        <!-- media queries set to 'display = none' when width < 700px -->
         <Connect />
         <Scanners />
         <RightTab :text="'How it Works'" :index="0"/>
@@ -44,7 +44,11 @@ import Info from './icons/info.vue'
 
 Vue.use(Vuex);
 Vue.use(VueFormulate)
-Vue.use(VueToast);
+Vue.use(VueToast, {
+    position: 'bottom'
+});
+
+
 
 // Need something on the smartcontract that watches for if a bet has already been filled. And sends back a notice
 // before any kind of transaction fee from a denial occurs

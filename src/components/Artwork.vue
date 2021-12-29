@@ -29,7 +29,6 @@ export default {
 <style scoped>
     #artwork{
         height: 30vh;
-        background-color: thistle;
         display: flex;
         flex-direction: row;
         justify-content: space-between;  
