@@ -9,13 +9,16 @@ contract Bet {
     address public creator;
     string public displayName;
     uint256 public wager;
+    bool public even;
     string public token;
     uint256 public betId;
 
-    constructor(address _creator, string memory _displayName, uint256 _wager, string memory _token, uint256 _betId) {
+
+    constructor(address _creator, string memory _displayName, uint256 _wager, bool _even, string memory _token, uint256 _betId) {
         creator = _creator;
         displayName = _displayName;
         wager = _wager;
+        even = _even;
         token = _token;
         betId = _betId;
     }
@@ -44,12 +47,12 @@ contract BetFactory{
     mapping(address => bool) public allAddresses;
     uint256 public betCounter = 1;
 
-    event CreatedBet(address creator, string displayName, uint256 wager, string token, uint256 betId);
+    event CreatedBet(address creator, string displayName, uint256 wager, bool even, string token, uint256 betId);
 
-    function createBet(uint256 _wager, string memory _token, string memory _displayName) external returns(Bet){
+    function createBet(uint256 _wager, bool _even, string memory _token, string memory _displayName) external returns(Bet){
         betCounter += 1;
-        Bet bet = new Bet(msg.sender, _displayName, _wager, _token, betCounter);
-        emit CreatedBet(msg.sender, bet.displayName(), bet.wager(), bet.token(), bet.betId());
+        Bet bet = new Bet(msg.sender, _displayName, _wager, _even, _token, betCounter);
+        emit CreatedBet(msg.sender, _displayName, _wager, _even, _token, betCounter);
         allBets[msg.sender].push(bet);
         allAddresses[msg.sender] = true;
         return bet;

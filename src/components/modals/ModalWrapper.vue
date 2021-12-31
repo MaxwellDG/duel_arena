@@ -36,13 +36,13 @@ export default {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        padding: 12px;
         border: 2px solid purple;
         background-color: #deedf9;
         border-radius: 3px;
     }
 
     .inner-container{
+        padding: 12px;
         background-color: rgba(128, 0, 128, 0.3);
     }
 </style>

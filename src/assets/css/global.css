@@ -11,6 +11,21 @@ html, body{
     right:0;
 }
 
+.but-sub{
+    border: 2px solid purple;
+    border-radius: 3px;
+    background-color: transparent;
+    font-family: 'Runescape UF';
+    font-size: 16px;
+    color: black;
+}
+
+.but-sub:hover{
+    background-color: purple;
+    cursor: pointer;
+    color: white;
+}
+
 
   
 

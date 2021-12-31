@@ -1,5 +1,5 @@
 <template>
-    <div @click={} id='newBetInterface'>
+    <div id='newBetInterface'>
         <h3>Create a new 50/50 bet</h3>
             <FormulateForm
                 v-model="formValues"
@@ -26,15 +26,23 @@
                     validation="required|alphanumeric|max:20"
                 />
                 <FormulateInput
-                    name="bet"
-                    label="Bet"
+                    name="wager"
+                    label="Wager"
                     validation="required|number"
                 />
                 <label>
                     / $USD
                     <p style="margin: 0;">{{handleUSDConversion}}</p>
                 </label>
+                <!-- ENSURE that these values get changed to bool values before being sent  -->
                 <FormulateInput
+                    name="even"
+                    :options="{true: 'Even', false: 'Odd'}" 
+                    type="radio"
+                    label="Tx last digit"
+                />
+                <FormulateInput
+                    input-class="but-sub"
                     type="submit"
                     label="Place bet"
                 />
@@ -53,7 +61,8 @@ export default {
             formValues: {
                 coin: 'safemoon', 
                 displayName: '',
-                bet: '',
+                wager: '',
+                even: true
             },
             icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.coin}.svg`)
         }
@@ -80,15 +89,15 @@ export default {
 
 <style scoped>
     h3{
-        color: white;
+        color: black;
         margin: 0;
     }
 
     #newBetInterface{
-        background-color: purple;
         padding: 0 10px 10px 10px;
         border-radius: 5px;
         font-family: 'RuneScape UF';
+        padding: 12px;
     }
     .formContainer{
         display: flex;
