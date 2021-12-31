@@ -11,9 +11,16 @@
         <!-- media queries set to 'display = none' when width < 700px -->
         <Connect />
         <Scanners />
-        <RightTab :text="'How it Works'" :index="0"/>
-        <RightTab :text="'Contact'" :index="1"/>
-        <RightTab :text="'Place New Bet'" :index="2"/>
+        <RightTab :text="'How it Works'" :index="0" @click.native="modal = 'HowItWorks'"/>
+        <RightTab :text="'Contact'" :index="1" @click.native="modal = 'Contact'"/>
+        <RightTab :text="'Place New Bet'" :index="2" @click.native="modal= 'NewBetInterface'"/>
+
+        <!-- Modals -->
+        <ModalWrapper @close-modal="modal = null" v-if="modal != null">
+            <HowItWorks v-if="modal == 'HowItWorks'"/>
+            <Contact v-else-if="modal == 'Contact'"/>
+            <NewBetInterface v-else-if="modal == 'NewBetInterface'"/>
+        </ModalWrapper>
     </div>
 </template>
 
@@ -27,6 +34,7 @@ import 'vue-toast-notification/dist/theme-default.css'
 import VueToast from 'vue-toast-notification'
 import Banner from './components/Banner.vue'
 import BottomButtons from './components/BottomButtons';
+import ModalWrapper from './components/modals/ModalWrapper';
 import Address from './components/Address.vue'
 import RightTab from './components/RightTab.vue'
 import Connect from './components/Connect.vue';
@@ -34,6 +42,9 @@ import Scanners from './components/Scanners.vue'
 import Artwork from './components/Artwork.vue'
 import Footer from './components/Footer.vue';
 import BettingBoard from './components/BettingBoard.vue'
+import Contact from './components/modals/Contact.vue'
+import HowItWorks from './components/modals/HowItWorks.vue'
+import NewBetInterface from './components/modals/NewBetInterface.vue'
 
 //Util
 import Web3Client from './web3/web3Client';
@@ -70,7 +81,11 @@ export default {
         RightTab,
         Footer,
         BettingBoard,
-        Info
+        ModalWrapper,
+        Info,
+        HowItWorks,
+        Contact,
+        NewBetInterface
     },
     created(){
         this.$nextTick(() => {
@@ -87,12 +102,13 @@ export default {
         return{
             windowWidth: WINDOW_WIDTH,
             web3: undefined,
+            modal: null
         }
     },
     methods: {  
         onResize() {
             this.windowWidth = window.innerWidth;
-        }
+        },
     },
 }
 </script>

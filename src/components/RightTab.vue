@@ -48,6 +48,18 @@ export default {
         font-size: 16px;
     }
 
+    .right-tab{
+        right: 0;
+        padding: 5px;
+        cursor: pointer;
+        background-color: rgba(128, 0, 128, 0.3);
+        border-top: 2px solid purple;
+        border-left: 2px solid purple;
+        border-bottom: 2px solid purple;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
     p{
         margin: 0;
     }

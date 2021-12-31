@@ -6,13 +6,13 @@ Vue.use(Vuex)
 
 const DEFAULT_BETS = []
 
-for (let i = 0; i < 10; i++) {
-  DEFAULT_BETS.push(new Bet({
-    coin: 'ada',
-    bet: (i + 1) * 5,
-    inUSD: (i + 1) * 5 * 2
-  }))
-}
+// for (let i = 0; i < 10; i++) {
+//   DEFAULT_BETS.push(new Bet({
+//     coin: 'ada',
+//     bet: (i + 1) * 5,
+//     inUSD: (i + 1) * 5 * 2
+//   }))
+// }
 
 export const store = new Vuex.Store({
   state: {

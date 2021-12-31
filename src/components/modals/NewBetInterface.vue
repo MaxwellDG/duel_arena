@@ -1,5 +1,5 @@
 <template>
-    <div id='newBetInterface'>
+    <div @click={} id='newBetInterface'>
         <h3>Create a new 50/50 bet</h3>
             <FormulateForm
                 v-model="formValues"
@@ -55,7 +55,7 @@ export default {
                 displayName: '',
                 bet: '',
             },
-            icon: () => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.coin}.svg`)
+            icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.coin}.svg`)
         }
     },
     computed: {
@@ -65,11 +65,11 @@ export default {
     },
     watch: {
         formValues(oldVal, newVal){
-            this.icon = () => import(`../../node_modules/cryptocurrency-icons/svg/color/${newVal.coin}.svg`)
+            this.icon = () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${newVal.coin}.svg`)
         }
     },
     methods: {
-        handleSubmit(){
+        async handleSubmit(){
             await this.web3.BetFactoryContract.methods.createBet(58, "SOL", "NODNOD").send({
                 from: this.web3.accounts[0],
             })
@@ -81,10 +81,10 @@ export default {
 <style scoped>
     h3{
         color: white;
+        margin: 0;
     }
 
     #newBetInterface{
-        height: 15vh;
         background-color: purple;
         padding: 0 10px 10px 10px;
         border-radius: 5px;
