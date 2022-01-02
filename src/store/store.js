@@ -16,7 +16,7 @@ const DEFAULT_BETS = []
 
 export const store = new Vuex.Store({
   state: {
-    web3: undefined,
+    web3Client: undefined,
     isBetModal: false,
     isConnected: false,
     openBets: DEFAULT_BETS,
@@ -25,8 +25,8 @@ export const store = new Vuex.Store({
     toggleNewBetModal (state) {
       state.isBetModal = !state.isBetModal;
     },
-    setWeb3 (state, web3){
-      state.web3 = web3;
+    setWeb3Client (state, web3Client){
+      state.web3Client = web3Client;
     },
     addBet (state, bet) {
       state.openBets.push(bet);

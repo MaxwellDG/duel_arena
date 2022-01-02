@@ -4,10 +4,11 @@ export default class Bet{
 
     constructor(obj){
         this.id = obj.id ?? v4(),
-        this.coin = obj.coin,
+        this.token = obj.token,
         this.displayName = obj.displayName ?? 'shitPoster9000',
-        this.bet = obj.bet,
-        this.inUSD = obj.inUSD
+        this.isEven = obj.isEven,
+        this.wager = obj.wager,
+        this.inUSD = obj.inUSD // TODO can calculate this locally
     }
 
 }

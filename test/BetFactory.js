@@ -23,7 +23,7 @@ contract('BetFactory can create a bet', () => {
     })
 
     it('Created a bet', async () => {
-        await betFactory.createBet(55, 'SOL', 'Martian');
+        await betFactory.createBet(55, true, 'SOL', 'Martian');
 
         const betsLengthAfter = await betFactory.getSelfBetsLength();
         assert(betsLengthAfter == 1);

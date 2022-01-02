@@ -35,10 +35,10 @@ export default {
             // modern version of 'window.ethereum.enable()'
             await window.ethereum.send('eth_requestAccounts')
             try{
-                const account = await this.$store.state.web3.eth.getAccounts()
+                const account = await this.$store.state.web3Client.web3.eth.getAccounts()
                 this.account = account[0]
                 if(!!this.account){
-                    const balance = await this.$store.state.web3.eth.getBalance(this.account)
+                    const balance = await this.$store.state.web3Client.web3.eth.getBalance(this.account)
                     this.balance = parseInt(balance)
                 }
                 this.toggleConnected();

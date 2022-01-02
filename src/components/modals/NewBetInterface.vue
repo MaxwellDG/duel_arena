@@ -7,7 +7,7 @@
                 class="formContainer"
             >
                 <FormulateInput
-                    name="coin"
+                    name="token"
                     :options="[
                             { value: 'btc', label: 'BTC' },
                             { value: 'eth', label: 'ETH', disabled: true, id: '69420' },
@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
+import BetFactory from '../../../build/contracts/BetFactory.json'
 
 export default {
     name: 'NewBetInterface',
@@ -59,29 +61,50 @@ export default {
     data() {
         return{
             formValues: {
-                coin: 'safemoon', 
-                displayName: '',
-                wager: '',
+                token: 'btc', 
+                displayName: 'tester',
+                wager: '777',
                 even: true
             },
-            icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.coin}.svg`)
+            icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.token}.svg`)
         }
     },
     computed: {
+        ...mapState({
+            web3Client: state => state.web3Client,
+        }),
         handleUSDConversion(){
-            return this.$store.getters.getUSDConversion({coin: this.formValues.coin, bet: this.formValues.bet})
+            return this.$store.getters.getUSDConversion({token: this.formValues.token, bet: this.formValues.bet})
         },
     },
     watch: {
         formValues(oldVal, newVal){
-            this.icon = () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${newVal.coin}.svg`)
+            this.icon = () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${newVal.token}.svg`)
         }
     },
     methods: {
-        async handleSubmit(){
-            await this.web3.BetFactoryContract.methods.createBet(58, "SOL", "NODNOD").send({
-                from: this.web3.accounts[0],
-            })
+        txCallback(err, txHash){
+            console.log("REVERT ERROR")
+            console.log(err)
+            console.log('TxHash', txHash)
+        },
+        async handleSubmit(formData){
+            console.log("Formdaatata")
+            console.log(formData);
+            const account = this.web3Client.accounts[0]
+
+            const estimatedGas = await this.web3Client.BetFactoryContract.methods.createBet(formData.wager, formData.even, formData.token, formData.displayName).estimateGas();
+            console.log('Estimated gas', estimatedGas)
+
+            // TODO this needs to be more accurate
+            const receipt = await this.web3Client.BetFactoryContract.methods.createBet(formData.wager, formData.even, formData.token, formData.displayName).send({
+                from: account,
+                gas: estimatedGas * 2
+            }, this.txCallback)
+
+            // TODO get the return so you can stub in the new bet
+
+            console.log(receipt)
         }
     }
 }

@@ -1,13 +1,18 @@
 <template>
     <li class="bet">
         <div style="display: flex; align-items: center;">
-            <p style="margin-right: 15px;">{{bet.coin}}</p>
-            <component :is="icon"/>
+            <p style="margin-right: 15px;">{{bet.token}}</p>
+            <div style="height: 25px; width: 25px;">
+                <component :is="icon"/>
+            </div>
         </div>
         <p>{{bet.displayName}}</p>
         <div style="display: flex;">
             <p>{{bet.bet}}</p>
             <p class="usd">{{bet.inUSD}}</p>
+        </div>
+        <div>
+            <p>{{bet.isEven.toString()}}</p>
         </div>
         <button @click="handleBet" class="bet-button">BET</button>
     </li>
@@ -24,7 +29,7 @@ export default {
     },
     data() {
         return{
-            icon: () => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.coin}.svg`)
+            icon: () => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.token}.svg`)
         }
     },
     methods: {

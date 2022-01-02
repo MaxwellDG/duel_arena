@@ -15,23 +15,47 @@
 <script>
 import { mapState } from 'vuex'
 import OpenBet from './Bet.vue'
+import BetModel from '../models/bet';
 
 export default {
     name: 'BettingBoard',
     components: {
         OpenBet
     },
-        data() {
-            return{
-                filter: 'ALL',
-            }
-        },
+    mounted(){
+        this.getSelfBets();
+    },
+    data() {
+        return{
+            filter: 'ALL',
+            openBets: []
+        }
+    },
     computed: {
         ...mapState({
-            openBets: state => state.openBets,
-            web3: state => state.web3
-        })
+            web3Client: state => state.web3Client
+        }),
     },
+    methods: {
+        async getSelfBets(){
+            let interval = setInterval(async () => {
+                console.log("INTERVAL")
+                if(!!this.web3Client.BetFactoryContract){
+                    console.log("BET FACTORY OPEN")
+                    const selfBetAddresses = await this.web3Client.getSelfBets();
+                    console.log(selfBetAddresses);
+                    selfBetAddresses.forEach(async j => {
+                        const betContract = this.web3Client.getBetContract(j);
+                        console.log("WHATS THE BETCONTRACT LOOK LIKE")
+                        const bet = await this.web3Client.getBetContractProperties(betContract);
+                        console.log(bet)
+                        this.openBets.push(bet);
+                    });
+                    clearInterval(interval)
+                } 
+            }, 1000)
+        }
+    }
 }
 </script>
 

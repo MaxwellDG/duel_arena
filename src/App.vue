@@ -91,9 +91,8 @@ export default {
         this.$nextTick(() => {
             window.addEventListener('resize', this.onResize);
         })
-    },
-    created(){
-        this.web3 = new Web3Client();
+        let web3Client = new Web3Client();
+        this.$store.commit('setWeb3Client', web3Client);
     },
     beforeDestroy() { 
         window.removeEventListener('resize', this.onResize); 
@@ -101,7 +100,6 @@ export default {
     data() {
         return{
             windowWidth: WINDOW_WIDTH,
-            web3: undefined,
             modal: null
         }
     },
