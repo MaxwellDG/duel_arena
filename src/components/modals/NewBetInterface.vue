@@ -36,7 +36,7 @@
                 </label>
                 <!-- ENSURE that these values get changed to bool values before being sent  -->
                 <FormulateInput
-                    name="even"
+                    name="isEven"
                     :options="{true: 'Even', false: 'Odd'}" 
                     type="radio"
                     label="Tx last digit"
@@ -52,7 +52,6 @@
 
 <script>
 import {mapState} from 'vuex';
-import BetFactory from '../../../build/contracts/BetFactory.json'
 
 export default {
     name: 'NewBetInterface',
@@ -64,7 +63,7 @@ export default {
                 token: 'btc', 
                 displayName: 'tester',
                 wager: '777',
-                even: true
+                isEven: true
             },
             icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.token}.svg`)
         }
@@ -84,8 +83,7 @@ export default {
     },
     methods: {
         txCallback(err, txHash){
-            console.log("REVERT ERROR")
-            console.log(err)
+            console.log('Err', err)
             console.log('TxHash', txHash)
         },
         async handleSubmit(formData){
@@ -93,13 +91,18 @@ export default {
             console.log(formData);
             const account = this.web3Client.accounts[0]
 
-            const estimatedGas = await this.web3Client.BetFactoryContract.methods.createBet(formData.wager, formData.even, formData.token, formData.displayName).estimateGas();
+            const estimatedGas = await this.web3Client.BetFactoryContract.methods
+                .createBet(formData.wager, formData.isEven === 'true', formData.token, formData.displayName)
+                .estimateGas();
             console.log('Estimated gas', estimatedGas)
 
             // TODO this needs to be more accurate
-            const receipt = await this.web3Client.BetFactoryContract.methods.createBet(formData.wager, formData.even, formData.token, formData.displayName).send({
-                from: account,
-                gas: estimatedGas * 2
+            // TODO this needs to actually send money
+            const receipt = await this.web3Client.BetFactoryContract.methods
+                .createBet(formData.wager, formData.isEven === 'true', formData.token, formData.displayName)
+                .send({
+                    from: account,
+                    gas: estimatedGas * 2
             }, this.txCallback)
 
             // TODO get the return so you can stub in the new bet

@@ -54,20 +54,14 @@ export default class Web3Client{
         return await this.BetFactoryContract.methods.getSelfBets().call()
     }
 
-    getBetContract(address){
-        return new this.web3.eth.Contract(Bet.abi, address);
+    async getBetContract(address){
+        const contract = new this.web3.eth.Contract(Bet.abi, address);
+        const betData = await contract.methods.betData().call();
+        console.log("Whats this")
+        console.log(betData)
+        return {
+            contract,
+            betData
+        }
     }
-
-    async getBetContractProperties(contract){
-        return new BetModel({
-            id: await contract.methods.betId().call(),
-            token: await contract.methods.token().call(),
-            displayName: await contract.methods.displayName().call(),
-            wager: await contract.methods.wager().call(),
-            isEven: await contract.methods.isEven().call(),
-            inUSD: 69420
-        });
-    }
-    
-
 }

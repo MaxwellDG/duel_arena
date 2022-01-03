@@ -8,7 +8,7 @@
         </div>
         <p>{{bet.displayName}}</p>
         <div style="display: flex;">
-            <p>{{bet.bet}}</p>
+            <p>{{bet.wager}}</p>
             <p class="usd">{{bet.inUSD}}</p>
         </div>
         <div>

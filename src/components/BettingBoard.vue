@@ -15,7 +15,6 @@
 <script>
 import { mapState } from 'vuex'
 import OpenBet from './Bet.vue'
-import BetModel from '../models/bet';
 
 export default {
     name: 'BettingBoard',
@@ -39,17 +38,13 @@ export default {
     methods: {
         async getSelfBets(){
             let interval = setInterval(async () => {
-                console.log("INTERVAL")
                 if(!!this.web3Client.BetFactoryContract){
-                    console.log("BET FACTORY OPEN")
                     const selfBetAddresses = await this.web3Client.getSelfBets();
-                    console.log(selfBetAddresses);
                     selfBetAddresses.forEach(async j => {
-                        const betContract = this.web3Client.getBetContract(j);
-                        console.log("WHATS THE BETCONTRACT LOOK LIKE")
-                        const bet = await this.web3Client.getBetContractProperties(betContract);
-                        console.log(bet)
-                        this.openBets.push(bet);
+                        console.log("Self bet")
+                        const betContract = await this.web3Client.getBetContract(j);
+                        console.log(betContract)
+                        this.openBets.push(betContract.betData);
                     });
                     clearInterval(interval)
                 } 

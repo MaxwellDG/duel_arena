@@ -10,41 +10,66 @@ pragma solidity >=0.4.22 <0.9.0;
 
 contract Bet {
 
-    address public creator;
-    string public displayName;
-    uint256 public wager;
-    bool public isEven;
-    string public token;
-    uint256 public betId;
+    event Withdraw(address winner, uint256 amount, string winnerDisplayName, int txLastDigit, string token);
 
-
-    constructor(address _creator, string memory _displayName, uint256 _wager, bool _isEven, string memory _token, uint256 _betId) {
-        creator = _creator;
-        displayName = _displayName;
-        wager = _wager;
-        isEven = _isEven;
-        token = _token;
-        betId = _betId;
+    struct BetData{
+        address payable creator;
+        string displayName;
+        uint256 wager;
+        bool isEven;
+        string token;
+        uint256 betId;
     }
 
-    // function getAllProperties() public view returns(Bet memory){
-        
-    // }
+    BetData public betData;
+    address payable matcher;
+
+    constructor(address _creator, string memory _displayName, uint256 _wager, bool _isEven, string memory _token, uint256 _betId) payable {
+        betData = BetData(
+            payable(_creator),
+            _displayName,
+            _wager,
+            _isEven,
+            _token,
+            _betId
+        );
+    }
+
+    function withdrawToWinner(address payable winner, int txLastDigit, string memory winnerDisplayName) internal{
+        emit Withdraw(winner, address(this).balance, winnerDisplayName, txLastDigit, betData.token);
+        selfdestruct(winner);
+    }
+
+    function matchBet(string memory matchToken, bool matchIsEven, string memory matchDisplayName) 
+    public payable isValidBetMatch(msg.value, matchToken, msg.sender, matchIsEven){
+        matcher = payable(msg.sender);
+        int txLastDigit = 8; // TODO get from tx and ensure its being analyzed in hex
+        bool didCreatorWin;
+        betData.isEven ?
+            didCreatorWin = txLastDigit % 2 == 0
+            :
+            didCreatorWin = txLastDigit % 2 == 1;
+        address payable winner = didCreatorWin ? betData.creator : matcher;
+        string memory winnerDisplayName = didCreatorWin ? betData.displayName : matchDisplayName;
+        withdrawToWinner(winner, txLastDigit, winnerDisplayName);
+    }
 
     // Pure
-    function compareStringsbyBytes(string memory s1, string memory s2) public pure returns(bool){
+    function compareStringsByBytes(string memory s1, string memory s2) public pure returns(bool){
         return keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
     
     // Modifiers
     modifier mustBeCreator {
-        require(msg.sender == creator);
+        require(msg.sender == betData.creator);
         _;
     }
 
-    modifier mustMatchBet(Bet incMatchBet) {
-        require(incMatchBet.wager() == wager);
-        require(compareStringsbyBytes(incMatchBet.token(), token));
+    modifier isValidBetMatch(uint256 matchWager, string memory matchToken, address _matcher, bool matchIsEven) {
+        require(matchWager == betData.wager);
+        require(compareStringsByBytes(matchToken, betData.token));
+        require(_matcher != betData.creator);
+        require(!matchIsEven == betData.isEven);
         _;
     }
 }
@@ -57,7 +82,8 @@ contract BetFactory{
 
     event CreatedBet(address creator, string displayName, uint256 wager, bool isEven, string token, uint256 betId);
 
-    function createBet(uint256 _wager, bool _isEven, string memory _token, string memory _displayName) external returns(Bet){ 
+    function createBet(uint256 _wager, bool _isEven, string memory _token, string memory _displayName) external payable returns(Bet){ 
+        // msg.value
         betCounter += 1;
         Bet bet = new Bet(msg.sender, _displayName, _wager, _isEven, _token, betCounter);
         emit CreatedBet(msg.sender, _displayName, _wager, _isEven, _token, betCounter);
@@ -67,16 +93,16 @@ contract BetFactory{
     }
 
     // This doesn't work atm
-    function removeBet(uint256 _betId) public hasOpenBets{
-        for (uint j = 0; j <= allBets[msg.sender].length; j ++) {  
-            if(_betId == allBets[msg.sender][j].betId()){
-                delete allBets[msg.sender][j];
-                if(allBets[msg.sender].length == 0){
-                    allAddresses[msg.sender] = false;
-                }
-            }
-        }
-    } 
+    // function removeBet(uint256 _betId) public hasOpenBets{
+    //     for (uint j = 0; j <= allBets[msg.sender].length; j ++) {  
+    //         if(_betId == allBets[msg.sender][j].betId()){
+    //             delete allBets[msg.sender][j];
+    //             if(allBets[msg.sender].length == 0){
+    //                 allAddresses[msg.sender] = false;
+    //             }
+    //         }
+    //     }
+    // } 
 
     function getSelfBets() public view returns (Bet[] memory){ 
         return allBets[msg.sender];

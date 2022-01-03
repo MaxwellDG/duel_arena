@@ -4,16 +4,16 @@
             <p>Find Your Transaction</p>
         </div>
         <div class="scanner-buttons">
-            <div v-on:click="() => handleClick('BTC')" class="scanner-icon-con">
+            <div v-on:click="() => website = 'https://btc.com/'" class="scanner-icon-con">
                 <BTC :width=32 :height=32 />
             </div>
-            <div v-on:click="() => handleClick('ETH')" class="scanner-icon-con">
+            <div v-on:click="() => website = 'https://etherscan.io/'" class="scanner-icon-con">
                 <ETH :width=32 :height=32 />
             </div>
-            <div v-on:click="() => handleClick('ADA')" class="scanner-icon-con">
+            <div v-on:click="() => website = 'https://cardanoscan.io/'" class="scanner-icon-con">
                 <ADA :width=32 :height=32 />
             </div>
-            <div v-on:click="() => handleClick('SOL')" class="scanner-icon-con">
+            <div v-on:click="() => website = 'https://solscan.io/'" class="scanner-icon-con">
                 <SOL :width=32 :height=32 />
             </div>
         </div>
@@ -54,27 +54,8 @@ export default {
         }
     },
     methods: {
-        handleClick(type){
-            switch(type){
-                case 'BTC': {
-                    this.website = `https://btc.com/`
-                    break;
-                }
-                case 'ETH': {
-                    this.website = `https://etherscan.io/`
-                    break;
-                }
-                case 'ADA': {
-                    this.website = `https://cardanoscan.io/`
-                    break;
-                }
-                case 'SOL': {
-                    this.website = `https://solscan.io/`
-                    break;
-                }
-            }
-        },
         handleCopy(){
+            navigator.clipboard.writeText(this.website);
             this.$toast.open({
                 message: 'Copied to clipboard',
                 type: 'info'
