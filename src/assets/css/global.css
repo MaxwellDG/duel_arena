@@ -11,6 +11,26 @@ html, body{
     right:0;
 }
 
+/* General Positioning */
+
+.row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.col{
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="text"] {
+    width: 100%; 
+    box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing: border-box;
+}
+
 .but-sub{
     border: 2px solid purple;
     border-radius: 3px;
@@ -24,6 +44,24 @@ html, body{
     background-color: purple;
     cursor: pointer;
     color: white;
+}
+
+.standard-dropdown .vs__dropdown-toggle,
+.standard-dropdown .vs__dropdown-menu{
+    background-color: white;
+    cursor: pointer;
+}
+
+.standard-dropdown .vs__dropdown-toggle{
+    height: 2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.standard-input-text{
+    border-color: rgba(60, 60, 60, 0.26);
+    border-radius: 4px;
 }
 
 

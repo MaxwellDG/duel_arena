@@ -44,12 +44,18 @@ export default {
 
 <style scoped>
     .info-con{
+        position: relative;
         display: flex;
         flex-direction: row;
         align-items: center;
     }
 
     .box-con{
+        position: absolute;
+        top: 0;
+        left: 26px;
+        min-width: 100px;
+        max-width: 200px;
         background-color: #b784c2;
         border-radius: 3px;
         padding: 2px 6px;

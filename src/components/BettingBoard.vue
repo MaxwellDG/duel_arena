@@ -36,17 +36,30 @@ export default {
         }),
     },
     methods: {
+        // TODO currently retrieving self bets cause it's simpler. Should be all bets in final.
         async getSelfBets(){
+            let count = 0;
             let interval = setInterval(async () => {
-                if(!!this.web3Client.BetFactoryContract){
-                    const selfBetAddresses = await this.web3Client.getSelfBets();
-                    selfBetAddresses.forEach(async j => {
-                        console.log("Self bet")
-                        const betContract = await this.web3Client.getBetContract(j);
-                        console.log(betContract)
-                        this.openBets.push(betContract.betData);
-                    });
-                    clearInterval(interval)
+                if(count >= 3){
+                    clearInterval(interval) // Give up
+                    // TODO Some kind of error alert
+                }
+                if(this.web3Client.BetFactoryContract){
+                    console.log("we got here")
+                    try{
+                        const selfBetAddresses = await this.web3Client.getSelfBets();
+                        selfBetAddresses.forEach(async j => {
+                            console.log("Self bet")
+                            const betContract = await this.web3Client.getBetContract(j);
+                            console.log(betContract)
+                            this.openBets.push(betContract.betData);
+                        });
+                        clearInterval(interval)
+                    } catch (e) {
+                        count++
+                    }
+                } else {
+                    count++;
                 } 
             }, 1000)
         }

@@ -1,108 +1,175 @@
 <template>
     <div id='newBetInterface'>
-        <h3>Create a new 50/50 bet</h3>
-            <FormulateForm
-                v-model="formValues"
-                @submit="handleSubmit"
-                class="formContainer"
-            >
-                <FormulateInput
-                    name="token"
+        <h2 style="margin: 0;">Create a new 50/50 bet</h2>
+        <div class="row section" style="width: 100%;">
+            <label for="displayName">Display&nbsp;Name&nbsp;</label>
+            <input name="displayName" type="text" class="displayInput standard-input-text" v-model="formValues.displayName"/>
+        </div>
+        <div class="row section">
+            <div class="row" style="align-items: center;">
+                <label for="tokens">Token&nbsp;</label>
+                <v-select 
+                    class="standard-dropdown token-drop"
+                    name="tokens"
+                    label="label"
+                    v-model="formValues.token" 
+                    :clearable="false"
                     :options="[
-                            { value: 'btc', label: 'BTC' },
-                            { value: 'eth', label: 'ETH', disabled: true, id: '69420' },
-                            { value: 'ada', label: 'ADA' },
-                            { value: 'sol', label: 'SOL'},
-                            { value: 'safemoon', label: 'SAFEMOON'},
+                            { value: 'btc', label: 'BTC', gecko: 'bitcoin'},
+                            { value: 'eth', label: 'ETH', gecko: 'ethereum'},
+                            { value: 'ada', label: 'ADA', gecko: 'cardano'},
+                            { value: 'sol', label: 'SOL', gecko: 'solana'},
                         ]"
-                    type="select"
                 />
-                <div class="iconCon">
-                    <component :is="icon" :height="32" :width="32" />
-                </div>
-                <FormulateInput
-                    name="displayName"
-                    label="Display Name"
-                    validation="required|alphanumeric|max:20"
+            </div>
+            <div class="iconCon">
+                <component :is="icon" :height="32" :width="32" />
+            </div>
+        </div>
+        <div class="row section">
+            <div class="field-con">
+                <label for="wager">Wager</label>
+                <input 
+                    name="wager"    
+                    class="standard-input-text"    
+                    type="text"    
+                    v-model="formValues.wager"
+                    @input="handleBetChange"
+                    @focus="handleFocus"
                 />
-                <FormulateInput
-                    name="wager"
-                    label="Wager"
-                    validation="required|number"
+            </div>
+            <div class="field-con">
+                <label for="usd">/ $USD</label>
+                <input 
+                    class="standard-input-text" 
+                    type="text" 
+                    name="usd"  
+                    :value="formValues.inUSD"
+                    @input="handleBetChange"
+                    @focus="handleFocus"
                 />
-                <label>
-                    / $USD
-                    <p style="margin: 0;">{{handleUSDConversion}}</p>
-                </label>
-                <!-- ENSURE that these values get changed to bool values before being sent  -->
-                <FormulateInput
-                    name="isEven"
-                    :options="{true: 'Even', false: 'Odd'}" 
-                    type="radio"
-                    label="Tx last digit"
+            </div>
+        </div>
+        <div class="row section">
+            <!-- ENSURE that these values get changed to bool values before being sent  -->
+            <p>Bet:</p>
+            <Info style="margin: 0 .5rem;">
+                <p>A number between 1-10 will be randomly generated. Bet whether it will be even or odd</p>
+            </Info>
+            <div class="row" style="margin-right: .5rem;">
+                <label>Even</label>
+                <input
+                    id="even"
+                    name="dudebro" 
+                    type="radio" 
+                    :checked="formValues.isEven"
+                    :value="formValues.isEven" 
+                    @change="handleRadioChange"
                 />
-                <FormulateInput
-                    input-class="but-sub"
-                    type="submit"
-                    label="Place bet"
+            </div>
+            <div class="row" style="margin-right: .5rem;">
+                <label>Odd</label>
+                <input 
+                    id="odd"
+                    name="dudebro" 
+                    type="radio" 
+                    :checked="!formValues.isEven"
+                    :value="!formValues.isEven" 
+                    @change="handleRadioChange"
                 />
-            </FormulateForm>
+            </div>
+            <button class="but-sub" style="width: 100%;" @click="handleSubmit">Submit</button>
+        </div>
     </div>
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import Info from '@/icons/info';
+import 'vue-select/dist/vue-select.css';
+import {mapMutations, mapState} from 'vuex';
 
 export default {
     name: 'NewBetInterface',
+    props: {
+    },
     components: {
+        Info,
     },
     data() {
         return{
             formValues: {
-                token: 'btc', 
-                displayName: 'tester',
-                wager: '777',
+                token: { value: 'btc', label: 'BTC', gecko: 'bitcoin' },
+                displayName: '',
+                wager: 0,
+                inUSD: 0,
                 isEven: true
             },
-            icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.token}.svg`)
+            focusedField: null,
+            icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.token.value}.svg`),
         }
     },
     computed: {
         ...mapState({
             web3Client: state => state.web3Client,
+            usdValues: state => state.usdValues,
         }),
         handleUSDConversion(){
-            return this.$store.getters.getUSDConversion({token: this.formValues.token, bet: this.formValues.bet})
+            return 
         },
     },
     watch: {
-        formValues(oldVal, newVal){
-            this.icon = () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${newVal.token}.svg`)
+        'formValues.token'(newVal){
+            this.icon = () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${newVal.value}.svg`)
         }
     },
     methods: {
+        ...mapMutations([
+            
+        ]),
+        handleBetChange(e){
+            if(e.target.value){
+                const val = e.target.value;
+                const conversion = this.usdValues[this.formValues.token.gecko].usd;
+                if(e.target.name == 'wager' && this.focusedField == 'wager'){
+                    console.log('wager change', e.target.value);
+                    this.formValues.inUSD = Math.round( ((val * conversion) + Number.EPSILON) * 100 ) / 100;
+                    this.formValues.wager = val;
+                } else if(e.target.name == 'usd' && this.focusedField == 'usd'){
+                    console.log('usd change', e.target.value);
+                    this.formValues.wager = (val / conversion).toFixed(9);
+                    this.formValues.inUSD = val
+                }
+            }
+        },
         txCallback(err, txHash){
             console.log('Err', err)
             console.log('TxHash', txHash)
         },
-        async handleSubmit(formData){
+        handleRadioChange(e){
+            this.formValues.isEven = e.target.id == 'even';
+        },
+        handleFocus(e){
+            this.focusedField = e.target.name;
+            if(e.target.value == 0)
+                e.target.value = '';
+        },
+        async handleSubmit(){
             console.log("Formdaatata")
-            console.log(formData);
+            console.log(this.formValues);
             const account = this.web3Client.accounts[0]
 
             const estimatedGas = await this.web3Client.BetFactoryContract.methods
-                .createBet(formData.wager, formData.isEven === 'true', formData.token, formData.displayName)
+                .createBet(this.formValues.wager, this.formValues.isEven === 'true', this.formValues.token.value, this.formValues.displayName)
                 .estimateGas();
             console.log('Estimated gas', estimatedGas)
 
-            // TODO this needs to be more accurate
+            
             // TODO this needs to actually send money
             const receipt = await this.web3Client.BetFactoryContract.methods
-                .createBet(formData.wager, formData.isEven === 'true', formData.token, formData.displayName)
+                .createBet(this.formValues.wager, this.formValues.isEven === 'true', this.formValues.token.value, this.formValues.displayName)
                 .send({
                     from: account,
-                    gas: estimatedGas * 2
+                    gas: estimatedGas * 2 // TODO this needs to be more accurate
             }, this.txCallback)
 
             // TODO get the return so you can stub in the new bet
@@ -114,25 +181,33 @@ export default {
 </script>
 
 <style scoped>
-    h3{
-        color: black;
-        margin: 0;
+
+    .field-con{
+        width: 7.5rem;
     }
 
-    #newBetInterface{
-        padding: 0 10px 10px 10px;
-        border-radius: 5px;
-        font-family: 'RuneScape UF';
-        padding: 12px;
+    .field-con input{
+        width: 100%;
     }
-    .formContainer{
-        display: flex;
-        justify-content: space-evenly;
-        align-items: flex-end;
-        color: white;
+
+    .section{
+        margin: .5rem 0;
+    }
+
+    .token-drop{
+        width: 200px;
+    }
+
+    input{
+        height: 2rem;
+        padding: 0 .5rem;
     }
 
     .iconCon{
-        margin: 0 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
+
+
 </style>

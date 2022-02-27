@@ -4,6 +4,11 @@ import './assets/css/global.css'
 import './assets/css/fonts.css'
 import './assets/css/colors.css'
 import {store} from './store/store.js'
+
+import vSelect from 'vue-select'
+
+Vue.component('v-select', vSelect)
+
 require('buffer')
 
 

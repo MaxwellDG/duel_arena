@@ -1,43 +1,40 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Bet from '../models/bet';
+
+import * as Types from '@/store/types';
+
 
 Vue.use(Vuex)
 
-const DEFAULT_BETS = []
-
-// for (let i = 0; i < 10; i++) {
-//   DEFAULT_BETS.push(new Bet({
-//     coin: 'ada',
-//     bet: (i + 1) * 5,
-//     inUSD: (i + 1) * 5 * 2
-//   }))
-// }
 
 export const store = new Vuex.Store({
   state: {
     web3Client: undefined,
     isBetModal: false,
     isConnected: false,
-    openBets: DEFAULT_BETS,
+    usdValues: {
+      bitcoin: 0,
+      ethereum: 0,
+      cardano: 0,
+      solana: 0,
+      safemoon: 0
+   }
   },
   mutations: {
-    toggleNewBetModal (state) {
+    [Types.TOGGLE_NEW_BET_MODAL] (state) {
       state.isBetModal = !state.isBetModal;
     },
-    setWeb3Client (state, web3Client){
+    [Types.SET_WEB3_CLIENT] (state, web3Client){
       state.web3Client = web3Client;
     },
-    addBet (state, bet) {
-      state.openBets.push(bet);
-    },
-    toggleConnected (state) {
+    [Types.TOGGLE_CONNECTED] (state) {
       state.isConnected = !state.isConnected;
-    }
+    },
+    [Types.SET_USD_VALUES] (state, payload) {
+      state.usdValues = payload;
+    },
   },
   getters: {
-    getUSDConversion: (state) => (payload) => {
-      return 69.420
-    }
+
   }
 })

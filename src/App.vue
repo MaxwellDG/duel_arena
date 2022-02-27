@@ -19,19 +19,13 @@
         <ModalWrapper @close-modal="modal = null" v-if="modal != null">
             <HowItWorks v-if="modal == 'HowItWorks'"/>
             <Contact v-else-if="modal == 'Contact'"/>
-            <NewBetInterface v-else-if="modal == 'NewBetInterface'"/>
+            <NewBetInterface v-else-if="modal == 'NewBetInterface'" />
         </ModalWrapper>
     </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import Vuex from 'vuex';
-import VueFormulate from '@braid/vue-formulate'
-import 'vue-toast-notification/dist/theme-default.css'
-
 //Components
-import VueToast from 'vue-toast-notification'
 import Banner from './components/Banner.vue'
 import BottomButtons from './components/BottomButtons';
 import ModalWrapper from './components/modals/ModalWrapper';
@@ -46,14 +40,22 @@ import Contact from './components/modals/Contact.vue'
 import HowItWorks from './components/modals/HowItWorks.vue'
 import NewBetInterface from './components/modals/NewBetInterface.vue'
 
+//Libraries
+import Vue from 'vue';
+import Vuex from 'vuex';
+import 'vue-toast-notification/dist/theme-default.css'
+import axios from 'axios';
+import VueToast from 'vue-toast-notification'
+
 //Util
 import Web3Client from './web3/web3Client';
+import * as Types from '@/store/types';
+import {mapState, mapMutations} from 'vuex';
 
 //SVGs
 import Info from './icons/info.vue'
 
 Vue.use(Vuex);
-Vue.use(VueFormulate)
 Vue.use(VueToast, {
     position: 'bottom'
 });
@@ -88,11 +90,14 @@ export default {
         NewBetInterface
     },
     created(){
+        let web3Client = new Web3Client();
+        this.SET_WEB3_CLIENT(web3Client);
+
+        this.getTokenValues();
+
         this.$nextTick(() => {
             window.addEventListener('resize', this.onResize);
         })
-        let web3Client = new Web3Client();
-        this.$store.commit('setWeb3Client', web3Client);
     },
     beforeDestroy() { 
         window.removeEventListener('resize', this.onResize); 
@@ -100,12 +105,28 @@ export default {
     data() {
         return{
             windowWidth: WINDOW_WIDTH,
-            modal: null
+            modal: null,
         }
     },
+    computed: {
+        ...mapState({
+            usdValues: state => state.usdValues
+        })
+    },
     methods: {  
+        ...mapMutations([
+            Types.SET_USD_VALUES,
+            Types.SET_WEB3_CLIENT
+        ]),
         onResize() {
             this.windowWidth = window.innerWidth;
+        },
+        getTokenValues(){
+            const ids = Object.keys(this.usdValues).join();
+            axios({url: `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`}).then(res => {
+                if(res.status == 200)
+                    this.SET_USD_VALUES(res.data);
+            }).catch(e => console.log(e));
         },
     },
 }
