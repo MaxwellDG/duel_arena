@@ -12,6 +12,7 @@ export const store = new Vuex.Store({
     web3Client: undefined,
     isBetModal: false,
     isConnected: false,
+    selfBets: [],
     usdValues: {
       bitcoin: 0,
       ethereum: 0,
@@ -32,6 +33,14 @@ export const store = new Vuex.Store({
     },
     [Types.SET_USD_VALUES] (state, payload) {
       state.usdValues = payload;
+    },
+
+    // Bets
+    [Types.SET_SELF_BETS] (state, payload){
+      state.selfBets = payload;
+    },
+    [Types.ADD_BET] (state, payload){
+      state.selfBets = payload;
     },
   },
   getters: {

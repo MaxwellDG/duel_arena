@@ -86,6 +86,8 @@
 <script>
 import Info from '@/icons/info';
 import 'vue-select/dist/vue-select.css';
+
+import * as Types from '@/store/types';
 import {mapMutations, mapState} from 'vuex';
 
 export default {
@@ -124,7 +126,7 @@ export default {
     },
     methods: {
         ...mapMutations([
-            
+            Types.TOGGLE_NEW_BET_MODAL
         ]),
         handleBetChange(e){
             if(e.target.value){
@@ -159,14 +161,14 @@ export default {
             const account = this.web3Client.accounts[0]
 
             const estimatedGas = await this.web3Client.BetFactoryContract.methods
-                .createBet(this.formValues.wager, this.formValues.isEven === 'true', this.formValues.token.value, this.formValues.displayName)
+                .createBet(parseFloat(this.formValues.wager), this.formValues.isEven, this.formValues.token.value, this.formValues.displayName)
                 .estimateGas();
             console.log('Estimated gas', estimatedGas)
 
             
             // TODO this needs to actually send money
             const receipt = await this.web3Client.BetFactoryContract.methods
-                .createBet(this.formValues.wager, this.formValues.isEven === 'true', this.formValues.token.value, this.formValues.displayName)
+                .createBet(parseFloat(this.formValues.wager), this.formValues.isEven, this.formValues.token.value, this.formValues.displayName)
                 .send({
                     from: account,
                     gas: estimatedGas * 2 // TODO this needs to be more accurate
@@ -175,6 +177,7 @@ export default {
             // TODO get the return so you can stub in the new bet
 
             console.log(receipt)
+            this.TOGGLE_NEW_BET_MODAL();
         }
     }
 }
