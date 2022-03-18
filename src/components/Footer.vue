@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p class="footer-text">No copyright Ltd. - Fuck your government</p>
+        <p class="footer-text">No copyright Ltd. Copy me.</p>
     </div>
 </template>
 

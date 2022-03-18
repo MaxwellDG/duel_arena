@@ -28,10 +28,10 @@ export default {
 
 <style scoped>
     #artwork{
-        height: 30vh;
+        height: 30%;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;  
+        justify-content: center;  
     }
 
     .wowText{
@@ -40,12 +40,5 @@ export default {
         justify-content: space-evenly;
     }
 
-    .osrsDance{
-        width: 50%;
-    }
-
-    .orc{
-        width: 50%;
-    }
 
 </style>

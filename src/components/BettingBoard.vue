@@ -1,7 +1,7 @@
 <template>
     <div class="bet-con">
         <div class="filterCon">
-            <p class="filterText">Filter ></p>
+            <p class="filterText">Filter</p>
             <input type="text" :value="filter" class="filterInput"/>
         </div>
         <div class="list-con">
