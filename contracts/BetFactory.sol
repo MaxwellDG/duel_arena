@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-// TODO don't use ETH retard gas
-// Solang Solidity Compiler allows you to deploy .sol smart contracts to Solana blockchain
-
-// TODO You're currently using a normal factory pattern. This is improved gas costs, but it still falls way short
-// You should instead be using a cloning pattern. This creates one single bet contract that has all the functions, and then
-// all additional 'clones' only require their unique properties, which would get input as variables to the OG implementation
 
 contract Bet {
 
