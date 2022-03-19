@@ -3,8 +3,10 @@ const htmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const autoprefixer = require("autoprefixer");
 const path = require("path");
+
+// Not using this but I've heard it's important for mobile version
+// const autoprefixer = require("autoprefixer");
 
 module.exports = {
   entry: {

@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: MIT
+
+// This only function of this is to help with keeping track of migrations overtime
+
 pragma solidity >=0.4.22 <0.9.0;
 
 contract Migrations {
