@@ -1,8 +1,6 @@
 <template>
     <div class='scanners'>
-        <div class="find">
-            <p>Find Your Transaction</p>
-        </div>
+        <p class="find">Find Your Transaction</p>
         <div class="scanner-buttons">
             <div v-on:click="() => website = 'https://btc.com/'" class="scanner-icon-con">
                 <BTC :width=32 :height=32 />
