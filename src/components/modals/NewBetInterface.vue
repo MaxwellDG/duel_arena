@@ -9,7 +9,7 @@
             <div class="row" style="align-items: center;">
                 <label for="tokens">Token&nbsp;</label>
                 <v-select 
-                    class="standard-dropdown token-drop"
+                    class="standard-dropdown"
                     name="tokens"
                     label="label"
                     v-model="formValues.token" 

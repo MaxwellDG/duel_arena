@@ -1,33 +1,30 @@
 <template>
-    <div>
-        <FormulateForm
-                v-model="formValues"
-                @submit="handleSubmit"
-                class="formContainer"
+    <div class="contact-con">
+        <p>Feel free to ask anything you'd like by filling out the form below</p>
+        <form
+            @submit="handleSubmit"
+            class="formContainer"
         >
-            <FormulateInput
+            <input
                 label="Email"
                 name="email"
                 type="email"
-                validation="required"
             />
-            <FormulateInput
+            <input
                 label="Subject"
                 name="subject"
             />
-            <FormulateInput
+            <input
                 label="Message"
                 name="email"
                 type="textarea"
-                validation="required|max:500|min:1"
             />
 
-            <FormulateInput
-                input-class="but-sub"
+            <input
                 type="submit"
                 label="Send"
             />
-        </FormulateForm>
+        </form>
     </div>
 </template>
 
@@ -46,9 +43,3 @@ export default {
     },
 }
 </script>
-
-<style scoped>
-    #container{
-        
-    }
-</style>

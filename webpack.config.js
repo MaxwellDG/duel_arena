@@ -49,6 +49,15 @@ module.exports = {
         ],
       },
       {
+        test: /\.less$/i,
+        use: [
+          // compiles Less to CSS
+          "style-loader",
+          "css-loader",
+          "less-loader",
+        ],
+      },
+      {
         test: /\.(eot|ttf|woff|woff2)(\?\S*)?$/,
         loader: "file-loader",
         options: {

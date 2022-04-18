@@ -11,25 +11,23 @@
         </div>
         <div class="fifth" style="display: flex;">
             <p>{{bet.wager}}</p>
-            <p class="usd">{{inUSD}}</p>
+            <p class="usd">{{bet.USD}}</p>
         </div>
         <div class="fifth">
             <p>{{bet.isEven ? 'Even' : 'Odd'}}</p>
         </div>
-        <div class="fifth bet-div">
+        <div v-if="!isSelf" class="fifth bet-div">
             <button @click="handleBet" class="bet-button">BET</button>
         </div>
     </li>
 </template>
 
 <script>
-import * as Types from '@/store/types';
-import {mapState} from 'vuex';
-
 export default {
     name: '',
     props: {
         bet: Object,
+        isSelf: Boolean
     },
     components: {
         
@@ -37,16 +35,6 @@ export default {
     data() {
         return{
             icon: () => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.token}.svg`)
-        }
-    },
-    computed: {
-        ...mapState({
-            usdValues: state => state.usdValues,
-        }),
-        inUSD(){
-            const tokenName = Object.keys(Types.TOKEN_CODES).find(j => Types.TOKEN_CODES[j] == this.bet.token)
-            if(tokenName)
-                return (parseFloat(this.bet.wager) * parseFloat(this.usdValues[tokenName].usd)).toFixed(2);
         }
     },
     methods: {

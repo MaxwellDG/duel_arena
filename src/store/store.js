@@ -7,7 +7,7 @@ import * as Types from '@/store/types';
 Vue.use(Vuex)
 
 
-export const store = new Vuex.Store({
+export default new Vuex.Store({
   state: {
     web3Client: undefined,
     isBetModal: false,
