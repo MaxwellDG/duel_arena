@@ -6,14 +6,14 @@
             <BettingBoard />
             <Footer />
         </div>
-        <BottomButtons v-if="windowWidth < 700"/>
+        <BottomButtons v-if="width && width < 700"/> 
 
         <!-- media queries set to 'display = none' when width < 700px -->
         <Connect />
         <Scanners />
-        <RightTab :text="'How it Works'" :index="0" @click.native="modal = 'HowItWorks'"/>
-        <RightTab :text="'Contact'" :index="1" @click.native="modal = 'Contact'"/>
-        <RightTab :text="'Place New Bet'" :index="2" @click.native="modal= 'NewBetInterface'"/>
+        <RightTab :text="'How it Works'" :index="0" @click="modal = 'HowItWorks'"/>
+        <RightTab :text="'Contact'" :index="1" @click="modal = 'Contact'"/>
+        <RightTab :text="'Place New Bet'" :index="2" @click="modal= 'NewBetInterface'"/>
 
         <!-- Modals -->
         <ModalWrapper @close-modal="modal = null" v-if="modal != null">
@@ -24,12 +24,14 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { onUnmounted, onMounted } from '@vue/runtime-core';
+import { ref } from 'vue'
+
 //Components
 import Banner from './components/Banner.vue'
 import BottomButtons from './components/BottomButtons';
 import ModalWrapper from './components/modals/ModalWrapper';
-import Address from './components/Address.vue'
 import RightTab from './components/RightTab.vue'
 import Connect from './components/Connect.vue';
 import Scanners from './components/Scanners.vue'
@@ -40,96 +42,37 @@ import Contact from './components/modals/Contact.vue'
 import HowItWorks from './components/modals/HowItWorks.vue'
 import NewBetInterface from './components/modals/NewBetInterface.vue'
 
-//Libraries
-import Vue from 'vue';
-import Vuex from 'vuex';
-import 'vue-toast-notification/dist/theme-default.css'
+//Libs
 import axios from 'axios';
-import VueToast from 'vue-toast-notification'
 
 //Util
-import Web3Client from './web3/web3Client';
 import * as Types from '@/store/types';
-import {mapState, mapMutations} from 'vuex';
+import { useStore } from 'vuex';
 
-//SVGs
-import Info from './icons/info.vue'
+const store = useStore()
 
-Vue.use(Vuex);
-Vue.use(VueToast, {
-    position: 'bottom'
-});
+const modal = ref(null)
 
+const width = ref(null)
+const onResize = () => width.value = window.innerWidth;
 
+onMounted(() => {
+    window.addEventListener('resize', onResize);
+    getTokenValues();
+})
 
-// Need something on the smartcontract that watches for if a bet has already been filled. And sends back a notice
-// before any kind of transaction fee from a denial occurs
+onUnmounted(() => {
+    window.removeEventListener('resize', onResize); 
+})
 
-// Start advertisement with runescape bots 
-// Maybe do some advertising? '50/50 2x Peer-2-Peer Crypto Gambling - DuelArena.io'
-// Miss DuelArena? Gamble like a big boi @ DuelArena.io
-
-const WINDOW_WIDTH = window.innerWidth;
-
-export default {
-    name: 'App',
-    components: {
-        Address,
-        Artwork,
-        Scanners,
-        BottomButtons,
-        Connect,
-        Banner,
-        RightTab,
-        Footer,
-        BettingBoard,
-        ModalWrapper,
-        Info,
-        HowItWorks,
-        Contact,
-        NewBetInterface
-    },
-    created(){
-        let web3Client = new Web3Client();
-        this.SET_WEB3_CLIENT(web3Client);
-
-        this.getTokenValues();
-
-        this.$nextTick(() => {
-            window.addEventListener('resize', this.onResize);
-        })
-    },
-    beforeDestroy() { 
-        window.removeEventListener('resize', this.onResize); 
-    },    
-    data() {
-        return{
-            windowWidth: WINDOW_WIDTH,
-            modal: null,
-        }
-    },
-    computed: {
-        ...mapState({
-            usdValues: state => state.usdValues
-        })
-    },
-    methods: {  
-        ...mapMutations([
-            Types.SET_USD_VALUES,
-            Types.SET_WEB3_CLIENT
-        ]),
-        onResize() {
-            this.windowWidth = window.innerWidth;
-        },
-        getTokenValues(){
-            const ids = Object.keys(this.usdValues).join();
-            axios({url: `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`}).then(res => {
-                if(res.status == 200)
-                    this.SET_USD_VALUES(res.data);
-            }).catch(e => console.log(e));
-        },
-    },
+const getTokenValues = () => {
+    const ids = Object.keys(store.state.usdValues).join();
+    axios({url: `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`}).then(res => {
+        if(res.status == 200)
+            store.commit(Types.SET_USD_VALUES, (res.data));
+    }).catch(e => console.log(e));
 }
+
 </script>
 
 <style>

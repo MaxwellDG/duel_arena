@@ -9,7 +9,7 @@
             <div class="row" style="align-items: center;">
                 <label for="tokens">Token&nbsp;</label>
                 <v-select 
-                    class="standard-dropdown token-drop"
+                    class="standard-dropdown"
                     name="tokens"
                     label="label"
                     v-model="formValues.token" 
@@ -23,7 +23,7 @@
                 />
             </div>
             <div class="iconCon">
-                <component :is="icon" :height="32" :width="32" />
+                <img :src="icon" alt="icon"/>
             </div>
         </div>
         <div class="row section">
@@ -44,7 +44,7 @@
                     class="standard-input-text" 
                     type="text" 
                     name="usd"  
-                    :value="formValues.inUSD"
+                    :value="formValues.USD"
                     @input="handleBetChange"
                     @focus="handleFocus"
                 />
@@ -83,108 +83,79 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Info from '@/icons/info';
-import 'vue-select/dist/vue-select.css';
 
 import * as Types from '@/store/types';
-import {mapMutations, mapState} from 'vuex';
+import { reactive, ref } from '@vue/reactivity';
+import { computed, inject } from '@vue/runtime-core';
+import { useStore } from 'vuex';
 
-export default {
-    name: 'NewBetInterface',
-    props: {
-    },
-    components: {
-        Info,
-    },
-    data() {
-        return{
-            formValues: {
-                token: { value: 'btc', label: 'BTC', gecko: 'bitcoin' },
-                displayName: '',
-                wager: 0,
-                inUSD: 0,
-                isEven: true
-            },
-            focusedField: null,
-            icon: () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${this.formValues.token.value}.svg`),
-        }
-    },
-    computed: {
-        ...mapState({
-            web3Client: state => state.web3Client,
-            usdValues: state => state.usdValues,
-        }),
-        handleUSDConversion(){
-            return 
-        },
-    },
-    watch: {
-        'formValues.token'(newVal){
-            this.icon = () => import(`../../../node_modules/cryptocurrency-icons/svg/color/${newVal.value}.svg`)
-        }
-    },
-    methods: {
-        ...mapMutations([
-            Types.TOGGLE_NEW_BET_MODAL
-        ]),
-        handleBetChange(e){
-            if(e.target.value){
-                const val = e.target.value;
-                const conversion = this.usdValues[this.formValues.token.gecko].usd;
-                if(e.target.name == 'wager' && this.focusedField == 'wager'){
-                    console.log('wager change', e.target.value);
-                    this.formValues.inUSD = Math.round( ((val * conversion) + Number.EPSILON) * 100 ) / 100;
-                    this.formValues.wager = val;
-                } else if(e.target.name == 'usd' && this.focusedField == 'usd'){
-                    console.log('usd change', e.target.value);
-                    this.formValues.wager = (val / conversion).toFixed(9);
-                    this.formValues.inUSD = val
-                }
-            }
-        },
-        txCallback(err, txHash){
-            console.log('Err', err)
-            console.log('TxHash', txHash)
-        },
-        handleRadioChange(e){
-            this.formValues.isEven = e.target.id == 'even';
-        },
-        handleFocus(e){
-            this.focusedField = e.target.name;
-            if(e.target.value == 0)
-                e.target.value = '';
-        },
-        async handleSubmit(){
-            console.log("Formdaatata")
-            console.log(this.formValues);
-            const account = this.web3Client.accounts[0]
+const store = useStore();
+const $web3 = inject('$web3')
 
-            const estimatedGas = await this.web3Client.BetFactoryContract.methods
-                .createBet(parseFloat(this.formValues.wager), this.formValues.isEven, this.formValues.token.value, this.formValues.displayName)
-                .estimateGas();
-            console.log('Estimated gas', estimatedGas)
+const formValues = reactive({
+    token: { value: 'btc', label: 'BTC', gecko: 'bitcoin' },
+    displayName: '',
+    wager: 0,
+    USD: 0,
+    isEven: true
+})
 
-            
-            // TODO this needs to actually send money
-            const receipt = await this.web3Client.BetFactoryContract.methods
-                .createBet(parseFloat(this.formValues.wager), this.formValues.isEven, this.formValues.token.value, this.formValues.displayName)
-                .send({
-                    from: account,
-                    gas: estimatedGas * 2 // TODO this needs to be more accurate
-            }, this.txCallback)
+const focusedField = ref(null);
 
-            // TODO get the return so you can stub in the new bet
+const icon = computed(() => {
+    console.log('changing', formValues.token.value)
+    return import(`../../../node_modules/cryptocurrency-icons/svg/color/${formValues.token.value}.svg`)
+})
 
-            console.log(receipt)
-            this.TOGGLE_NEW_BET_MODAL();
+const handleBetChange = (e) => {
+    if(e.target.value){
+        const val = e.target.value;
+        const conversion = store.state.usdValues[formValues.token.gecko].usd;
+        if(e.target.name == 'wager' && focusedField == 'wager'){
+            formValues.USD = Math.round( ((val * conversion) + Number.EPSILON) * 100 ) / 100;
+            formValues.wager = val;
+        } else if(e.target.name == 'usd' && focusedField == 'usd'){
+            formValues.wager = (val / conversion).toFixed(9);
+            formValues.USD = val
         }
     }
 }
+
+const txCallback = (err, txHash) => console.log('Err', err, 'TxHash:', txHash);
+        
+const handleRadioChange = (e) => formValues.isEven = e.target.id == 'even';
+
+const handleFocus = (e) => {
+    focusedField = e.target.name;
+    if(e.target.value == 0)
+        e.target.value = '';
+}
+
+const handleSubmit = async () => {
+    const account = $web3.accounts[0]
+
+    const estimatedGas = await $web3.BetFactoryContract.methods
+        .createBet(parseFloat(formValues.wager), formValues.isEven, formValues.token.value, formValues.displayName)
+        .estimateGas();
+
+    // TODO this needs to actually send money
+    const receipt = await $web3.BetFactoryContract.methods
+        .createBet(parseFloat(formValues.wager), formValues.isEven, formValues.token.value, formValues.displayName)
+        .send({
+            from: account,
+            gas: estimatedGas * 2 // TODO this needs to be more accurate
+    }, txCallback)
+
+    // TODO get the return so you can stub in the new bet
+
+    store.commit(Types.TOGGLE_NEW_BET_MODAL);
+}
+
 </script>
 
 <style scoped>
-
     .field-con{
         width: 7.5rem;
     }

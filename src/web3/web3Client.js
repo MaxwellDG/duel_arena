@@ -3,13 +3,6 @@ import Web3 from 'web3'
 import BetFactory from '../../build/contracts/BetFactory.json'
 import Bet from '../../build/contracts/Bet.json'
 
-import BetModel from '../models/bet';
-
-import {store} from '../store/store';
-
-const BET_FACTORY_ADDRESS = '0x1243a8e4F4Ec865c59C682d0ef75e6510e79Ad53';
-
-
 export default class Web3Client{
 
     constructor(){

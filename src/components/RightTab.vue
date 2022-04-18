@@ -4,30 +4,19 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'RightTab',
-    props: {
-        text: String,
-        index: Number,
-    },
-    components: {
-        
-    },
-    data() {
-        return{
-            
-        }
-    },
-    computed: {
-        getClasses(){
-            return this.index == 2 ? 'tab right-tab bottom-tab' : 'tab right-tab top-tab'
-        },
-    }
-}
+<script setup>
+import { computed, defineProps } from '@vue/runtime-core'
+
+const props = defineProps({
+    text: String,
+    index: Number,
+})
+
+const getClasses = computed(() => props.index == 2 ? 'tab right-tab bottom-tab' : 'tab right-tab top-tab')
+
 </script>
 
-<style scoped>
+<style scoped lang="less">
     .tab{
         position: absolute;
         color: black;
@@ -35,6 +24,10 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        @media only screen and (max-width: 700px) {
+            display: none;
+        }
     }
 
     .bottom-tab{
@@ -62,12 +55,6 @@ export default {
 
     p{
         margin: 0;
-    }
-
-    @media only screen and (max-width: 700px) {
-        .tab {
-            display: none;
-        }
     }
 
 </style>

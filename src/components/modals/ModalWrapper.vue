@@ -1,5 +1,5 @@
 <template>
-    <div class="modal" @click="handleClose">
+    <div class="modal" @click="emits('close-modal')">
         <div @click.stop class="container">
             <div class="inner-container">
                 <slot />
@@ -8,15 +8,10 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'ModalWrapper',
-    methods: {
-        handleClose(){
-            this.$emit('close-modal')
-        }
-    }
-}
+<script setup>
+
+const emits = defineEmits(['close-modal'])
+
 </script>
 
 <style scoped>

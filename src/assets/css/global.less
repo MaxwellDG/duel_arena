@@ -1,5 +1,12 @@
+@primary-color: purple;
+@primary-trans: rgba(128, 0, 128, 0.3);
+@back-white: #deedf9;
+@text-black: black;
+
+@mobile-width: 700px;
+
 body{
-    background-color: #deedf9;
+    background-color: @back-white;
     margin: 0;
 }
 
@@ -13,15 +20,41 @@ html, body{
 
 /* General Positioning */
 
-.row{
+.flex{
     display: flex;
+}
+
+.between{
     justify-content: space-between;
+}
+
+.align{
     align-items: center;
 }
 
-.col{
+.flex-col{
     display: flex;
     flex-direction: column;
+}
+
+// General styles
+
+button{
+    border-radius: 4px;
+    font-family: 'Runescape UF';
+    cursor: pointer;
+}
+
+.selected-button{
+    border: 1px solid @primary-color;
+    background-color: @primary-color;
+    color: @back-white;
+}
+
+.unselected-button{
+    border: 1px solid @primary-color;
+    background-color: @primary-trans;
+    color: @text-black;
 }
 
 input[type="text"] {

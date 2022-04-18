@@ -1,15 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
+import { createStore } from 'vuex'
 import * as Types from '@/store/types';
 
-
-Vue.use(Vuex)
-
-
-export const store = new Vuex.Store({
+export default createStore({
   state: {
-    web3Client: undefined,
     isBetModal: false,
     isConnected: false,
     selfBets: [],
@@ -24,9 +17,6 @@ export const store = new Vuex.Store({
   mutations: {
     [Types.TOGGLE_NEW_BET_MODAL] (state) {
       state.isBetModal = !state.isBetModal;
-    },
-    [Types.SET_WEB3_CLIENT] (state, web3Client){
-      state.web3Client = web3Client;
     },
     [Types.TOGGLE_CONNECTED] (state) {
       state.isConnected = !state.isConnected;

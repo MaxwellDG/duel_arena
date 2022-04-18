@@ -1,36 +1,27 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import './assets/css/global.css'
+import './assets/css/global.less'
 import './assets/css/fonts.css'
-import './assets/css/colors.css'
-import {store} from './store/store.js'
+import './assets/css/base.less'
+import store from './store/store.js'
 
-import vSelect from 'vue-select'
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
+import Web3Client from './web3/web3Client'
 
-Vue.component('v-select', vSelect)
 
+const app = createApp(App)
+
+// For crypto and browserify
 require('buffer')
-
-
-// For crypto library and browserify
 global.Buffer = global.Buffer || require("buffer").Buffer; 
 
-// I dunno
-Vue.config.productionTip = false
+app.config.productionTip = false
 
-// //Routing
-// const routes = [
-//   { path: '/', component: Principal },
-//   { path: '/legal', component: Legal }
-// ]
+app.component('v-select', vSelect)
+app.use(store)
 
-// const router = new VueRouter({
-//   routes
-// })
+app.provide('$web3', new Web3Client()); // Provides global access to web3 
 
-//Init with index.html
-new Vue({
-  render: h => h(App),
-  store
-  // router,
-}).$mount('#app')
+app.mount('#app');
+

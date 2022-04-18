@@ -3,26 +3,15 @@
         <div class="left">
             <h1 class="banner-text">50 / 50 Bets -> 2x</h1>
             <Info>
-                <p class="fee">* 1% service fee from winner</p>
+                <p class="fee">* 1% service fee + _ CHAINLINK from winner</p>
             </Info>
         </div>
     </div>
 </template>
 
-<script>
+<script setup>
 import Info from '../icons/info.vue';
 
-export default {
-    name: 'Banner',
-    components: {
-        Info,
-    },
-    data() {
-        return{
-            
-        }
-    },
-}
 </script>
 
 <style scoped>

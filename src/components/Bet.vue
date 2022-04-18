@@ -3,7 +3,7 @@
         <div class="fifth" style="display: flex; align-items: center;">
             <p style="margin-right: 15px;">{{bet.token}}</p>
             <div style="height: 25px; width: 25px;">
-                <component :is="icon"/>
+                <!-- <component :is="icon"/> -->
             </div>
         </div>
         <div class="fifth">
@@ -11,50 +11,27 @@
         </div>
         <div class="fifth" style="display: flex;">
             <p>{{bet.wager}}</p>
-            <p class="usd">{{inUSD}}</p>
+            <p class="usd">{{bet.USD}}</p>
         </div>
         <div class="fifth">
             <p>{{bet.isEven ? 'Even' : 'Odd'}}</p>
         </div>
-        <div class="fifth bet-div">
+        <div v-if="!isSelf" class="fifth bet-div">
             <button @click="handleBet" class="bet-button">BET</button>
         </div>
     </li>
 </template>
 
-<script>
-import * as Types from '@/store/types';
-import {mapState} from 'vuex';
+<script setup>
+import { reactive } from '@vue/reactivity'
 
-export default {
-    name: '',
-    props: {
-        bet: Object,
-    },
-    components: {
-        
-    },
-    data() {
-        return{
-            icon: () => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.token}.svg`)
-        }
-    },
-    computed: {
-        ...mapState({
-            usdValues: state => state.usdValues,
-        }),
-        inUSD(){
-            const tokenName = Object.keys(Types.TOKEN_CODES).find(j => Types.TOKEN_CODES[j] == this.bet.token)
-            if(tokenName)
-                return (parseFloat(this.bet.wager) * parseFloat(this.usdValues[tokenName].usd)).toFixed(2);
-        }
-    },
-    methods: {
-        handleBet(){
-            // TODO some wiggidy wack metamask stuff
-        },
-    }
-}
+const props = defineProps({
+    bet: Object,
+    isSelf: Boolean
+})
+
+// const icon = reactive(() => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.token}.svg`))
+
 </script>
 
 <style scoped>
