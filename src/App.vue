@@ -41,11 +41,8 @@ import HowItWorks from './components/modals/HowItWorks.vue'
 import NewBetInterface from './components/modals/NewBetInterface.vue'
 
 //Libraries
-import Vue from 'vue';
-import Vuex from 'vuex';
 import 'vue-toast-notification/dist/theme-default.css'
 import axios from 'axios';
-import VueToast from 'vue-toast-notification'
 
 //Util
 import Web3Client from './web3/web3Client';
@@ -54,11 +51,6 @@ import {mapState, mapMutations} from 'vuex';
 
 //SVGs
 import Info from './icons/info.vue'
-
-Vue.use(Vuex);
-Vue.use(VueToast, {
-    position: 'bottom'
-});
 
 
 

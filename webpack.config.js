@@ -4,13 +4,26 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const path = require("path");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 // Not using this but I've heard it's important for mobile version
 // const autoprefixer = require("autoprefixer");
 
+
+// Node polyfill fallbacks were not working here, so they've been moved to vue.config.js and are done with a plugin
+
+
 module.exports = {
   entry: {
     main: "./src/main.js",
+  },
+  resolve: {
+    alias: {
+      vue$: "vue/dist/vue.runtime.esm.js",
+      '@': path.resolve('src'),
+      vue: '@vue/compat'
+    },
+    extensions: ["*", ".js", ".vue", ".json"],
   },
   output: {
     filename: "[name].[contenthash:8].js",
@@ -33,7 +46,14 @@ module.exports = {
       },
       {
         test: /\.vue$/,
-        loader: "vue-loader",
+        loader: 'vue-loader',
+        options: {
+          compilerOptions: {
+            compatConfig: {
+              MODE: 2
+            }
+          }
+        }
       },
       {
         test: /\.s?css$/,
@@ -73,11 +93,6 @@ module.exports = {
           esModule: false,
         },
       },
-      {
-        test: /\.svg$/,
-        loader: 
-          'vue-svg-loader',
-      },
     ],
   },
   plugins: [
@@ -98,20 +113,6 @@ module.exports = {
       favicon: "./public/favicon.ico",
     }),
   ],
-  resolve: {
-    alias: {
-      vue$: "vue/dist/vue.runtime.esm.js",
-      '@': path.resolve('src'),
-    },
-    extensions: ["*", ".js", ".vue", ".json"],
-    fallback: {
-      "crypto": require.resolve("crypto-browserify"),
-      "http": require.resolve("stream-http"),
-      "https": require.resolve("https-browserify"),
-      "os": require.resolve("os-browserify/browser"),
-      "stream": require.resolve("stream-browserify"),
-      "buffer": require.resolve("buffer")    }
-  },
   optimization: {
     moduleIds: "deterministic",
     runtimeChunk: "single",

@@ -3,16 +3,16 @@
         <p class="find">Find Your Transaction</p>
         <div class="scanner-buttons">
             <div v-on:click="() => website = 'https://btc.com/'" class="scanner-icon-con">
-                <BTC :width=32 :height=32 />
+                <!-- <BTC :width=32 :height=32 /> -->
             </div>
             <div v-on:click="() => website = 'https://etherscan.io/'" class="scanner-icon-con">
-                <ETH :width=32 :height=32 />
+                <!-- <ETH :width=32 :height=32 /> -->
             </div>
             <div v-on:click="() => website = 'https://cardanoscan.io/'" class="scanner-icon-con">
-                <ADA :width=32 :height=32 />
+                <!-- <ADA :width=32 :height=32 /> -->
             </div>
             <div v-on:click="() => website = 'https://solscan.io/'" class="scanner-icon-con">
-                <SOL :width=32 :height=32 />
+                <!-- <SOL :width=32 :height=32 /> -->
             </div>
         </div>
         <div 
@@ -22,27 +22,27 @@
             class="website-con"
         >
             <p class="website-text">{{website}}</p>
-            <Copy v-if="isHoverScanner"/>
+            <!-- <Copy v-if="isHoverScanner"/> -->
         </div>
     </div>
 </template>
 
 <script>
-import BTC from '../../node_modules/cryptocurrency-icons/svg/black/btc.svg'
-import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
-import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
-import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
-import Copy from '../icons/copy.svg';
+// import BTC from '../../node_modules/cryptocurrency-icons/svg/black/btc.svg'
+// import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
+// import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
+// import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
+// import Copy from '../icons/copy.svg';
 
 
 export default {
     name: '',
     components: {
-        BTC,
-        ETH,
-        ADA,
-        SOL,
-        Copy
+        // BTC,
+        // ETH,
+        // ADA,
+        // SOL,
+        // Copy
     },
     data() {
         return{

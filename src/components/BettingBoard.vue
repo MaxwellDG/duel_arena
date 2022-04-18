@@ -3,13 +3,13 @@
         <div class="filterCon">
             <div class="flex align">
                 <p class="filterText">Filter</p>
-                <v-select 
+                <!-- <v-select 
                     class="standard-dropdown token-drop"
                     name="filterInput"
                     v-model="filter" 
                     :clearable="false"
                     :options="getFilterOptions"
-                />
+                /> -->
                 <input type="text" v-model="filterInput" class="filterInput"/>
             </div>
             <div class="board-buttons">

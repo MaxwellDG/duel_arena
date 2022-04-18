@@ -1,36 +1,28 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import VueToast from 'vue-toast-notification'
 import App from './App.vue'
 import './assets/css/global.less'
 import './assets/css/fonts.css'
 import './assets/css/base.less'
 import store from './store/store.js'
 
-import vSelect from 'vue-select'
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
-Vue.component('v-select', vSelect)
 
+const app = createApp(App)
+
+// For crypto and browserify
 require('buffer')
-
-
-// For crypto library and browserify
 global.Buffer = global.Buffer || require("buffer").Buffer; 
 
-// I dunno
-Vue.config.productionTip = false
+app.config.productionTip = false
 
-// //Routing
-// const routes = [
-//   { path: '/', component: Principal },
-//   { path: '/legal', component: Legal }
-// ]
-
-// const router = new VueRouter({
-//   routes
+app.component('v-select', vSelect)
+app.use(store)
+// app.use(VueToast, {
+//   position: 'bottom'
 // })
 
-//Init with index.html
-new Vue({
-  render: h => h(App),
-  store
-  // router,
-}).$mount('#app')
+app.mount('#app');
+

@@ -1,13 +1,9 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
+import { createStore } from 'vuex'
 import * as Types from '@/store/types';
 
+// TODO composition API has useStore hook for getting things in other files
 
-Vue.use(Vuex)
-
-
-export default new Vuex.Store({
+export default createStore({
   state: {
     web3Client: undefined,
     isBetModal: false,
