@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import VueToast from 'vue-toast-notification'
 import App from './App.vue'
 import './assets/css/global.less'
 import './assets/css/fonts.css'
@@ -8,6 +7,7 @@ import store from './store/store.js'
 
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import Web3Client from './web3/web3Client'
 
 
 const app = createApp(App)
@@ -20,9 +20,8 @@ app.config.productionTip = false
 
 app.component('v-select', vSelect)
 app.use(store)
-// app.use(VueToast, {
-//   position: 'bottom'
-// })
+
+app.provide('$web3', new Web3Client()); // Provides global access to web3 
 
 app.mount('#app');
 

@@ -9,9 +9,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 // Not using this but I've heard it's important for mobile version
 // const autoprefixer = require("autoprefixer");
 
-
 // Node polyfill fallbacks were not working here, so they've been moved to vue.config.js and are done with a plugin
-
 
 module.exports = {
   entry: {
@@ -21,7 +19,6 @@ module.exports = {
     alias: {
       vue$: "vue/dist/vue.runtime.esm.js",
       '@': path.resolve('src'),
-      vue: '@vue/compat'
     },
     extensions: ["*", ".js", ".vue", ".json"],
   },
@@ -85,7 +82,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(png|jpe?g|gif|webm|mp4)$/,
+        test: /\.(png|jpe?g|gif|webm|mp4|svg)$/,
         loader: "file-loader",
         options: {
           name: "[name][contenthash:8].[ext]",

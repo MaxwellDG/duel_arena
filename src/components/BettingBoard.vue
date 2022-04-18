@@ -3,13 +3,13 @@
         <div class="filterCon">
             <div class="flex align">
                 <p class="filterText">Filter</p>
-                <!-- <v-select 
+                <v-select 
                     class="standard-dropdown token-drop"
                     name="filterInput"
                     v-model="filter" 
                     :clearable="false"
-                    :options="getFilterOptions"
-                /> -->
+                    :options="FILTER_OPTIONS"
+                />
                 <input type="text" v-model="filterInput" class="filterInput"/>
             </div>
             <div class="board-buttons">
@@ -25,78 +25,66 @@
     </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
+<script setup>
 import OpenBet from './Bet.vue'
 
 import Bet from '@/models/bet'
 
-export default {
-    name: 'BettingBoard',
-    components: {
-        OpenBet
-    },
-    mounted(){
-        this.getSelfBets();
-    },
-    data() {
-        return{
-            filter: {label: 'Token', code: 'token'},
-            filterInput: '',
-            type: 'self',
-            openBets: [],
-            selfBets: []
-        }
-    },
-    computed: {
-        ...mapState({
-            web3Client: state => state.web3Client
-        }),
-        getBets(){
-            const arr = this.type == 'self' ? this.selfBets : this.openBets
-            if(this.filterInput.length == 0) return arr;
-            return arr.filter(bet => {
-                return bet[this.filter.code].includes(this.filterInput)
-            })
-        },
-        getFilterOptions(){
-            return [
+import { useStore } from 'vuex'
+import { inject, onMounted, reactive, ref } from '@vue/runtime-core'
+
+const store = useStore();
+const $web3 = inject('$web3')
+
+onMounted(() => {
+    getSelfBets();
+})
+
+const filter =  reactive({label: 'Token', code: 'token'})
+const filterInput = ref('')
+const FILTER_OPTIONS = [
                 {label: 'Token', code: 'token'},
                 {label: 'DisplayName', code: 'displayName'},
                 {label: 'USD', code: 'USD'},
             ]
-        }
-    },
-    methods: {
-        async getSelfBets(){
-            let count = 0;
-            let interval = setInterval(async () => {
-                if(count >= 3){
-                    clearInterval(interval) // Give up
-                    // TODO Some kind of error alert
-                }
-                if(this.web3Client.BetFactoryContract){
-                    try{
-                        const selfBetAddresses = await this.web3Client.getSelfBets();
-                        selfBetAddresses.forEach(async j => {
-                            const betContract = await this.web3Client.getBetContract(j);
-                            const BetData = new Bet(betContract.betData);
-                            this.selfBets.push(BetData);
-                        });
-                        clearInterval(interval)
-                    } catch (e) {
-                        count++
-                    }
-                } else {
-                    count++;
-                } 
-            }, 1000)
-        },
-        getClass(type){
-            return type == this.type ? 'selected-button' : 'unselected-button'
-        },
-    }
+
+const type = ref('self')
+const getClass = (str) => str == type.value ? 'selected-button' : 'unselected-button'
+
+const openBets = reactive([])
+const selfBets = reactive([])
+const getBets = () => {
+    const arr = this.type == 'self' ? this.selfBets : this.openBets
+    if(this.filterInput.length == 0) return arr;
+    return arr.filter(bet => {
+        return bet[this.filter.code].includes(this.filterInput)
+    })
 }
+const getSelfBets = async () =>{
+    let count = 0;
+    let interval = setInterval(async () => {
+        if(count >= 3){
+            clearInterval(interval) // Give up
+            // TODO Some kind of error alert
+        }
+        if($web3.BetFactoryContract){
+            try{
+                const selfBetAddresses = await $web3.getSelfBets();
+                selfBetAddresses.forEach(async j => {
+                    const betContract = await $web3.getBetContract(j);
+                    const BetData = new Bet(betContract.betData);
+                    this.selfBets.push(BetData);
+                });
+                clearInterval(interval)
+            } catch (e) {
+                count++
+            }
+        } else {
+            count++;
+        } 
+    }, 1000)
+}
+
 </script>
 
 <style scoped>

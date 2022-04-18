@@ -30,17 +30,6 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'HowItWorks',
-    data() {
-        return{
-            
-        }
-    },
-}
+<script setup>
+
 </script>
-
-<style scoped>
-
-</style>

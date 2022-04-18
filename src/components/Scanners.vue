@@ -3,67 +3,46 @@
         <p class="find">Find Your Transaction</p>
         <div class="scanner-buttons">
             <div v-on:click="() => website = 'https://btc.com/'" class="scanner-icon-con">
-                <!-- <BTC :width=32 :height=32 /> -->
+                <img :src="BTC" alt="icon" :width=32 :height=32 />
             </div>
             <div v-on:click="() => website = 'https://etherscan.io/'" class="scanner-icon-con">
-                <!-- <ETH :width=32 :height=32 /> -->
+                <img :src="ETH" alt="icon" :width=32 :height=32 />
             </div>
             <div v-on:click="() => website = 'https://cardanoscan.io/'" class="scanner-icon-con">
-                <!-- <ADA :width=32 :height=32 /> -->
+                <img :src="ADA" alt="icon" :width=32 :height=32 />
             </div>
             <div v-on:click="() => website = 'https://solscan.io/'" class="scanner-icon-con">
-                <!-- <SOL :width=32 :height=32 /> -->
+                <img :src="SOL" alt="icon" :width=32 :height=32 />
             </div>
         </div>
-        <div 
-            @click="handleCopy"
-            @mouseover="() => isHoverScanner = true"
-            @mouseout="() => isHoverScanner = false" 
-            class="website-con"
-        >
+        <div @click="handleCopy" class="website-con">
             <p class="website-text">{{website}}</p>
-            <!-- <Copy v-if="isHoverScanner"/> -->
+            <img :src="Copy" alt="icon" :width=12 :height=12 />
         </div>
     </div>
 </template>
 
-<script>
-// import BTC from '../../node_modules/cryptocurrency-icons/svg/black/btc.svg'
-// import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
-// import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
-// import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
-// import Copy from '../icons/copy.svg';
+<script setup>
+import BTC from '../../node_modules/cryptocurrency-icons/svg/black/btc.svg'
+import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
+import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
+import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
+import Copy from '../icons/copy.svg';
 
+import { ref } from 'vue';
 
-export default {
-    name: '',
-    components: {
-        // BTC,
-        // ETH,
-        // ADA,
-        // SOL,
-        // Copy
-    },
-    data() {
-        return{
-            expanded: false,
-            website: `https://btc.com/`,
-            isHoverScanner: false,
-        }
-    },
-    methods: {
-        handleCopy(){
-            navigator.clipboard.writeText(this.website);
-            this.$toast.open({
-                message: 'Copied to clipboard',
-                type: 'info'
-            })
-        }
-    }
+const website = ref(`https://btc.com/`)
+
+const handleCopy = () =>{
+    navigator.clipboard.writeText(website.value);
+    $toast.open({
+        message: 'Copied to clipboard',
+        type: 'info'
+    })
 }
 </script>
 
-<style scoped>
+<style scoped lang='less'>
     .scanners{
         position: absolute;
         bottom: 1rem;
@@ -76,6 +55,10 @@ export default {
         border-top-right-radius: 3px;
         border-bottom-right-radius: 3px;
         padding: 5px;
+
+        @media only screen and (max-width: 700px) {
+            display: none;
+        }
     }
 
     .scanner-buttons{
@@ -87,9 +70,6 @@ export default {
         color: white;
     }
 
-    .website-text{
-        padding: 2px 5px;
-    }
 
     .website-con{
         display: flex;
@@ -99,6 +79,18 @@ export default {
         border-radius: 2px;
         cursor: pointer;
         padding: 2px 3px 1px 3px;
+
+        .website-text{
+            padding: 2px 5px;
+        }
+
+        img{
+            display: none;
+        }
+
+        &:hover img{
+            display:  inline;
+        }
     }
 
     .scanner-icon-con{
@@ -114,11 +106,4 @@ export default {
         justify-content: center;
         align-items: center;
     }
-
-    @media only screen and (max-width: 700px) {
-        .scanners {
-            display: none;
-        }
-    }
-
 </style>

@@ -4,18 +4,8 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'BottomButton',
-    components: {
-        
-    },
-    data() {
-        return{
-            
-        }
-    },
-}
+<script setup>
+
 </script>
 
 <style scoped>

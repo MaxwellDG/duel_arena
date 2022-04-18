@@ -3,7 +3,7 @@
         <div class="fifth" style="display: flex; align-items: center;">
             <p style="margin-right: 15px;">{{bet.token}}</p>
             <div style="height: 25px; width: 25px;">
-                <component :is="icon"/>
+                <!-- <component :is="icon"/> -->
             </div>
         </div>
         <div class="fifth">
@@ -22,27 +22,16 @@
     </li>
 </template>
 
-<script>
-export default {
-    name: '',
-    props: {
-        bet: Object,
-        isSelf: Boolean
-    },
-    components: {
-        
-    },
-    data() {
-        return{
-            icon: () => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.token}.svg`)
-        }
-    },
-    methods: {
-        handleBet(){
-            // TODO some wiggidy wack metamask stuff
-        },
-    }
-}
+<script setup>
+import { reactive } from '@vue/reactivity'
+
+const props = defineProps({
+    bet: Object,
+    isSelf: Boolean
+})
+
+// const icon = reactive(() => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.token}.svg`))
+
 </script>
 
 <style scoped>

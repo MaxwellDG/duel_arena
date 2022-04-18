@@ -1,7 +1,7 @@
 <template>
     <div class="connectCon">
-        <button v-if="!isConnected" @click="connectToMetamask" class='connect butt'>Connect -></button>
-        <div class="connected-con" v-else-if="isConnected">
+        <button v-if="!store.state.isConnected" @click="connectToMetamask" class='connect butt'>Connect -></button>
+        <div class="connected-con" v-else>
             <button class='disconnect butt'>Disconnect</button> 
             <div class="info-con">
                 <p class="info-label">Account: </p>
@@ -15,51 +15,38 @@
     </div>
 </template>
 
-<script>
-import {mapState, mapMutations} from 'vuex';
+<script setup>
+import { ref, inject } from 'vue';
+
+import { useStore } from 'vuex'
 import * as Types from '@/store/types';
 
-export default {
-    name: '',
-    components: {
-        
-    },
-    data() {
-        return{
-            account: 0,
-            balance: 0,
-            isHovering: false,
+const store = useStore();
+
+const $web3 = inject('$web3')
+
+const account = ref()
+const balance = ref()
+
+const connectToMetamask = async () => {
+    // modern version of 'window.ethereum.enable()'
+    await window.ethereum.send('eth_requestAccounts')
+    try{
+        const accounts = await $web3.web3.eth.getAccounts()
+        account.value = accounts[0]
+        if(accounts[0]){
+            const bal = await $web3.web3.eth.getBalance(account.value)
+            balance.value = parseInt(bal)
         }
-    },
-    computed: {
-        ...mapState({
-            isConnected: state => state.isConnected
-        }),
-    },
-    methods: {
-        ...mapMutations([
-            Types.TOGGLE_CONNECTED
-        ]),
-        connectToMetamask: async function(){
-            // modern version of 'window.ethereum.enable()'
-            await window.ethereum.send('eth_requestAccounts')
-            try{
-                const account = await this.$store.state.web3Client.web3.eth.getAccounts()
-                this.account = account[0]
-                if(!!this.account){
-                    const balance = await this.$store.state.web3Client.web3.eth.getBalance(this.account)
-                    this.balance = parseInt(balance)
-                }
-                this.TOGGLE_CONNECTED();
-            } catch(e){
-                console.log(e)
-            }
-        }, 
+        store.commit(Types.TOGGLE_CONNECTED);
+    } catch(e){
+        console.log(e)
     }
 }
+
 </script>
 
-<style scoped>
+<style scoped lang='less'>
     .connectCon{
         position: absolute;
         top: 0 ;

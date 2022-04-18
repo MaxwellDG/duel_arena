@@ -4,20 +4,6 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'Footer',
-    components: {
-        
-    },
-    data() {
-        return{
-            
-        }
-    },
-}
-</script>
-
 <style scoped>
     .footer-text{
         font-size: 10px;

@@ -28,18 +28,12 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { reactive } from '@vue/reactivity'
 
-export default {
-    name: 'Contact',
-    data() {
-        return{
-            formValues: {
-                email: '',
-                subject: '',
-                message: ''
-            }
-        }
-    },
-}
+const formValues = reactive({
+    email: '',
+    subject: '', 
+    message: ''
+})
 </script>

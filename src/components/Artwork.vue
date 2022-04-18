@@ -9,21 +9,8 @@
     </div>
 </template>
 
-<script>
+<script setup>
 
-// TODO Photoshop them all into 1 photo
-
-export default {
-    name: 'Artwork',
-    components: {
-        
-    },
-    data() {
-        return{
-            
-        }
-    },
-}
 </script>
 
 <style scoped>

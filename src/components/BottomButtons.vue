@@ -18,20 +18,9 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import BottomButton from './BottomButton.vue'
 
-export default {
-    name: '',
-    components: {
-        BottomButton,
-    },
-    data() {
-        return{
-            
-        }
-    },
-}
 </script>
 
 <style scoped>
