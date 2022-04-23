@@ -31,7 +31,7 @@ import OpenBet from './Bet.vue'
 import Bet from '@/models/bet'
 
 import { useStore } from 'vuex'
-import { inject, onMounted, reactive, ref } from '@vue/runtime-core'
+import { computed, inject, onMounted, reactive, ref } from '@vue/runtime-core'
 
 const store = useStore();
 const $web3 = inject('$web3')
@@ -53,13 +53,13 @@ const getClass = (str) => str == type.value ? 'selected-button' : 'unselected-bu
 
 const openBets = reactive([])
 const selfBets = reactive([])
-const getBets = () => {
-    const arr = this.type == 'self' ? this.selfBets : this.openBets
-    if(this.filterInput.length == 0) return arr;
+const getBets = computed(() => {
+    const arr = type.value == 'self' ? selfBets : openBets
+    if(filterInput.value.length == 0) return arr;
     return arr.filter(bet => {
-        return bet[this.filter.code].includes(this.filterInput)
+        return bet[filter.code].includes(filterInput.value)
     })
-}
+})
 const getSelfBets = async () =>{
     let count = 0;
     let interval = setInterval(async () => {
@@ -73,7 +73,7 @@ const getSelfBets = async () =>{
                 selfBetAddresses.forEach(async j => {
                     const betContract = await $web3.getBetContract(j);
                     const BetData = new Bet(betContract.betData);
-                    this.selfBets.push(BetData);
+                    selfBets.push(BetData);
                 });
                 clearInterval(interval)
             } catch (e) {

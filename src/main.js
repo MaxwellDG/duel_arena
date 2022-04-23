@@ -3,6 +3,7 @@ import App from './App.vue'
 import './assets/css/global.less'
 import './assets/css/fonts.css'
 import './assets/css/base.less'
+import './assets/css/new-bet.less'
 import store from './store/store.js'
 
 import vSelect from 'vue-select';
