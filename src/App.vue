@@ -11,15 +11,15 @@
         <!-- media queries set to 'display = none' when width < 700px -->
         <Connect />
         <Scanners />
-        <RightTab :text="'How it Works'" :index="0" @click="modal = 'HowItWorks'"/>
-        <RightTab :text="'Contact'" :index="1" @click="modal = 'Contact'"/>
-        <RightTab :text="'Place New Bet'" :index="2" @click="modal= 'NewBetInterface'"/>
+        <RightTab :text="'How it Works'" :index="0" @click="toggleModal('HowItWorks')"/>
+        <RightTab :text="'Contact'" :index="1" @click="toggleModal('Contact')"/>
+        <RightTab :text="'Place New Bet'" :index="2" @click="toggleModal('NewBetInterface')"/>
 
         <!-- Modals -->
-        <ModalWrapper @close-modal="modal = null" v-if="modal != null">
-            <HowItWorks v-if="modal == 'HowItWorks'"/>
-            <Contact v-else-if="modal == 'Contact'"/>
-            <NewBetInterface v-else-if="modal == 'NewBetInterface'" />
+        <ModalWrapper v-if="store.state.modal != null" @close-modal="toggleModal(null)" >
+            <HowItWorks v-if="store.state.modal == 'HowItWorks'"/>
+            <Contact v-else-if="store.state.modal == 'Contact'"/>
+            <NewBetInterface v-else-if="store.state.modal == 'NewBetInterface'" />
         </ModalWrapper>
     </div>
 </template>
@@ -50,8 +50,7 @@ import * as Types from '@/store/types';
 import { useStore } from 'vuex';
 
 const store = useStore()
-
-const modal = ref(null)
+const toggleModal = (text) => store.commit(Types.TOGGLE_MODAL, text)
 
 const width = ref(null)
 const onResize = () => width.value = window.innerWidth;
@@ -72,6 +71,8 @@ const getTokenValues = () => {
             store.commit(Types.SET_USD_VALUES, (res.data));
     }).catch(e => console.log(e));
 }
+
+
 
 </script>
 

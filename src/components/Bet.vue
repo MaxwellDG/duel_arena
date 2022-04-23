@@ -2,9 +2,7 @@
     <li class="bet">
         <div class="fifth" style="display: flex; align-items: center;">
             <p style="margin-right: 15px;">{{bet.token}}</p>
-            <div style="height: 25px; width: 25px;">
-                <!-- <component :is="icon"/> -->
-            </div>
+            <img :src="icon" :width="15" :height="15" />
         </div>
         <div class="fifth">
             <p>{{bet.displayName}}</p>
@@ -24,13 +22,14 @@
 
 <script setup>
 import { reactive } from '@vue/reactivity'
+import { computed } from '@vue/runtime-core'
 
 const props = defineProps({
     bet: Object,
     isSelf: Boolean
 })
 
-// const icon = reactive(() => import(`../../node_modules/cryptocurrency-icons/svg/color/${this.bet.token}.svg`))
+const icon = computed(() => require(`../../node_modules/cryptocurrency-icons/svg/color/${props.bet.token}.svg`))
 
 </script>
 

@@ -31,6 +31,7 @@ import OpenBet from './Bet.vue'
 import Bet from '@/models/bet'
 
 import { useStore } from 'vuex'
+import * as Types from "@/store/types"
 import { computed, inject, onMounted, reactive, ref } from '@vue/runtime-core'
 
 const store = useStore();
@@ -52,9 +53,8 @@ const type = ref('self')
 const getClass = (str) => str == type.value ? 'selected-button' : 'unselected-button'
 
 const openBets = reactive([])
-const selfBets = reactive([])
 const getBets = computed(() => {
-    const arr = type.value == 'self' ? selfBets : openBets
+    const arr = type.value == 'self' ? store.state.selfBets : openBets
     if(filterInput.value.length == 0) return arr;
     return arr.filter(bet => {
         return bet[filter.code].includes(filterInput.value)
@@ -73,7 +73,7 @@ const getSelfBets = async () =>{
                 selfBetAddresses.forEach(async j => {
                     const betContract = await $web3.getBetContract(j);
                     const BetData = new Bet(betContract.betData);
-                    selfBets.push(BetData);
+                    store.commit(Types.ADD_SELF_BET, BetData)
                 });
                 clearInterval(interval)
             } catch (e) {
@@ -110,6 +110,7 @@ const getSelfBets = async () =>{
         flex: 1;
         display: flex;
         flex-direction: column;
+        height: 100%;
         width: 100%;
         padding: 0 10px 10px 10px;
         overflow: hidden;
@@ -119,11 +120,12 @@ const getSelfBets = async () =>{
         scrollbar-color: rgba(128, 0, 128, 0.3) transparent;
         scrollbar-width: thin;
         flex: 1;
-        overflow-y: auto;
+        overflow-y: hidden;
+        height: 100%;
     }
     
     .bettingBoard{
-        height: 0;
+        height: 100%;
         margin: 0;
         padding: 0;
     }

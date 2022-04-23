@@ -3,7 +3,7 @@ import * as Types from '@/store/types';
 
 export default createStore({
   state: {
-    isBetModal: false,
+    modal: null,
     isConnected: false,
     selfBets: [],
     usdValues: {
@@ -15,8 +15,8 @@ export default createStore({
    }
   },
   mutations: {
-    [Types.TOGGLE_NEW_BET_MODAL] (state) {
-      state.isBetModal = !state.isBetModal;
+    [Types.TOGGLE_MODAL] (state, payload) {
+      state.modal = payload;
     },
     [Types.TOGGLE_CONNECTED] (state) {
       state.isConnected = !state.isConnected;
@@ -29,8 +29,8 @@ export default createStore({
     [Types.SET_SELF_BETS] (state, payload){
       state.selfBets = payload;
     },
-    [Types.ADD_BET] (state, payload){
-      state.selfBets = payload;
+    [Types.ADD_SELF_BET] (state, payload){
+      state.selfBets.push(payload);
     },
   },
   getters: {

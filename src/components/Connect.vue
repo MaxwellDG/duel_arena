@@ -52,9 +52,9 @@ const connectToMetamask = async () => {
         top: 0 ;
         right: 2rem;
         background-color: rgba(128, 0, 128, 0.3);
-        border-left: 2px solid purple;
-        border-right: 2px solid purple;
-        border-bottom: 2px solid purple;
+        border-left: 2px solid rgba(128, 0, 128, 0.7);
+        border-right: 2px solid rgba(128, 0, 128, 0.7);
+        border-bottom: 2px solid rgba(128, 0, 128, 0.7);
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
     }

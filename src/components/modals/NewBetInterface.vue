@@ -65,6 +65,7 @@
 
 <script setup>
 import Info from '@/icons/info';
+import Bet from '@/models/bet'
 
 import * as Types from '@/store/types';
 import { reactive, ref } from '@vue/reactivity';
@@ -90,10 +91,10 @@ const handleWagerChange = (e) => {
     if(e.target.value){
         const val = e.target.value;
         const conversion = store.state.usdValues[formValues.token.gecko].usd;
-        if(e.target.name == 'wager' && focusedField == 'wager'){
+        if(e.target.name == 'wager' && focusedField.value == 'wager'){
             formValues.USD = Math.round( ((val * conversion) + Number.EPSILON) * 100 ) / 100;
             formValues.wager = val;
-        } else if(e.target.name == 'usd' && focusedField == 'usd'){
+        } else if(e.target.name == 'usd' && focusedField.value == 'usd'){
             formValues.wager = (val / conversion).toFixed(9);
             formValues.USD = val
         }
@@ -105,12 +106,14 @@ const txCallback = (err, txHash) => console.log('Err', err, 'TxHash:', txHash);
 const handleBetChange = (e) => formValues.isEven = e.target.id == 'even';
 
 const handleFocus = (e) => {
-    focusedField = e.target.name;
+    focusedField.value = e.target.name;
     if(e.target.value == 0)
         e.target.value = '';
 }
 
 const handleSubmit = async () => {
+    store.commit(Types.TOGGLE_MODAL, null);
+
     const account = $web3.accounts[0]
 
     const estimatedGas = await $web3.BetFactoryContract.methods
@@ -125,9 +128,13 @@ const handleSubmit = async () => {
             gas: estimatedGas * 2 // TODO this needs to be more accurate
     }, txCallback)
 
-    // TODO get the return so you can stub in the new bet
-
-    store.commit(Types.TOGGLE_NEW_BET_MODAL);
+    // Stubs in new self bet
+    console.log(receipt)
+    const createdBet = receipt.events?.CreatedBet
+    if(createdBet){
+        console.log('creating')
+        store.commit(Types.ADD_SELF_BET, new Bet(createdBet.returnValues))
+    }
 }
 
 </script>
