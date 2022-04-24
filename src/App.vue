@@ -75,23 +75,3 @@ const getTokenValues = () => {
 
 
 </script>
-
-<style>
-    .main-con{
-        display: flex;
-        height: 100%;
-        flex-direction: column;
-        justify-content: flex-start;
-        font-family: 'Runescape UF';
-    }
-
-    .center-con{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: 50%;
-        margin: 0 auto;
-    }
-</style>

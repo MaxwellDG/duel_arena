@@ -5,8 +5,7 @@
                 <p class="filterText">Filter</p>
                 <v-select 
                     class="standard-dropdown token-drop"
-                    name="filterInput"
-                    v-model="filter" 
+                    v-model="filter"
                     :clearable="false"
                     :options="FILTER_OPTIONS"
                 />
@@ -41,11 +40,11 @@ onMounted(() => {
     getSelfBets();
 })
 
-const filter =  reactive({label: 'Token', code: 'token'})
+const filter = ref({label: 'Token', code: 'token'})
 const filterInput = ref('')
 const FILTER_OPTIONS = [
                 {label: 'Token', code: 'token'},
-                {label: 'DisplayName', code: 'displayName'},
+                {label: 'Display Name', code: 'displayName'},
                 {label: 'USD', code: 'USD'},
             ]
 
@@ -56,8 +55,8 @@ const openBets = reactive([])
 const getBets = computed(() => {
     const arr = type.value == 'self' ? store.state.selfBets : openBets
     if(filterInput.value.length == 0) return arr;
-    return arr.filter(bet => {
-        return bet[filter.code].includes(filterInput.value)
+    else return arr.filter(bet => {
+        return bet[filter.value.code].includes(filterInput.value)
     })
 })
 const getSelfBets = async () =>{
@@ -86,47 +85,3 @@ const getSelfBets = async () =>{
 }
 
 </script>
-
-<style scoped>
-    .filterCon{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 30px 0 10px 0;
-    }
-
-    .filterInput{
-        background-color: transparent;
-        border: none;
-        padding: 2px 5px;
-    }
-
-    .filterText{
-        margin: 0;
-        
-    }
-
-    .bet-con{
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 100%;
-        padding: 0 10px 10px 10px;
-        overflow: hidden;
-    }
-
-    .list-con{
-        scrollbar-color: rgba(128, 0, 128, 0.3) transparent;
-        scrollbar-width: thin;
-        flex: 1;
-        overflow-y: hidden;
-        height: 100%;
-    }
-    
-    .bettingBoard{
-        height: 100%;
-        margin: 0;
-        padding: 0;
-    }
-</style>

@@ -25,16 +25,10 @@ export default class Web3Client{
             this.web3.eth.handleRevert = true;
 
             this.accounts = await web3.eth.getAccounts();
-            console.log('accounts', this.accounts)
             this.networkId = await web3.eth.net.getId();
             const deployedNetwork = BetFactory.networks[this.networkId];
 
             this.BetFactoryContract = new web3.eth.Contract(BetFactory.abi, deployedNetwork.address)
-            console.log(this.BetFactoryContract)
-
-            console.log('some info')
-            console.log(await this.getBetCounter());
-            console.log(await this.getSelfBets());
         } else { 
             // Non-dapp browsers
             console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
@@ -52,8 +46,6 @@ export default class Web3Client{
     async getBetContract(address){
         const contract = new this.web3.eth.Contract(Bet.abi, address);
         const betData = await contract.methods.betData().call();
-        console.log("Whats this")
-        console.log(betData)
         return {
             contract,
             betData

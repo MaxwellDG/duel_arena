@@ -129,10 +129,8 @@ const handleSubmit = async () => {
     }, txCallback)
 
     // Stubs in new self bet
-    console.log(receipt)
     const createdBet = receipt.events?.CreatedBet
     if(createdBet){
-        console.log('creating')
         store.commit(Types.ADD_SELF_BET, new Bet(createdBet.returnValues))
     }
 }

@@ -3,11 +3,11 @@
         <button v-if="!store.state.isConnected" @click="connectToMetamask" class='connect butt'>Connect -></button>
         <div class="connected-con" v-else>
             <button class='disconnect butt'>Disconnect</button> 
-            <div class="info-con">
+            <div class="wallet-info">
                 <p class="info-label">Account: </p>
                 <p class="account">&nbsp;{{account}}</p>
             </div>
-            <div class="info-con">
+            <div class="wallet-info">
                 <p class="info-label">Balance: </p>
                 <p class="balance">&nbsp;{{balance}}</p>
             </div>
@@ -59,8 +59,7 @@ const connectToMetamask = async () => {
         border-bottom-right-radius: 3px;
     }
 
-    .info-con{
-        display: flex;
+    .wallet-info{
         overflow: hidden;
         white-space: nowrap;   
         text-overflow: ellipsis;

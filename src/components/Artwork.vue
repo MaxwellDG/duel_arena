@@ -8,24 +8,3 @@
         <img src="/images/Grunt.png" class="orc"/>
     </div>
 </template>
-
-<script setup>
-
-</script>
-
-<style scoped>
-    #artwork{
-        height: 30%;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;  
-    }
-
-    .wowText{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-    }
-
-
-</style>
