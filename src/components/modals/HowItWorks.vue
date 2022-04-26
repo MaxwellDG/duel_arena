@@ -8,7 +8,7 @@
         </p>
         <h2>How does the tech work?</h2>
         <p>
-            Creating, or matching, a bet sends your currency to a smart contract wallet on its respective blockchain. No one in the world is able to access it, including DuelArena.
+            Creating or matching a bet sends your currency to a smart contract wallet on its respective blockchain. No one in the world is able to access it, including DuelArena.
             The funds are restricted to the rules of the smart contract, which specifically state that they can only be released in 1 of 2 scenarios.
         </p>
         <ul>

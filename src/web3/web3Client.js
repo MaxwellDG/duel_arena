@@ -25,20 +25,18 @@ export default class Web3Client{
             this.web3.eth.handleRevert = true;
 
             this.accounts = await web3.eth.getAccounts();
-            console.log('accounts', this.accounts)
             this.networkId = await web3.eth.net.getId();
             const deployedNetwork = BetFactory.networks[this.networkId];
 
             this.BetFactoryContract = new web3.eth.Contract(BetFactory.abi, deployedNetwork.address)
-            console.log(this.BetFactoryContract)
-
-            console.log('some info')
-            console.log(await this.getBetCounter());
-            console.log(await this.getSelfBets());
         } else { 
             // Non-dapp browsers
             console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
         }
+    }
+
+    txCallback(err, txHash){
+        console.log('Err', err, 'TxHash:', txHash);
     }
 
     async getBetCounter(){
@@ -46,14 +44,26 @@ export default class Web3Client{
     }
 
     async getSelfBets(){
-        return await this.BetFactoryContract.methods.getSelfBets().call()
+        return await this.BetFactoryContract.methods.getSelfBets().call({
+            from: this.accounts[1]
+        })
+    }
+
+    async get10OpenBets(){
+        return await this.BetFactoryContract.methods.get10OpenBets().call();
+    }
+
+    async deleteBet(address){
+        const estimatedGas = this.BetFactoryContract.methods.deleteBet(address).estimatedGas();
+        this.BetFactoryContract.methods.deleteBet(address).send({
+            from: this.accounts[1], // TODO get the real one later
+            gas: estimatedGas * 2 // TODO this needs to be more accurate
+        }, this.txCallback)
     }
 
     async getBetContract(address){
         const contract = new this.web3.eth.Contract(Bet.abi, address);
         const betData = await contract.methods.betData().call();
-        console.log("Whats this")
-        console.log(betData)
         return {
             contract,
             betData

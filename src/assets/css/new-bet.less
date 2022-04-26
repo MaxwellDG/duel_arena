@@ -1,0 +1,34 @@
+@primary-color: purple;
+@primary-trans: rgba(128, 0, 128, 0.3);
+@back-white: #deedf9;
+@text-black: black;
+
+@mobile-width: 700px;
+
+
+.newBetInterface{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+
+.new-bet-token{
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+
+    .new-token-dropdown{
+        flex-grow: 1;
+        cursor: pointer;
+    }
+}
+
+.bet-buttons{
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-evenly;
+
+    button{
+        padding: 0.5rem 1.5rem;
+    }
+}

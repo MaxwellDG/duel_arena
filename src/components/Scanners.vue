@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import BTC from '../../node_modules/cryptocurrency-icons/svg/black/btc.svg'
+import BTC from '@/../node_modules/cryptocurrency-icons/svg/black/btc.svg'
 import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
 import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
 import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'

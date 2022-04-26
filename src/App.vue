@@ -11,15 +11,16 @@
         <!-- media queries set to 'display = none' when width < 700px -->
         <Connect />
         <Scanners />
-        <RightTab :text="'How it Works'" :index="0" @click="modal = 'HowItWorks'"/>
-        <RightTab :text="'Contact'" :index="1" @click="modal = 'Contact'"/>
-        <RightTab :text="'Place New Bet'" :index="2" @click="modal= 'NewBetInterface'"/>
+        <RightTab :text="'How it Works'" :index="0" @click="toggleModal('HowItWorks')"/>
+        <RightTab :text="'Contact'" :index="1" @click="toggleModal('Contact')"/>
+        <RightTab :text="'Place New Bet'" :index="2" @click="toggleModal('NewBetInterface')"/>
 
         <!-- Modals -->
-        <ModalWrapper @close-modal="modal = null" v-if="modal != null">
-            <HowItWorks v-if="modal == 'HowItWorks'"/>
-            <Contact v-else-if="modal == 'Contact'"/>
-            <NewBetInterface v-else-if="modal == 'NewBetInterface'" />
+        <ModalWrapper v-if="store.state.modal.modal != null" @close-modal="toggleModal(null)" >
+            <Confirm v-if="store.state.modal.modal == 'Confirm'" />
+            <HowItWorks v-if="store.state.modal.modal == 'HowItWorks'"/>
+            <Contact v-else-if="store.state.modal.modal == 'Contact'"/>
+            <NewBetInterface v-else-if="store.state.modal.modal == 'NewBetInterface'" />
         </ModalWrapper>
     </div>
 </template>
@@ -29,6 +30,7 @@ import { onUnmounted, onMounted } from '@vue/runtime-core';
 import { ref } from 'vue'
 
 //Components
+import Confirm from "@/components/modals/Confirm"
 import Banner from './components/Banner.vue'
 import BottomButtons from './components/BottomButtons';
 import ModalWrapper from './components/modals/ModalWrapper';
@@ -50,8 +52,9 @@ import * as Types from '@/store/types';
 import { useStore } from 'vuex';
 
 const store = useStore()
-
-const modal = ref(null)
+const toggleModal = (text) => store.commit(Types.SET_MODAL, {
+    modal: text
+})
 
 const width = ref(null)
 const onResize = () => width.value = window.innerWidth;
@@ -73,24 +76,6 @@ const getTokenValues = () => {
     }).catch(e => console.log(e));
 }
 
+
+
 </script>
-
-<style>
-    .main-con{
-        display: flex;
-        height: 100%;
-        flex-direction: column;
-        justify-content: flex-start;
-        font-family: 'Runescape UF';
-    }
-
-    .center-con{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: 50%;
-        margin: 0 auto;
-    }
-</style>

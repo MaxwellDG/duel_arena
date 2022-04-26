@@ -5,8 +5,7 @@
                 <p class="filterText">Filter</p>
                 <v-select 
                     class="standard-dropdown token-drop"
-                    name="filterInput"
-                    v-model="filter" 
+                    v-model="filter"
                     :clearable="false"
                     :options="FILTER_OPTIONS"
                 />
@@ -31,7 +30,8 @@ import OpenBet from './Bet.vue'
 import Bet from '@/models/bet'
 
 import { useStore } from 'vuex'
-import { inject, onMounted, reactive, ref } from '@vue/runtime-core'
+import * as Types from "@/store/types"
+import { computed, inject, onMounted, reactive, ref } from '@vue/runtime-core'
 
 const store = useStore();
 const $web3 = inject('$web3')
@@ -40,11 +40,11 @@ onMounted(() => {
     getSelfBets();
 })
 
-const filter =  reactive({label: 'Token', code: 'token'})
+const filter = ref({label: 'Token', code: 'token'})
 const filterInput = ref('')
 const FILTER_OPTIONS = [
                 {label: 'Token', code: 'token'},
-                {label: 'DisplayName', code: 'displayName'},
+                {label: 'Display Name', code: 'displayName'},
                 {label: 'USD', code: 'USD'},
             ]
 
@@ -52,15 +52,19 @@ const type = ref('self')
 const getClass = (str) => str == type.value ? 'selected-button' : 'unselected-button'
 
 const openBets = reactive([])
-const selfBets = reactive([])
-const getBets = () => {
-    const arr = this.type == 'self' ? this.selfBets : this.openBets
-    if(this.filterInput.length == 0) return arr;
-    return arr.filter(bet => {
-        return bet[this.filter.code].includes(this.filterInput)
+const getBets = computed(() => {
+    const arr = type.value == 'self' ? store.state.selfBets : openBets
+    if(filterInput.value.length == 0) return arr;
+    else return arr.filter(bet => {
+        return bet[filter.value.code].includes(filterInput.value)
     })
-}
-const getSelfBets = async () =>{
+})
+
+// TODO maybe move these two functions below into a util file so they can be called everywhere
+// then call them here in mounted()
+// Or look into the Composition API thing about using functions in other classes easily
+
+const getSelfBets = async () => {
     let count = 0;
     let interval = setInterval(async () => {
         if(count >= 3){
@@ -73,7 +77,7 @@ const getSelfBets = async () =>{
                 selfBetAddresses.forEach(async j => {
                     const betContract = await $web3.getBetContract(j);
                     const BetData = new Bet(betContract.betData);
-                    this.selfBets.push(BetData);
+                    store.commit(Types.ADD_SELF_BET, BetData)
                 });
                 clearInterval(interval)
             } catch (e) {
@@ -85,46 +89,30 @@ const getSelfBets = async () =>{
     }, 1000)
 }
 
+
+// const get10OpenBets = async () => {
+//     let count = 0;
+//     let interval = setInterval(async () => {
+//         if(count >= 3){
+//             clearInterval(interval) // Give up
+//             // TODO Some kind of error alert
+//         }
+//         if($web3.BetFactoryContract){
+//             try{
+//                 const selfBetAddresses = await $web3.getSelfBets();
+//                 selfBetAddresses.forEach(async j => {
+//                     const betContract = await $web3.getBetContract(j);
+//                     const BetData = new Bet(betContract.betData);
+//                     store.commit(Types.ADD_SELF_BET, BetData)
+//                 });
+//                 clearInterval(interval)
+//             } catch (e) {
+//                 count++
+//             }
+//         } else {
+//             count++;
+//         } 
+//     }, 1000)
+// }
+
 </script>
-
-<style scoped>
-    .filterCon{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 30px 0 10px 0;
-    }
-
-    .filterInput{
-        background-color: transparent;
-        border: none;
-        padding: 2px 5px;
-    }
-
-    .filterText{
-        margin: 0;
-        
-    }
-
-    .bet-con{
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        padding: 0 10px 10px 10px;
-        overflow: hidden;
-    }
-
-    .list-con{
-        scrollbar-color: rgba(128, 0, 128, 0.3) transparent;
-        scrollbar-width: thin;
-        flex: 1;
-        overflow-y: auto;
-    }
-    
-    .bettingBoard{
-        height: 0;
-        margin: 0;
-        padding: 0;
-    }
-</style>

@@ -1,15 +1,15 @@
 <template>
-    <div id='newBetInterface'>
+    <div class='newBetInterface'>
         <h2 style="margin: 0;">Create a new 50/50 bet</h2>
-        <div class="row section" style="width: 100%;">
+        <div style="width: 100%;">
             <label for="displayName">Display&nbsp;Name&nbsp;</label>
             <input name="displayName" type="text" class="displayInput standard-input-text" v-model="formValues.displayName"/>
         </div>
-        <div class="row section">
-            <div class="row" style="align-items: center;">
-                <label for="tokens">Token&nbsp;</label>
+        <div>
+            <label for="tokens">Token&nbsp;</label>
+            <div class="new-bet-token">
                 <v-select 
-                    class="standard-dropdown"
+                    class="new-token-dropdown standard-dropdown"
                     name="tokens"
                     label="label"
                     v-model="formValues.token" 
@@ -21,12 +21,10 @@
                             { value: 'sol', label: 'SOL', gecko: 'solana'},
                         ]"
                 />
-            </div>
-            <div class="iconCon">
-                <img :src="icon" alt="icon"/>
+                <img :src="getIconSrc" :width="32" :height="32"/>   
             </div>
         </div>
-        <div class="row section">
+        <div class="flex">
             <div class="field-con">
                 <label for="wager">Wager</label>
                 <input 
@@ -34,7 +32,7 @@
                     class="standard-input-text"    
                     type="text"    
                     v-model="formValues.wager"
-                    @input="handleBetChange"
+                    @input="handleWagerChange"
                     @focus="handleFocus"
                 />
             </div>
@@ -45,50 +43,34 @@
                     type="text" 
                     name="usd"  
                     :value="formValues.USD"
-                    @input="handleBetChange"
+                    @input="handleWagerChange"
                     @focus="handleFocus"
                 />
             </div>
         </div>
-        <div class="row section">
+        <div class="flex align">
             <!-- ENSURE that these values get changed to bool values before being sent  -->
-            <p>Bet:</p>
-            <Info style="margin: 0 .5rem;">
+            <Info :leftAlign="true">
                 <p>A number between 1-10 will be randomly generated. Bet whether it will be even or odd</p>
             </Info>
-            <div class="row" style="margin-right: .5rem;">
-                <label>Even</label>
-                <input
-                    id="even"
-                    name="dudebro" 
-                    type="radio" 
-                    :checked="formValues.isEven"
-                    :value="formValues.isEven" 
-                    @change="handleRadioChange"
-                />
+            <p>Bet:</p>
+            <div class="bet-buttons">
+                <button id="even" :class="formValues.isEven ? 'selected-button' : 'unselected-button'" @click="handleBetChange">EVEN</button>
+                <button id="odd" :class="formValues.isEven ? 'unselected-button' : 'selected-button'" @click="handleBetChange">ODD</button>
             </div>
-            <div class="row" style="margin-right: .5rem;">
-                <label>Odd</label>
-                <input 
-                    id="odd"
-                    name="dudebro" 
-                    type="radio" 
-                    :checked="!formValues.isEven"
-                    :value="!formValues.isEven" 
-                    @change="handleRadioChange"
-                />
-            </div>
-            <button class="but-sub" style="width: 100%;" @click="handleSubmit">Submit</button>
         </div>
+        <button class="but-sub" style="width: 100%;" @click="handleSubmit">Submit</button>
     </div>
 </template>
 
 <script setup>
 import Info from '@/icons/info';
+import Bet from '@/models/bet'
+import Web3 from 'web3'
 
 import * as Types from '@/store/types';
 import { reactive, ref } from '@vue/reactivity';
-import { computed, inject } from '@vue/runtime-core';
+import { computed, inject, nextTick } from '@vue/runtime-core';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -104,19 +86,16 @@ const formValues = reactive({
 
 const focusedField = ref(null);
 
-const icon = computed(() => {
-    console.log('changing', formValues.token.value)
-    return import(`../../../node_modules/cryptocurrency-icons/svg/color/${formValues.token.value}.svg`)
-})
+const getIconSrc = computed(() => require(`@/../node_modules/cryptocurrency-icons/svg/color/${formValues.token.value}.svg`))
 
-const handleBetChange = (e) => {
+const handleWagerChange = (e) => {
     if(e.target.value){
         const val = e.target.value;
         const conversion = store.state.usdValues[formValues.token.gecko].usd;
-        if(e.target.name == 'wager' && focusedField == 'wager'){
+        if(e.target.name == 'wager' && focusedField.value == 'wager'){
             formValues.USD = Math.round( ((val * conversion) + Number.EPSILON) * 100 ) / 100;
             formValues.wager = val;
-        } else if(e.target.name == 'usd' && focusedField == 'usd'){
+        } else if(e.target.name == 'usd' && focusedField.value == 'usd'){
             formValues.wager = (val / conversion).toFixed(9);
             formValues.USD = val
         }
@@ -125,16 +104,18 @@ const handleBetChange = (e) => {
 
 const txCallback = (err, txHash) => console.log('Err', err, 'TxHash:', txHash);
         
-const handleRadioChange = (e) => formValues.isEven = e.target.id == 'even';
+const handleBetChange = (e) => formValues.isEven = e.target.id == 'even';
 
 const handleFocus = (e) => {
-    focusedField = e.target.name;
+    focusedField.value = e.target.name;
     if(e.target.value == 0)
         e.target.value = '';
 }
 
 const handleSubmit = async () => {
-    const account = $web3.accounts[0]
+    store.commit(Types.SET_MODAL, {modal: null});
+
+    const account = $web3.accounts[1] // TODO this is only for testing. Get real connected account later
 
     const estimatedGas = await $web3.BetFactoryContract.methods
         .createBet(parseFloat(formValues.wager), formValues.isEven, formValues.token.value, formValues.displayName)
@@ -145,12 +126,16 @@ const handleSubmit = async () => {
         .createBet(parseFloat(formValues.wager), formValues.isEven, formValues.token.value, formValues.displayName)
         .send({
             from: account,
+            value: Web3.utils.toWei(formValues.wager),
             gas: estimatedGas * 2 // TODO this needs to be more accurate
     }, txCallback)
 
-    // TODO get the return so you can stub in the new bet
-
-    store.commit(Types.TOGGLE_NEW_BET_MODAL);
+    // Stubs in new self bet
+    const createdBet = receipt.events?.CreatedBet
+    if(createdBet){
+        // console.log('Created', createdBet)
+        store.commit(Types.ADD_SELF_BET, new Bet(createdBet.returnValues))
+    }
 }
 
 </script>
@@ -162,10 +147,6 @@ const handleSubmit = async () => {
 
     .field-con input{
         width: 100%;
-    }
-
-    .section{
-        margin: .5rem 0;
     }
 
     .token-drop{

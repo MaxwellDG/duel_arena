@@ -18,6 +18,10 @@ html, body{
     right:0;
 }
 
+#app{
+    height: 100%;
+}
+
 /* General Positioning */
 
 .flex{
@@ -43,6 +47,10 @@ button{
     border-radius: 4px;
     font-family: 'Runescape UF';
     cursor: pointer;
+}
+
+.clipped-button{
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 15% 100%);
 }
 
 .selected-button{
@@ -81,6 +89,7 @@ input[type="text"] {
 
 .standard-dropdown .vs__dropdown-toggle,
 .standard-dropdown .vs__dropdown-menu{
+    min-width: 10rem;
     background-color: white;
     cursor: pointer;
 }
@@ -98,7 +107,41 @@ input[type="text"] {
 }
 
 
+
+
   
 
+.tab{
+    position: absolute;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
+    @media only screen and (max-width: 700px) {
+        display: none;
+    }
+}
+
+.bottom-tab{
+    height: 35px;
+    font-size: 24px;
+}
+
+.top-tab{
+    height: 25px;
+    font-size: 16px;
+}
+
+.right-tab{
+    right: 0;
+    cursor: pointer;
+    background-color: rgba(128, 0, 128, 0.3);
+    padding: 0.5rem 2rem 0.5rem 3rem;
+}
+
+p{
+    margin: 0;
+}
 

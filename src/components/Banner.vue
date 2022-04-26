@@ -2,7 +2,7 @@
     <div class="banner">
         <div class="left">
             <h1 class="banner-text">50 / 50 Bets -> 2x</h1>
-            <Info>
+            <Info :leftAlign="false">
                 <p class="fee">* 1% service fee + _ CHAINLINK from winner</p>
             </Info>
         </div>
