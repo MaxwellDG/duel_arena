@@ -12,20 +12,18 @@ contract Bet {
         uint256 wager;
         bool isEven;
         string token;
-        uint256 betId;
     }
 
     BetData public betData;
     address payable matcher;
 
-    constructor(address _creator, string memory _displayName, uint256 _wager, bool _isEven, string memory _token, uint256 _betId) payable {
+    constructor(address _creator, string memory _displayName, uint256 _wager, bool _isEven, string memory _token) payable {
         betData = BetData(
             payable(_creator),
             _displayName,
             _wager,
             _isEven,
-            _token,
-            _betId
+            _token
         );
     }
 
@@ -34,7 +32,7 @@ contract Bet {
         selfdestruct(winner);
     }
 
-    function matchBet(string memory matchToken, bool matchIsEven, string memory matchDisplayName) 
+    function matchBet(string memory matchToken, bool matchIsEven) 
     public payable isValidBetMatch(msg.value, matchToken, msg.sender, matchIsEven){
         matcher = payable(msg.sender);
         // TODO CHAINLINK RNG
@@ -68,10 +66,10 @@ contract Bet {
     }
 
     // Selfdestruct
-    function kill(address _address) external returns(bool){
-        require(_address == address(betData.creator)); // TODO how to return false if this fails?
+    function kill(address _address) external{
+        require(_address == address(betData.creator), "These don't match");
         require(address(this).balance > 0, "Contract balance is zero");
-        selfdestruct(betData.creator);
+        selfdestruct(payable(_address));
     }
 }
 
@@ -79,34 +77,21 @@ contract BetFactory{
 
     mapping(address => Bet[]) public allBets;
     mapping(address => bool) public allAddresses;
-    uint256 public betCounter = 1;
 
-    event CreatedBet(address creator, string displayName, uint256 wager, bool isEven, string token, uint256 betId);
+    event CreatedBet(address creator, string displayName, uint256 wager, bool isEven, string token);
 
     receive() external payable{} // Allows contract to receive ether from anywhere
 
     function createBet(uint256 _wager, bool _isEven, string memory _token, string memory _displayName) external payable returns(Bet){ 
         require(msg.value > 0, "Zero ether has been sent");
-        betCounter += 1;
-        Bet bet = new Bet(msg.sender, _displayName, _wager, _isEven, _token, betCounter);
-        emit CreatedBet(msg.sender, _displayName, _wager, _isEven, _token, betCounter);
+        Bet bet = new Bet{value: _wager}(msg.sender, _displayName, _wager, _isEven, _token);
+        emit CreatedBet(msg.sender, _displayName, _wager, _isEven, _token);
         allBets[msg.sender].push(bet);
         allAddresses[msg.sender] = true;
         return bet;
     }
 
-    // This doesn't work atm
-    // function removeBet(uint256 _betId) public hasOpenBets{
-    //     for (uint j = 0; j <= allBets[msg.sender].length; j++) {  
-    //         if(_betId == allBets[msg.sender][j].betId()){
-    //             delete allBets[msg.sender][j];
-    //             if(allBets[msg.sender].length == 0){
-    //                 allAddresses[msg.sender] = false;
-    //             }
-    //         }
-    //     }
-    // } 
-
+    // Note this only returns the bet contract addresses. More needs to be done with web3 and ABI data to get the actual contract object
     function getSelfBets() public view returns (Bet[] memory){ 
         return allBets[msg.sender];
     }
@@ -125,17 +110,18 @@ contract BetFactory{
 
     function deleteBet(address _betAddress) public{ // TODO hasOpenBets
         Bet[] memory bets = allBets[msg.sender];
-        for(uint j = 0; j <= bets.length; j++){ // TODO theres certainly a more efficient way to do this. Look for something like find() in javascript
+        for(uint j = 0; j < bets.length; j++){ // TODO theres certainly a more efficient way to do this. Look for something like find() in javascript
             Bet bet = bets[j];
             if(address(bet) == _betAddress){
-                bool boolean = bet.kill(msg.sender);
-                if(boolean){ 
-                    delete bets[j];
-                    if(bets.length > 1){ // Replace the empty slot with the last item in the array
-                        bets[j] = bets[bets.length - 1]; // TODO is this making a copy? or pointing. Needs to make a copy. Remember that it maybe(can't remember) just stores the address string so that's really all you've gotta copy, and not literally the whole Bet smartcontract
-                        delete bets[bets.length - 1]; // TODO this might be deleting both. Also stackoverflow says this call is redundant and wastes gas
-                    }
+                bet.kill(msg.sender);
+                if(allBets[msg.sender].length == 1){
+                    delete allBets[msg.sender];
+                    allAddresses[msg.sender] = false;
+                } else {
+                    allBets[msg.sender][j] = allBets[msg.sender][allBets[msg.sender].length - 1];
+                    allBets[msg.sender].pop();
                 }
+                break;
             }
         }
     }

@@ -29,11 +29,14 @@ export default createStore({
     },
 
     // Bets
-    [Types.SET_SELF_BETS] (state, payload){
-      state.selfBets = payload;
+    [Types.SET_SELF_BETS] (state, bets){
+      state.selfBets = bets;
     },
-    [Types.ADD_SELF_BET] (state, payload){
-      state.selfBets.push(payload);
+    [Types.ADD_SELF_BET] (state, bet){
+      state.selfBets.push(bet);
+    },
+    [Types.REMOVE_SELF_BET] (state, address){
+      state.selfBets.splice(state.selfBets.findIndex(j => j.address == address), 1);
     },
   },
   getters: {

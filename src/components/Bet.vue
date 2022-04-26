@@ -24,12 +24,12 @@
 </template>
 
 <script setup>
-import { reactive } from '@vue/reactivity'
-import { computed } from '@vue/runtime-core'
+import { computed, inject } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import * as Types from "@/store/types"
 
 const store = useStore();
+const $web3 = inject('$web3')
 
 const props = defineProps({
     bet: Object,
@@ -40,7 +40,12 @@ const icon = computed(() => require(`../../node_modules/cryptocurrency-icons/svg
 
 const openConfirmModal = () => store.commit(Types.SET_MODAL, {
     modal: 'Confirm', 
-    data: props.bet
+    data: props.bet,
+    acceptFunc: async () => {
+        store.commit(Types.SET_MODAL, {modal: null});
+        await $web3.deleteBet(props.bet.address)
+        store.commit(Types.REMOVE_SELF_BET, props.bet.address)
+    }
 })
 
 </script>

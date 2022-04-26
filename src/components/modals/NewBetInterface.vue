@@ -119,7 +119,10 @@ const handleSubmit = async () => {
 
     const estimatedGas = await $web3.BetFactoryContract.methods
         .createBet(parseFloat(formValues.wager), formValues.isEven, formValues.token.value, formValues.displayName)
-        .estimateGas();
+        .estimateGas({
+            from: account,
+            value: Web3.utils.toWei(formValues.wager),
+        });
 
     // TODO this needs to actually send money
     const receipt = await $web3.BetFactoryContract.methods
@@ -133,8 +136,11 @@ const handleSubmit = async () => {
     // Stubs in new self bet
     const createdBet = receipt.events?.CreatedBet
     if(createdBet){
-        // console.log('Created', createdBet)
-        store.commit(Types.ADD_SELF_BET, new Bet(createdBet.returnValues))
+        store.commit(Types.ADD_SELF_BET, new Bet({
+                address: createdBet.returnValues[0],
+                ...createdBet.returnValues
+            }
+        ));
     }
 }
 

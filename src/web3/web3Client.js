@@ -46,7 +46,7 @@ export default class Web3Client{
     async getSelfBets(){
         return await this.BetFactoryContract.methods.getSelfBets().call({
             from: this.accounts[1]
-        })
+        });
     }
 
     async get10OpenBets(){
@@ -54,10 +54,10 @@ export default class Web3Client{
     }
 
     async deleteBet(address){
-        const estimatedGas = this.BetFactoryContract.methods.deleteBet(address).estimatedGas();
-        this.BetFactoryContract.methods.deleteBet(address).send({
+        const estimatedGas = await this.BetFactoryContract.methods.deleteBet(address).estimateGas();
+        await this.BetFactoryContract.methods.deleteBet(address).send({
             from: this.accounts[1], // TODO get the real one later
-            gas: estimatedGas * 2 // TODO this needs to be more accurate
+            gas: estimatedGas * 3 // TODO this needs to be more accurate
         }, this.txCallback)
     }
 

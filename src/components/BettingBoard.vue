@@ -73,10 +73,13 @@ const getSelfBets = async () => {
         }
         if($web3.BetFactoryContract){
             try{
-                const selfBetAddresses = await $web3.getSelfBets();
+                const selfBetAddresses = await $web3.getSelfBets(); 
                 selfBetAddresses.forEach(async j => {
                     const betContract = await $web3.getBetContract(j);
-                    const BetData = new Bet(betContract.betData);
+                    const BetData = new Bet({
+                        address: betContract.contract._address,
+                        ...betContract.betData
+                    });
                     store.commit(Types.ADD_SELF_BET, BetData)
                 });
                 clearInterval(interval)
