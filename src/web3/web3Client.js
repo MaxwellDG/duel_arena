@@ -35,12 +35,30 @@ export default class Web3Client{
         }
     }
 
+    txCallback(err, txHash){
+        console.log('Err', err, 'TxHash:', txHash);
+    }
+
     async getBetCounter(){
         return await this.BetFactoryContract.methods.betCounter().call();
     }
 
     async getSelfBets(){
-        return await this.BetFactoryContract.methods.getSelfBets().call()
+        return await this.BetFactoryContract.methods.getSelfBets().call({
+            from: this.accounts[1]
+        })
+    }
+
+    async get10OpenBets(){
+        return await this.BetFactoryContract.methods.get10OpenBets().call();
+    }
+
+    async deleteBet(address){
+        const estimatedGas = this.BetFactoryContract.methods.deleteBet(address).estimatedGas();
+        this.BetFactoryContract.methods.deleteBet(address).send({
+            from: this.accounts[1], // TODO get the real one later
+            gas: estimatedGas * 2 // TODO this needs to be more accurate
+        }, this.txCallback)
     }
 
     async getBetContract(address){

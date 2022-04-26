@@ -17,12 +17,19 @@
         <div v-if="!isSelf" class="fifth bet-div">
             <button @click="handleBet" class="bet-button">BET</button>
         </div>
+        <div v-else>
+            <button @click="openConfirmModal">X</button>
+        </div>
     </li>
 </template>
 
 <script setup>
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
+import { useStore } from 'vuex'
+import * as Types from "@/store/types"
+
+const store = useStore();
 
 const props = defineProps({
     bet: Object,
@@ -30,6 +37,11 @@ const props = defineProps({
 })
 
 const icon = computed(() => require(`../../node_modules/cryptocurrency-icons/svg/color/${props.bet.token}.svg`))
+
+const openConfirmModal = () => store.commit(Types.SET_MODAL, {
+    modal: 'Confirm', 
+    data: props.bet
+})
 
 </script>
 

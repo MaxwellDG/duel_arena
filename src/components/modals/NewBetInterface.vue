@@ -66,6 +66,7 @@
 <script setup>
 import Info from '@/icons/info';
 import Bet from '@/models/bet'
+import Web3 from 'web3'
 
 import * as Types from '@/store/types';
 import { reactive, ref } from '@vue/reactivity';
@@ -112,9 +113,9 @@ const handleFocus = (e) => {
 }
 
 const handleSubmit = async () => {
-    store.commit(Types.TOGGLE_MODAL, null);
+    store.commit(Types.SET_MODAL, {modal: null});
 
-    const account = $web3.accounts[0]
+    const account = $web3.accounts[1] // TODO this is only for testing. Get real connected account later
 
     const estimatedGas = await $web3.BetFactoryContract.methods
         .createBet(parseFloat(formValues.wager), formValues.isEven, formValues.token.value, formValues.displayName)
@@ -125,12 +126,14 @@ const handleSubmit = async () => {
         .createBet(parseFloat(formValues.wager), formValues.isEven, formValues.token.value, formValues.displayName)
         .send({
             from: account,
+            value: Web3.utils.toWei(formValues.wager),
             gas: estimatedGas * 2 // TODO this needs to be more accurate
     }, txCallback)
 
     // Stubs in new self bet
     const createdBet = receipt.events?.CreatedBet
     if(createdBet){
+        // console.log('Created', createdBet)
         store.commit(Types.ADD_SELF_BET, new Bet(createdBet.returnValues))
     }
 }

@@ -16,10 +16,11 @@
         <RightTab :text="'Place New Bet'" :index="2" @click="toggleModal('NewBetInterface')"/>
 
         <!-- Modals -->
-        <ModalWrapper v-if="store.state.modal != null" @close-modal="toggleModal(null)" >
-            <HowItWorks v-if="store.state.modal == 'HowItWorks'"/>
-            <Contact v-else-if="store.state.modal == 'Contact'"/>
-            <NewBetInterface v-else-if="store.state.modal == 'NewBetInterface'" />
+        <ModalWrapper v-if="store.state.modal.modal != null" @close-modal="toggleModal(null)" >
+            <Confirm v-if="store.state.modal.modal == 'Confirm'" />
+            <HowItWorks v-if="store.state.modal.modal == 'HowItWorks'"/>
+            <Contact v-else-if="store.state.modal.modal == 'Contact'"/>
+            <NewBetInterface v-else-if="store.state.modal.modal == 'NewBetInterface'" />
         </ModalWrapper>
     </div>
 </template>
@@ -29,6 +30,7 @@ import { onUnmounted, onMounted } from '@vue/runtime-core';
 import { ref } from 'vue'
 
 //Components
+import Confirm from "@/components/modals/Confirm"
 import Banner from './components/Banner.vue'
 import BottomButtons from './components/BottomButtons';
 import ModalWrapper from './components/modals/ModalWrapper';
@@ -50,7 +52,9 @@ import * as Types from '@/store/types';
 import { useStore } from 'vuex';
 
 const store = useStore()
-const toggleModal = (text) => store.commit(Types.TOGGLE_MODAL, text)
+const toggleModal = (text) => store.commit(Types.SET_MODAL, {
+    modal: text
+})
 
 const width = ref(null)
 const onResize = () => width.value = window.innerWidth;

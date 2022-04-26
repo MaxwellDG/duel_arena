@@ -3,7 +3,10 @@ import * as Types from '@/store/types';
 
 export default createStore({
   state: {
-    modal: null,
+    modal: {
+      modal: null,
+      data: {}
+    },
     isConnected: false,
     selfBets: [],
     usdValues: {
@@ -15,7 +18,7 @@ export default createStore({
    }
   },
   mutations: {
-    [Types.TOGGLE_MODAL] (state, payload) {
+    [Types.SET_MODAL] (state, payload) {
       state.modal = payload;
     },
     [Types.TOGGLE_CONNECTED] (state) {

@@ -59,7 +59,12 @@ const getBets = computed(() => {
         return bet[filter.value.code].includes(filterInput.value)
     })
 })
-const getSelfBets = async () =>{
+
+// TODO maybe move these two functions below into a util file so they can be called everywhere
+// then call them here in mounted()
+// Or look into the Composition API thing about using functions in other classes easily
+
+const getSelfBets = async () => {
     let count = 0;
     let interval = setInterval(async () => {
         if(count >= 3){
@@ -83,5 +88,31 @@ const getSelfBets = async () =>{
         } 
     }, 1000)
 }
+
+
+// const get10OpenBets = async () => {
+//     let count = 0;
+//     let interval = setInterval(async () => {
+//         if(count >= 3){
+//             clearInterval(interval) // Give up
+//             // TODO Some kind of error alert
+//         }
+//         if($web3.BetFactoryContract){
+//             try{
+//                 const selfBetAddresses = await $web3.getSelfBets();
+//                 selfBetAddresses.forEach(async j => {
+//                     const betContract = await $web3.getBetContract(j);
+//                     const BetData = new Bet(betContract.betData);
+//                     store.commit(Types.ADD_SELF_BET, BetData)
+//                 });
+//                 clearInterval(interval)
+//             } catch (e) {
+//                 count++
+//             }
+//         } else {
+//             count++;
+//         } 
+//     }, 1000)
+// }
 
 </script>
