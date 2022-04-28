@@ -43,14 +43,16 @@ export default class Web3Client{
         return await this.BetFactoryContract.methods.betCounter().call();
     }
 
-    async getSelfBets(){
-        return await this.BetFactoryContract.methods.getSelfBets().call({
-            from: this.accounts[1]
+    async getSelfBets(pageNum){
+        return await this.BetFactoryContract.methods.get25Bets('self', pageNum, '').call({
+            from: this.accounts[1] // TODO change this
         });
     }
 
-    async get10OpenBets(){
-        return await this.BetFactoryContract.methods.get10OpenBets().call();
+    async getOpenBets(filter, pageNum, input){
+        return await this.BetFactoryContract.methods.get25Bets(filter, pageNum, input).call({
+            from: this.accounts[1] // TODO change this
+        });
     }
 
     async deleteBet(address){

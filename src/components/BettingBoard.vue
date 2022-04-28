@@ -73,7 +73,7 @@ const getSelfBets = async () => {
         }
         if($web3.BetFactoryContract){
             try{
-                const selfBetAddresses = await $web3.getSelfBets(); 
+                const selfBetAddresses = await $web3.getSelfBets(0); 
                 selfBetAddresses.forEach(async j => {
                     const betContract = await $web3.getBetContract(j);
                     const BetData = new Bet({
@@ -91,31 +91,5 @@ const getSelfBets = async () => {
         } 
     }, 1000)
 }
-
-
-// const get10OpenBets = async () => {
-//     let count = 0;
-//     let interval = setInterval(async () => {
-//         if(count >= 3){
-//             clearInterval(interval) // Give up
-//             // TODO Some kind of error alert
-//         }
-//         if($web3.BetFactoryContract){
-//             try{
-//                 const selfBetAddresses = await $web3.getSelfBets();
-//                 selfBetAddresses.forEach(async j => {
-//                     const betContract = await $web3.getBetContract(j);
-//                     const BetData = new Bet(betContract.betData);
-//                     store.commit(Types.ADD_SELF_BET, BetData)
-//                 });
-//                 clearInterval(interval)
-//             } catch (e) {
-//                 count++
-//             }
-//         } else {
-//             count++;
-//         } 
-//     }, 1000)
-// }
 
 </script>

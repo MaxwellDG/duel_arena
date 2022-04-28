@@ -32,8 +32,12 @@ contract Bet {
         selfdestruct(winner);
     }
 
-    function matchBet(string memory matchToken, bool matchIsEven) 
-    public payable isValidBetMatch(msg.value, matchToken, msg.sender, matchIsEven){
+    // TODO this makes more sense in the BetFactoy. Lowers contract creation costs as well as aids in removing the bet from all arrays once finished
+    function matchBet(string memory _matchToken, bool _matchIsEven) public payable{
+        require(msg.value == betData.wager, "Wager doesn't match");
+        require(compareStringsByBytes(_matchToken, betData.token), "Token doesn't match");
+        require(msg.sender != betData.creator, "Creator and matcher are the same");
+        require(!_matchIsEven == betData.isEven, "Both bet same bet");
         matcher = payable(msg.sender);
         // TODO CHAINLINK RNG
         // address payable winner = didCreatorWin ? betData.creator : matcher;
@@ -51,20 +55,6 @@ contract Bet {
         return address(this).balance;
     }
     
-    // Modifiers
-    modifier mustBeCreator {
-        require(msg.sender == betData.creator);
-        _;
-    }
-
-    modifier isValidBetMatch(uint256 matchWager, string memory matchToken, address _matcher, bool matchIsEven) {
-        require(matchWager == betData.wager);
-        require(compareStringsByBytes(matchToken, betData.token));
-        require(_matcher != betData.creator);
-        require(!matchIsEven == betData.isEven);
-        _;
-    }
-
     // Selfdestruct
     function kill(address _address) external{
         require(_address == address(betData.creator), "These don't match");
@@ -75,8 +65,13 @@ contract Bet {
 
 contract BetFactory{
 
-    mapping(address => Bet[]) public allBets;
-    mapping(address => bool) public allAddresses;
+    // TODO look into Swarm for distributed data storage. The setup below clearly won't scale. Get this project working first, 
+    // then state this intention in the first line of the README
+
+    Bet[] public allBets;
+    mapping(address => Bet[]) public betsByWallet;
+    mapping(string => Bet[]) public betsByToken; 
+    mapping(string => Bet[]) public betsByDisplayName;
 
     event CreatedBet(address creator, string displayName, uint256 wager, bool isEven, string token);
 
@@ -86,58 +81,53 @@ contract BetFactory{
         require(msg.value > 0, "Zero ether has been sent");
         Bet bet = new Bet{value: _wager}(msg.sender, _displayName, _wager, _isEven, _token);
         emit CreatedBet(msg.sender, _displayName, _wager, _isEven, _token);
-        allBets[msg.sender].push(bet);
-        allAddresses[msg.sender] = true;
+        betsByWallet[msg.sender].push(bet);
+        betsByToken[_token].push(bet);
+        betsByDisplayName[_displayName].push(bet);
+        allBets.push(bet);
         return bet;
     }
 
-    // Note this only returns the bet contract addresses. More needs to be done with web3 and ABI data to get the actual contract object
-    function getSelfBets() public view returns (Bet[] memory){ 
-        return allBets[msg.sender];
+    // Note these only returns the bet contract addresses. More needs to be done with web3 and ABI data to get the actual contract object
+    function get25Bets(string memory _filter, int _pageNum, string memory _input) public view returns (Bet[] memory) {
+        // CHECK if this works if the upper index is too high. Might have to say like 'if length is < s then change end of slice
+        int s = _pageNum * 25;
+        if(filter == "all"){
+            return allBets[s:(s + 25)];
+        } else if(filter == "token"){
+            return betsByToken[_input][s:(s + 25)];
+        } else if(filter == "displayName") {
+            return betsByDisplayName[_input][s:(s + 25)];
+        } else {
+            return betsByWallet[msg.sender][s:(s + 25)]; // Retrieve self bets
+        }
     }
 
-    function getSelfBetsLength() public view returns (uint256){
-        return allBets[msg.sender].length;
-    }
-
-    function getHasOpenBets() public view returns(bool){
-        return allAddresses[msg.sender];
-    }
-
-    function readBets(string memory _tokenFilter, string memory _betFilter, string memory _displayNameFilter, uint256 pageNum) public view{
-        // TODO in some way that's not mega expensive
-    }
-
-    function deleteBet(address _betAddress) public{ // TODO hasOpenBets
-        Bet[] memory bets = allBets[msg.sender];
-        for(uint j = 0; j < bets.length; j++){ // TODO theres certainly a more efficient way to do this. Look for something like find() in javascript
-            Bet bet = bets[j];
-            if(address(bet) == _betAddress){
-                bet.kill(msg.sender);
-                if(allBets[msg.sender].length == 1){
-                    delete allBets[msg.sender];
-                    allAddresses[msg.sender] = false;
-                } else {
-                    allBets[msg.sender][j] = allBets[msg.sender][allBets[msg.sender].length - 1];
-                    allBets[msg.sender].pop();
-                }
-                break;
+    function deleteFromArray(Bet[] storage arr, Bet bet) internal {
+        for(uint i = 0; i < arr.length; i++){ 
+            if(address(bet) == address(arr[i])){
+                 if(arr[i].length == 1){
+                        delete arr[i];
+                    } else {
+                        arr[i] = arr[arr.length - 1];
+                        arr.pop();
+                    }
             }
         }
     }
 
-    //Modifiers
-    modifier hasOpenBets(){
-        // BROKEN ?
-        require(allAddresses[msg.sender] == true);
-        _;
+    function deleteBet(address _betAddress) public {
+        Bet[] memory bets = betsByWallet[msg.sender];
+        for(uint j = 0; j < bets.length; j++){ 
+            if(address(bet) == _betAddress){
+                deleteFromArray(allBets, bets[j]);
+                deleteFromArray(betsByWallet[msg.sender], bets[j]);
+                deleteFromArray(betsByToken[bet.betData.token], bets[j]);
+                deleteFromArray(betsByDisplayName[bet.betData.displayName], bets[j]);
+            }
+            bet.kill(msg.sender);
+            break;
+            }
+        }
     }
-
 }
-
-// abstract contract Mortal is Bet {
-
-//     function kill() public mustBeCreator { 
-//         selfdestruct(payable(msg.sender));
-//     }
-// }
