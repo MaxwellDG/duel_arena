@@ -31,14 +31,11 @@ import Bet from '@/models/bet'
 
 import { useStore } from 'vuex'
 import * as Types from "@/store/types"
+import { BET_FILTERS } from "@/util/constants"
 import { computed, inject, onMounted, reactive, ref } from '@vue/runtime-core'
 
 const store = useStore();
 const $web3 = inject('$web3')
-
-onMounted(() => {
-    getSelfBets();
-})
 
 const filter = ref({label: 'Token', code: 'token'})
 const filterInput = ref('')
@@ -51,45 +48,29 @@ const FILTER_OPTIONS = [
 const type = ref('self')
 const getClass = (str) => str == type.value ? 'selected-button' : 'unselected-button'
 
-const openBets = reactive([])
 const getBets = computed(() => {
-    const arr = type.value == 'self' ? store.state.selfBets : openBets
+    const arr = type.value == 'self' ? store.state.selfBets : store.state.openBets;
     if(filterInput.value.length == 0) return arr;
     else return arr.filter(bet => {
         return bet[filter.value.code].includes(filterInput.value)
     })
 })
 
-// TODO maybe move these two functions below into a util file so they can be called everywhere
-// then call them here in mounted()
-// Or look into the Composition API thing about using functions in other classes easily
-
-const getSelfBets = async () => {
-    let count = 0;
-    let interval = setInterval(async () => {
-        if(count >= 3){
-            clearInterval(interval) // Give up
-            // TODO Some kind of error alert
-        }
-        if($web3.BetFactoryContract){
-            try{
-                const selfBetAddresses = await $web3.getSelfBets(0); 
-                selfBetAddresses.forEach(async j => {
-                    const betContract = await $web3.getBetContract(j);
-                    const BetData = new Bet({
-                        address: betContract.contract._address,
-                        ...betContract.betData
-                    });
-                    store.commit(Types.ADD_SELF_BET, BetData)
+const getMoreBets = async (pageNum, filter, input) => {
+    if($web3.BetFactoryContract){
+        try{
+            const contractAddresses = await $web3.getBets(filter, pageNum, input);
+            return contractAddresses.map(async j => {
+                const betContract = await $web3.getBetContract(j);
+                return new Bet({
+                    address: betContract.contract._address,
+                    ...betContract.betData
                 });
-                clearInterval(interval)
-            } catch (e) {
-                count++
-            }
-        } else {
-            count++;
-        } 
-    }, 1000)
+            });
+        } catch (e) {
+            // error alert
+        }
+    } 
 }
 
 </script>

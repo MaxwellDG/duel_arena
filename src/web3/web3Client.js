@@ -3,6 +3,13 @@ import Web3 from 'web3'
 import BetFactory from '../../build/contracts/BetFactory.json'
 import Bet from '../../build/contracts/Bet.json'
 
+import BetModel from "@/models/bet";
+
+//Util
+import store from "@/store/store";
+import * as Types from "@/store/types";
+import { BET_FILTERS } from "@/util/constants"
+
 export default class Web3Client{
 
     constructor(){
@@ -29,28 +36,35 @@ export default class Web3Client{
             const deployedNetwork = BetFactory.networks[this.networkId];
 
             this.BetFactoryContract = new web3.eth.Contract(BetFactory.abi, deployedNetwork.address)
+            const allBets = await this.initFirstBets(0, BET_FILTERS.ALL)
+            console.log('what dis', allBets)
+            store.commit(Types.SET_OPEN_BETS, allBets)
+            const selfBets = await this.initFirstBets(0, BET_FILTERS.SELF)
+            store.commit(Types.SET_SELF_BETS, selfBets)
+            
         } else { 
             // Non-dapp browsers
             console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
         }
     }
 
+    async initFirstBets(pageNum, filter){
+        const contractAddresses = await this.getBets(pageNum, filter);
+        return await Promise.all(await contractAddresses.map(async j => {
+            const betContract = await this.getBetContract(j);
+            return new BetModel({
+                address: betContract.contract._address,
+                ...betContract.betData
+            });
+        }));
+    }
+
     txCallback(err, txHash){
         console.log('Err', err, 'TxHash:', txHash);
     }
 
-    async getBetCounter(){
-        return await this.BetFactoryContract.methods.betCounter().call();
-    }
-
-    async getSelfBets(pageNum){
-        return await this.BetFactoryContract.methods.get25Bets('self', pageNum, '').call({
-            from: this.accounts[1] // TODO change this
-        });
-    }
-
-    async getOpenBets(filter, pageNum, input){
-        return await this.BetFactoryContract.methods.get25Bets(filter, pageNum, input).call({
+    async getBets(pageNum, filterNum, input = ''){
+        return await this.BetFactoryContract.methods.get25Bets(pageNum, filterNum, input).call({
             from: this.accounts[1] // TODO change this
         });
     }
