@@ -50,7 +50,7 @@ export default class Web3Client{
 
     async initFirstBets(pageNum, filter){
         const contractAddresses = await this.getBets(pageNum, filter);
-        return await Promise.all(await contractAddresses.map(async j => {
+        return await Promise.all(contractAddresses.map(async j => {
             const betContract = await this.getBetContract(j);
             return new BetModel({
                 address: betContract.contract._address,
