@@ -8,7 +8,7 @@ import BetModel from "@/models/bet";
 //Util
 import store from "@/store/store";
 import * as Types from "@/store/types";
-import { BET_FILTERS } from "@/util/constants"
+import { SEARCH_FILTERS } from "@/util/constants"
 
 export default class Web3Client{
 
@@ -36,10 +36,9 @@ export default class Web3Client{
             const deployedNetwork = BetFactory.networks[this.networkId];
 
             this.BetFactoryContract = new web3.eth.Contract(BetFactory.abi, deployedNetwork.address)
-            const allBets = await this.initFirstBets(0, BET_FILTERS.ALL)
-            console.log('what dis', allBets)
+            const allBets = await this.initFirstBets(0, SEARCH_FILTERS.ALL)
             store.commit(Types.SET_OPEN_BETS, allBets)
-            const selfBets = await this.initFirstBets(0, BET_FILTERS.SELF)
+            const selfBets = await this.initFirstBets(0, SEARCH_FILTERS.SELF)
             store.commit(Types.SET_SELF_BETS, selfBets)
             
         } else { 
@@ -64,6 +63,7 @@ export default class Web3Client{
     }
 
     async getBets(pageNum, filterNum, input = ''){
+        console.log("Receiving ", pageNum, filterNum, input)
         return await this.BetFactoryContract.methods.get25Bets(pageNum, filterNum, input).call({
             from: this.accounts[1] // TODO change this
         });

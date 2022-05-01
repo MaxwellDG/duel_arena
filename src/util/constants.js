@@ -1,4 +1,4 @@
-export const BET_FILTERS = {
+export const SEARCH_FILTERS = {
     ALL: 0,
     SELF: 1,
     TOKEN: 2,
