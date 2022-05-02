@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 
 contract Bet {
 
-    event Withdraw(address winner, uint256 amount, string winnerDisplayName, int txLastDigit, string token);
+    event Withdraw(address winner, uint256 amount, string token);
 
     struct BetData{
         address payable creator;
@@ -14,6 +14,7 @@ contract Bet {
         string token;
     }
 
+    address payable matcher;
     BetData public betData;
 
     constructor(address _creator, string memory _displayName, uint256 _wager, bool _isEven, string memory _token) payable {
@@ -26,14 +27,26 @@ contract Bet {
         );
     }
 
-    function withdrawToWinner(address payable winner, int txLastDigit, string calldata winnerDisplayName) internal{
-        emit Withdraw(winner, address(this).balance, winnerDisplayName, txLastDigit, betData.token);
+    function withdrawToWinner(uint256 _randomNumber) external isFromChainlink{
+        address payable winner;
+        if((_randomNumber % 2 == 0 && betData.isEven) || (_randomNumber % 2 == 1 && !betData.isEven)){
+            winner = betData.creator;
+        } else {
+            winner = matcher;
+        }
+        emit Withdraw(winner, address(this).balance, betData.token);
         selfdestruct(winner);
     }
 
     // View
     function getBetData() public view returns(BetData memory){
         return betData;
+    }
+
+    //modifier
+    modifier isFromChainlink(){
+        require(msg.sender == '<ChainlinkConsumer address>'); // TODO get real address
+        _;
     }
     
     // Selfdestruct
@@ -134,6 +147,7 @@ contract BetFactory{
         for(uint j = 0; j < bets.length; j++){ 
             if(address(bets[j]) == _betAddress){
                 Bet bet = bets[j];
+                // TODO set matcher property in Bet contract?
                 string memory token = bet.getBetData().token;
                 uint256 wager = bet.getBetData().wager;
                 require(msg.value == wager, "Wager doesn't match");
@@ -141,7 +155,7 @@ contract BetFactory{
                 require(compareStringsByBytes(_matchToken, token), "Tokens don't match"); 
                 // TODO CHAINLINK VRM
                 // get access to ChainlinkConsumer contract
-                //  <contract>.requestRandomWords()
+                //  <contract>.requestRandomWords(address(bet))
 
                 break;
             }

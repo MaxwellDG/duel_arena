@@ -25,7 +25,7 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
   }
 
   // Assumes the subscription is funded sufficiently.
-  function requestRandomWords() external onlyOwner {
+  function requestRandomWords(address _betAddress) external onlyOwner {
     // Will revert if subscription is not set and funded.
     s_requestId = COORDINATOR.requestRandomWords(
       keyHash,
@@ -34,11 +34,12 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
       callbackGasLimit,
       numWords
     );
+    // TODO add the _betAddress somewhere to be referred back to later. Mapping? Not sure.
   }
   
   function fulfillRandomWords(uint256, /* requestId */ uint256[] memory randomWords) internal override {
     s_randomWords = randomWords;
-    // TODO send back to BetFactory.sol
+    // TODO send back to the Bet contract with withdrawToWinner(randomWords[0])
   }
 
   modifier onlyOwner() {
