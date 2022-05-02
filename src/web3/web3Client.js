@@ -63,7 +63,6 @@ export default class Web3Client{
     }
 
     async getBets(pageNum, filterNum, input = ''){
-        console.log("Receiving ", pageNum, filterNum, input)
         return await this.BetFactoryContract.methods.get25Bets(pageNum, filterNum, input).call({
             from: this.accounts[1] // TODO change this
         });

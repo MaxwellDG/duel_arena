@@ -15,7 +15,6 @@ contract Bet {
     }
 
     BetData public betData;
-    address payable matcher;
 
     constructor(address _creator, string memory _displayName, uint256 _wager, bool _isEven, string memory _token) payable {
         betData = BetData(
@@ -30,24 +29,6 @@ contract Bet {
     function withdrawToWinner(address payable winner, int txLastDigit, string calldata winnerDisplayName) internal{
         emit Withdraw(winner, address(this).balance, winnerDisplayName, txLastDigit, betData.token);
         selfdestruct(winner);
-    }
-
-    // TODO this makes more sense in the BetFactoy. Lowers contract creation costs as well as aids in removing the bet from all arrays once finished
-    function matchBet(string memory _matchToken, bool _matchIsEven) public payable{
-        require(msg.value == betData.wager, "Wager doesn't match");
-        require(compareStringsByBytes(_matchToken, betData.token), "Token doesn't match");
-        require(msg.sender != betData.creator, "Creator and matcher are the same");
-        require(!_matchIsEven == betData.isEven, "Both bet same bet");
-        matcher = payable(msg.sender);
-        // TODO CHAINLINK RNG
-        // address payable winner = didCreatorWin ? betData.creator : matcher;
-        // string memory winnerDisplayName = didCreatorWin ? betData.displayName : matchDisplayName;
-        // withdrawToWinner(winner, txLastDigit, winnerDisplayName);
-    }
-
-    // Pure
-    function compareStringsByBytes(string memory s1, string memory s2) internal pure returns(bool){ 
-        return keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
 
     // View
@@ -113,7 +94,7 @@ contract BetFactory{
         }
     }
 
-    function deleteBet(address _betAddress) public {
+    function deleteBet(address _betAddress) public { // TODO this part is the worst for scaling. Maybe can jump to the correct spot with pagination data?
         Bet[] memory bets = betsByWallet[msg.sender];
         for(uint j = 0; j < bets.length; j++){ 
             if(address(bets[j]) == _betAddress){
@@ -144,5 +125,31 @@ contract BetFactory{
                 break;
             }
         }
+    }
+
+    // TODO this makes more sense in the BetFactoy. Lowers contract creation costs as well as aids in removing the bet from all arrays once finished
+    function matchBet(address _creator, address _betAddress, string memory _matchToken) public payable{
+        require(msg.sender != _creator, "Creator and matcher are the same");
+        Bet[] memory bets = betsByWallet[_creator];
+        for(uint j = 0; j < bets.length; j++){ 
+            if(address(bets[j]) == _betAddress){
+                Bet bet = bets[j];
+                string memory token = bet.getBetData().token;
+                uint256 wager = bet.getBetData().wager;
+                require(msg.value == wager, "Wager doesn't match");
+                // TODO do this in a safer way by detecting the actual token sent in the value (same with initial sending)
+                require(compareStringsByBytes(_matchToken, token), "Tokens don't match"); 
+                // TODO CHAINLINK VRM
+                // get access to ChainlinkConsumer contract
+                //  <contract>.requestRandomWords()
+
+                break;
+            }
+        }
+    }
+
+    // Pure
+    function compareStringsByBytes(string memory s1, string memory s2) internal pure returns(bool){ 
+        return keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
 }
