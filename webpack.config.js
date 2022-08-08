@@ -9,15 +9,13 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 // Not using this but I've heard it's important for mobile version
 // const autoprefixer = require("autoprefixer");
 
-// Node polyfill fallbacks were not working here, so they've been moved to vue.config.js and are done with a plugin
-
 module.exports = {
   entry: {
     main: "./src/main.js",
   },
   resolve: {
     alias: {
-      vue$: "vue/dist/vue.runtime.esm.js",
+      'Vue': 'vue/dist/vue.esm-bundler.js',
       '@': path.resolve('src'),
     },
     extensions: ["*", ".js", ".vue", ".json"],
@@ -109,6 +107,11 @@ module.exports = {
       template: path.resolve(__dirname, "public", "index.html"),
       favicon: "./public/favicon.ico",
     }),
+    new NodePolyfillPlugin(),
+    new webpack.DefinePlugin({
+      "__VUE_OPTIONS_API__": true, // enable/disable Options API support
+      "__VUE_PROD_DEVTOOLS__": false // enable/disable devtools support in production
+    })
   ],
   optimization: {
     moduleIds: "deterministic",

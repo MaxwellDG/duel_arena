@@ -8,7 +8,7 @@
             <div class="flex align">
                 <div v-if="type != 'self'" class="flex align" :style="{marginRight: '0.5rem'}">
                     <p class="filterText">Search</p>
-                    <v-select 
+                    <!-- <v-select 
                         class="standard-dropdown token-drop"
                         :modelValue="search"
                         @update:modelValue="handleSearchUpdate"
@@ -16,7 +16,7 @@
                         :clearable="false"
                         :searchable="false"
                         :options="SEARCH_OPTIONS"
-                    />
+                    /> -->
                     <input 
                         type="text" 
                         :value="searchInput" 

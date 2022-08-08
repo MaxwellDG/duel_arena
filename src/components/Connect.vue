@@ -30,7 +30,7 @@ const balance = ref()
 
 const connectToMetamask = async () => {
     // modern version of 'window.ethereum.enable()'
-    await window.ethereum.send('eth_requestAccounts')
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
     try{
         const accounts = await $web3.web3.eth.getAccounts()
         account.value = accounts[0]
@@ -60,9 +60,9 @@ const connectToMetamask = async () => {
     }
 
     .wallet-info{
-        overflow: hidden;
-        white-space: nowrap;   
-        text-overflow: ellipsis;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .info-label{
@@ -81,15 +81,19 @@ const connectToMetamask = async () => {
         flex-direction: column;
         justify-content: center;
         padding: 5px 25px;
-        max-width: 100px;   
+        // max-width: 100px;   
     }
 
     .account{
         text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
     }
 
     .balance{
         text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
     }
 
     p{

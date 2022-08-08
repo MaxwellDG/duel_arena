@@ -2,17 +2,20 @@
     <div class='scanners'>
         <p class="find">Find Your Transaction</p>
         <div class="scanner-buttons">
-            <div v-on:click="() => website = 'https://btc.com/'" class="scanner-icon-con">
+            <div v-on:click="() => website = 'https://btc.com'" class="scanner-icon-con">
                 <img :src="BTC" alt="icon" :width=32 :height=32 />
             </div>
-            <div v-on:click="() => website = 'https://etherscan.io/'" class="scanner-icon-con">
+            <div v-on:click="() => website = 'https://etherscan.io'" class="scanner-icon-con">
                 <img :src="ETH" alt="icon" :width=32 :height=32 />
             </div>
-            <div v-on:click="() => website = 'https://cardanoscan.io/'" class="scanner-icon-con">
+            <div v-on:click="() => website = 'https://cardanoscan.io'" class="scanner-icon-con">
                 <img :src="ADA" alt="icon" :width=32 :height=32 />
             </div>
-            <div v-on:click="() => website = 'https://solscan.io/'" class="scanner-icon-con">
+            <!-- <div v-on:click="() => website = 'https://solscan.io'" class="scanner-icon-con">
                 <img :src="SOL" alt="icon" :width=32 :height=32 />
+            </div> -->
+            <div v-on:click="() => website = 'https://avascan.info'" class="scanner-icon-con">
+                <img :src="AVAX" alt="icon" :width=32 :height=32 />
             </div>
         </div>
         <div @click="handleCopy" class="website-con">
@@ -26,7 +29,8 @@
 import BTC from '@/../node_modules/cryptocurrency-icons/svg/black/btc.svg'
 import ETH from '../../node_modules/cryptocurrency-icons/svg/black/eth.svg'
 import ADA from '../../node_modules/cryptocurrency-icons/svg/black/ada.svg'
-import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
+// import SOL from '../../node_modules/cryptocurrency-icons/svg/black/sol.svg'
+import AVAX from '../../node_modules/cryptocurrency-icons/svg/black/avax.svg' // Manually added to node_modules lib
 import Copy from '../icons/copy.svg';
 
 import { ref } from 'vue';

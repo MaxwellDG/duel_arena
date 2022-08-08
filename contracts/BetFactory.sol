@@ -26,8 +26,11 @@ contract Bet {
             _token
         );
     }
-
-    function withdrawToWinner(uint256 _randomNumber) external isFromChainlink{
+ 
+    // If you can't get the 'external isFromChainLink going, try looking into making this mega private
+    // Then you could throw this in as a callback? Fk that probably won't work. It'd take too long to wait for Chainlink response
+    // Do they even have callback functions in solidity? 
+    function withdrawToWinner(uint256 _randomNumber){ // external isFromChainlink
         address payable winner;
         if((_randomNumber % 2 == 0 && betData.isEven) || (_randomNumber % 2 == 1 && !betData.isEven)){
             winner = betData.creator;
@@ -43,9 +46,11 @@ contract Bet {
         return betData;
     }
 
-    //modifier
+    // Modifier
+
+    // Is this even possible? It's a subcription thing from the Chainlink website. Maybe.
     modifier isFromChainlink(){
-        require(msg.sender == '<ChainlinkConsumer address>'); // TODO get real address
+        require(msg.sender == 0x6168499c0cFfCaCD319c818142124B7A15E857ab); // TODO THERES A POSSIBILITY THIS IS CORRECT. I don't know. Test it more.
         _;
     }
     
