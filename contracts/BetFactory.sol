@@ -97,6 +97,10 @@ contract BetFactory is VRFConsumerBaseV2{
     mapping(string => Bet[]) public betsByDisplayName;
 
     event CreatedBet(address creator, string displayName, uint256 wager, bool isEven, string token);
+    event DoingAnything(string isItDoingAnything);
+    event DoingAnythingFirst(string isItDoingAnything);
+    event TestRequest(bytes32 keyHash, uint64 subId, uint16 reqConfirms, uint32 gasCallbackLimit, uint32 numOfWords);
+    event TestRequest2(uint256 requestId);
 
     receive() external payable{} // Allows contract to receive ether from anywhere
 
@@ -107,7 +111,7 @@ contract BetFactory is VRFConsumerBaseV2{
     }
 
     function createBet(uint256 _wager, bool _isEven, string calldata _token, string calldata _displayName) external payable returns(Bet){ 
-        require(msg.value > 0, "Zero ether has been sent");
+        require(msg.value == _wager, "ETH sent does not equal wager amount");
         Bet bet = new Bet{value: _wager}(address(this), msg.sender, _displayName, _wager, _isEven, _token);
         emit CreatedBet(msg.sender, _displayName, _wager, _isEven, _token);
         betsByWallet[msg.sender].push(bet);
@@ -186,6 +190,7 @@ contract BetFactory is VRFConsumerBaseV2{
                 require(msg.value == wager, "Wager doesn't match");
                 require(compareStringsByBytes(_matchToken, token), "Tokens don't match"); // TODO do this in a safer way by detecting the actual token sent in the value (same with initial sending)
                 bet.stateMatcher(msg.sender);
+                emit DoingAnythingFirst("IS this doing anythingggggg");
                 requestRandomWords(_betAddress);
                 break;
             }
@@ -195,6 +200,8 @@ contract BetFactory is VRFConsumerBaseV2{
     // VRF Chainlink related
     function requestRandomWords(address _betAddress) internal {
         // Will revert if subscription is not set and funded.
+        emit DoingAnything("IS this doing anything");
+        emit TestRequest(keyHash, s_subscriptionId, requestConfirmations, callbackGasLimit, numWords);
         uint256 s_requestId = COORDINATOR.requestRandomWords(
             keyHash,
             s_subscriptionId,
@@ -202,6 +209,7 @@ contract BetFactory is VRFConsumerBaseV2{
             callbackGasLimit,
             numWords
         );
+        emit TestRequest2(s_requestId);
         requestIdToBetAddress[s_requestId] = _betAddress;
     }
 
