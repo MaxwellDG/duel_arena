@@ -1,10 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+// TODO look into Swarm for distributed data storage. The setup below clearly won't scale. Get this project working first. 
+// State this intention in the first line of the README
+
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
 contract Bet {
 
     event Withdraw(address winner, uint256 amount, string token);
+
+    address private betFactoryContract;
 
     struct BetData{
         address payable creator;
@@ -17,7 +24,15 @@ contract Bet {
     address payable matcher;
     BetData public betData;
 
-    constructor(address _creator, string memory _displayName, uint256 _wager, bool _isEven, string memory _token) payable {
+    constructor(
+        address _betFactoryContract, 
+        address _creator, 
+        string memory _displayName, 
+        uint256 _wager, 
+        bool _isEven, 
+        string memory _token) 
+    payable {
+        betFactoryContract = _betFactoryContract; // TODO this can obviously be set a better way than being passed every time 
         betData = BetData(
             payable(_creator),
             _displayName,
@@ -27,10 +42,7 @@ contract Bet {
         );
     }
  
-    // If you can't get the 'external isFromChainLink going, try looking into making this mega private
-    // Then you could throw this in as a callback? Fk that probably won't work. It'd take too long to wait for Chainlink response
-    // Do they even have callback functions in solidity? 
-    function withdrawToWinner(uint256 _randomNumber){ // external isFromChainlink
+    function declareWinner(uint256 _randomNumber) external isFromBetFactory{
         address payable winner;
         if((_randomNumber % 2 == 0 && betData.isEven) || (_randomNumber % 2 == 1 && !betData.isEven)){
             winner = betData.creator;
@@ -38,19 +50,22 @@ contract Bet {
             winner = matcher;
         }
         emit Withdraw(winner, address(this).balance, betData.token);
+        // TODO notify BetFactory that this has suicided
         selfdestruct(winner);
     }
 
-    // View
+    function stateMatcher(address _matcher) external isFromBetFactory{
+        matcher = payable(_matcher);
+    }
+
+    // Views
     function getBetData() public view returns(BetData memory){
         return betData;
     }
 
-    // Modifier
-
-    // Is this even possible? It's a subcription thing from the Chainlink website. Maybe.
-    modifier isFromChainlink(){
-        require(msg.sender == 0x6168499c0cFfCaCD319c818142124B7A15E857ab); // TODO THERES A POSSIBILITY THIS IS CORRECT. I don't know. Test it more.
+    // Modifiers
+    modifier isFromBetFactory(){
+        require(msg.sender == betFactoryContract); 
         _;
     }
     
@@ -62,11 +77,20 @@ contract Bet {
     }
 }
 
-contract BetFactory{
+contract BetFactory is VRFConsumerBaseV2{
 
-    // TODO look into Swarm for distributed data storage. The setup below clearly won't scale. Get this project working first. 
-    // State this intention in the first line of the README
+    // VRF related
+    VRFCoordinatorV2Interface COORDINATOR;
+    uint64 s_subscriptionId;
+    address s_owner;
+    address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab; // Rinkeby-specific coordinator
+    bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc; // The gas lane to use, which specifies the maximum gas price to bump to.
+    uint32 callbackGasLimit = 100000;
+    uint16 requestConfirmations = 3;
+    uint32 numWords =  1;
+    mapping(uint256 => address) requestIdToBetAddress; // While VRF pending, this stores a map of the unique request id to the bet address
 
+    // Bet related
     Bet[] public allBets;
     mapping(address => Bet[]) public betsByWallet;
     mapping(string => Bet[]) public betsByToken; 
@@ -76,9 +100,15 @@ contract BetFactory{
 
     receive() external payable{} // Allows contract to receive ether from anywhere
 
+    constructor (uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) payable { // Get subscriptionId from account on https://vrf.chain.link/ // ATM it's 3682
+        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        s_owner = msg.sender;
+        s_subscriptionId = subscriptionId;
+    }
+
     function createBet(uint256 _wager, bool _isEven, string calldata _token, string calldata _displayName) external payable returns(Bet){ 
         require(msg.value > 0, "Zero ether has been sent");
-        Bet bet = new Bet{value: _wager}(msg.sender, _displayName, _wager, _isEven, _token);
+        Bet bet = new Bet{value: _wager}(address(this), msg.sender, _displayName, _wager, _isEven, _token);
         emit CreatedBet(msg.sender, _displayName, _wager, _isEven, _token);
         betsByWallet[msg.sender].push(bet);
         betsByToken[_token].push(bet);
@@ -145,26 +175,39 @@ contract BetFactory{
         }
     }
 
-    // TODO this makes more sense in the BetFactoy. Lowers contract creation costs as well as aids in removing the bet from all arrays once finished
     function matchBet(address _creator, address _betAddress, string memory _matchToken) public payable{
         require(msg.sender != _creator, "Creator and matcher are the same");
         Bet[] memory bets = betsByWallet[_creator];
         for(uint j = 0; j < bets.length; j++){ 
             if(address(bets[j]) == _betAddress){
                 Bet bet = bets[j];
-                // TODO set matcher property in Bet contract?
                 string memory token = bet.getBetData().token;
                 uint256 wager = bet.getBetData().wager;
                 require(msg.value == wager, "Wager doesn't match");
-                // TODO do this in a safer way by detecting the actual token sent in the value (same with initial sending)
-                require(compareStringsByBytes(_matchToken, token), "Tokens don't match"); 
-                // TODO CHAINLINK VRM
-                // get access to ChainlinkConsumer contract
-                //  <contract>.requestRandomWords(address(bet))
-
+                require(compareStringsByBytes(_matchToken, token), "Tokens don't match"); // TODO do this in a safer way by detecting the actual token sent in the value (same with initial sending)
+                bet.stateMatcher(msg.sender);
+                requestRandomWords(_betAddress);
                 break;
             }
         }
+    }
+
+    // VRF Chainlink related
+    function requestRandomWords(address _betAddress) internal {
+        // Will revert if subscription is not set and funded.
+        uint256 s_requestId = COORDINATOR.requestRandomWords(
+            keyHash,
+            s_subscriptionId,
+            requestConfirmations,
+            callbackGasLimit,
+            numWords
+        );
+        requestIdToBetAddress[s_requestId] = _betAddress;
+    }
+
+    // Callback function from VRFConsumerBaseV2 extension that is overridden
+    function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
+        Bet(requestIdToBetAddress[_requestId]).declareWinner(_randomWords[0]);
     }
 
     // Pure
