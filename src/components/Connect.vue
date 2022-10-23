@@ -1,48 +1,32 @@
 <template>
     <div class="connectCon">
-        <button v-if="!store.state.isConnected" @click="connectToMetamask" class='connect butt'>Connect -></button>
+        <button v-if="!store.state.isConnected" @click="store.commit(Types.SET_MODAL, { modal: 'Connect' });" class='connect butt'>
+            Connect ->
+        </button>
         <div class="connected-con" v-else>
             <button class='disconnect butt'>Disconnect</button> 
             <div class="wallet-info">
+                <p class="info-label">Blockchain: </p>
+                <p class="account">&nbsp;{{store.state.blockchain}}</p>
+            </div>
+            <div class="wallet-info">
                 <p class="info-label">Account: </p>
-                <p class="account">&nbsp;{{account}}</p>
+                <p class="account">&nbsp;{{store.state.account}}</p>
             </div>
             <div class="wallet-info">
                 <p class="info-label">Balance: </p>
-                <p class="balance">&nbsp;{{balance}}</p>
+                <p class="balance">&nbsp;{{store.state.balance}}</p>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, inject } from 'vue';
 
 import { useStore } from 'vuex'
 import * as Types from '@/store/types';
 
 const store = useStore();
-
-const $web3 = inject('$web3')
-
-const account = ref()
-const balance = ref()
-
-const connectToMetamask = async () => {
-    // modern version of 'window.ethereum.enable()'
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-    try{
-        const accounts = await $web3.web3.eth.getAccounts()
-        account.value = accounts[0]
-        if(accounts[0]){
-            const bal = await $web3.web3.eth.getBalance(account.value)
-            balance.value = parseInt(bal)
-        }
-        store.commit(Types.TOGGLE_CONNECTED);
-    } catch(e){
-        console.log(e)
-    }
-}
 
 </script>
 

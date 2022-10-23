@@ -97,10 +97,8 @@ contract BetFactory is VRFConsumerBaseV2{
     mapping(string => Bet[]) public betsByDisplayName;
 
     event CreatedBet(address creator, string displayName, uint256 wager, bool isEven, string token);
-    event DoingAnything(string isItDoingAnything);
-    event DoingAnythingFirst(string isItDoingAnything);
     event TestRequest(bytes32 keyHash, uint64 subId, uint16 reqConfirms, uint32 gasCallbackLimit, uint32 numOfWords);
-    event TestRequest2(uint256 requestId);
+    event TestRequest2(uint256 requestId, address wtvrAddress);
 
     receive() external payable{} // Allows contract to receive ether from anywhere
 
@@ -190,17 +188,17 @@ contract BetFactory is VRFConsumerBaseV2{
                 require(msg.value == wager, "Wager doesn't match");
                 require(compareStringsByBytes(_matchToken, token), "Tokens don't match"); // TODO do this in a safer way by detecting the actual token sent in the value (same with initial sending)
                 bet.stateMatcher(msg.sender);
-                emit DoingAnythingFirst("IS this doing anythingggggg");
                 requestRandomWords(_betAddress);
                 break;
             }
         }
     }
 
+    //TODO maybe the COORDINATOR is undefined? or maybe the 'requestRandomWords' function needs to have the modifier 'onlyOwner'? Not sure how extension of other contracts works exactly
+
     // VRF Chainlink related
     function requestRandomWords(address _betAddress) internal {
         // Will revert if subscription is not set and funded.
-        emit DoingAnything("IS this doing anything");
         emit TestRequest(keyHash, s_subscriptionId, requestConfirmations, callbackGasLimit, numWords);
         uint256 s_requestId = COORDINATOR.requestRandomWords(
             keyHash,
@@ -209,8 +207,8 @@ contract BetFactory is VRFConsumerBaseV2{
             callbackGasLimit,
             numWords
         );
-        emit TestRequest2(s_requestId);
-        requestIdToBetAddress[s_requestId] = _betAddress;
+        emit TestRequest2(s_requestId, _betAddress);
+        // requestIdToBetAddress[s_requestId] = _betAddress;
     }
 
     // Callback function from VRFConsumerBaseV2 extension that is overridden

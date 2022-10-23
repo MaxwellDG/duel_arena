@@ -7,6 +7,9 @@ export default createStore({
       modal: null,
       data: {}
     },
+    chainConnected: undefined,
+    balance: undefined,
+    account: undefined,
     isConnected: false,
     openBets: [],
     openBetsPageNum: 0,
@@ -29,6 +32,17 @@ export default createStore({
     },
     [Types.SET_USD_VALUES] (state, payload) {
       state.usdValues = payload;
+    },
+
+    //Blockchain
+    [Types.SET_CHAIN_CONNECTED] (state, chain) {
+      state.chainConnected = chain;
+    },
+    [Types.SET_ACCOUNT] (state, account) {
+      state.account = account;
+    },
+    [Types.SET_BALANCE] (state, balance) {
+      state.balance = balance;
     },
 
     // Bets
