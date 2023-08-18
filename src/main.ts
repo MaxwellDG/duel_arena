@@ -10,14 +10,11 @@ import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import Web3Client from './web3/web3Client'
 
-
 const app = createApp(App)
 
 // For crypto and browserify
 require('buffer')
 global.Buffer = global.Buffer || require("buffer").Buffer; 
-
-app.config.productionTip = false
 
 app.component('v-select', vSelect)
 app.use(store)
